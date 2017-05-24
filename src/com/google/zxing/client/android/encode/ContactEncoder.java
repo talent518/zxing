@@ -29,7 +29,7 @@ abstract class ContactEncoder {
 	/**
 	 * @return first, the best effort encoding of all data in the appropriate format; second, a display-appropriate version of the contact information
 	 */
-	abstract String[] encode(Iterable<String> names, String organization, Iterable<String> addresses, Iterable<String> phones, Iterable<String> emails, String url, String note);
+	abstract String[] encode(Iterable<String> names, String organization, Iterable<String> addresses, Iterable<String> phones, Iterable<String> emails, Iterable<String> urls, String note);
 
 	/**
 	 * @return null if s is null or empty, or result of s.trim() otherwise
@@ -58,7 +58,7 @@ abstract class ContactEncoder {
 		Collection<String> uniques = new HashSet<String>(2);
 		for (String value : values) {
 			String trimmed = trim(value);
-			if (trimmed != null && !uniques.contains(trimmed)) {
+			if (trimmed != null && trimmed.length() > 0 && !uniques.contains(trimmed)) {
 				newContents.append(prefix).append(':').append(fieldFormatter.format(trimmed)).append(terminator);
 				String display = formatter == null ? trimmed : formatter.format(trimmed);
 				newDisplayContents.append(display).append('\n');

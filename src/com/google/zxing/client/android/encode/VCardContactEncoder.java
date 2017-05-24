@@ -38,10 +38,11 @@ final class VCardContactEncoder extends ContactEncoder {
 	private static final char TERMINATOR = '\n';
 
 	@Override
-	public String[] encode(Iterable<String> names, String organization, Iterable<String> addresses, Iterable<String> phones, Iterable<String> emails, String url, String note) {
+	public String[] encode(Iterable<String> names, String organization, Iterable<String> addresses, Iterable<String> phones, Iterable<String> emails, Iterable<String> urls, String note) {
 		StringBuilder newContents = new StringBuilder(100);
-		StringBuilder newDisplayContents = new StringBuilder(100);
 		newContents.append("BEGIN:VCARD").append(TERMINATOR);
+		newContents.append("VERSION:3.0").append(TERMINATOR);
+		StringBuilder newDisplayContents = new StringBuilder(100);
 		appendUpToUnique(newContents, newDisplayContents, "N", names, 1, null);
 		append(newContents, newDisplayContents, "ORG", organization);
 		appendUpToUnique(newContents, newDisplayContents, "ADR", addresses, 1, null);
@@ -52,7 +53,7 @@ final class VCardContactEncoder extends ContactEncoder {
 			}
 		});
 		appendUpToUnique(newContents, newDisplayContents, "EMAIL", emails, Integer.MAX_VALUE, null);
-		append(newContents, newDisplayContents, "URL", url);
+		appendUpToUnique(newContents, newDisplayContents, "URL", urls, Integer.MAX_VALUE, null);
 		append(newContents, newDisplayContents, "NOTE", note);
 		newContents.append("END:VCARD").append(TERMINATOR);
 		return new String[] { newContents.toString(), newDisplayContents.toString() };

@@ -16,16 +16,20 @@
 
 package com.google.zxing.client.android.share;
 
+import android.app.ListActivity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
+import com.google.zxing.client.android.R;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,32 +37,33 @@ import java.util.List;
  * 
  * @author Sean Owen
  */
-final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Object, List<String[]>> {
+final class LoadPackagesAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
 
 	private static final String[] PKG_PREFIX_WHITELIST = { "com.google.android.apps.", };
 	private static final String[] PKG_PREFIX_BLACKLIST = { "com.android.", "android", "com.google.android.", "com.htc", };
 
-	private final AppPickerActivity activity;
+	private final ListActivity activity;
 
-	LoadPackagesAsyncTask(AppPickerActivity activity) {
+	LoadPackagesAsyncTask(ListActivity activity) {
 		this.activity = activity;
 	}
 
 	@Override
-	protected List<String[]> doInBackground(List<String[]>... objects) {
-		List<String[]> labelsPackages = objects[0];
+	protected List<AppInfo> doInBackground(Void... objects) {
+		List<AppInfo> labelsPackages = new ArrayList<AppInfo>();
 		PackageManager packageManager = activity.getPackageManager();
 		List<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
 		for (ApplicationInfo appInfo : appInfos) {
-			CharSequence label = appInfo.loadLabel(packageManager);
-			if (label != null) {
-				String packageName = appInfo.packageName;
-				if (!isHidden(packageName)) {
-					labelsPackages.add(new String[] { label.toString(), packageName });
+			String packageName = appInfo.packageName;
+			if (!isHidden(packageName)) {
+				CharSequence label = appInfo.loadLabel(packageManager);
+				Drawable icon = appInfo.loadIcon(packageManager);
+				if (label != null) {
+					labelsPackages.add(new AppInfo(packageName, label.toString(), icon));
 				}
 			}
 		}
-		Collections.sort(labelsPackages, new ByFirstStringComparator());
+		Collections.sort(labelsPackages);
 		return labelsPackages;
 	}
 
@@ -80,21 +85,19 @@ final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Object, List
 	}
 
 	@Override
-	protected synchronized void onPostExecute(List<String[]> results) {
-		List<String> labels = new ArrayList<String>(results.size());
-		for (String[] result : results) {
-			labels.add(result[0]);
-		}
-		ListAdapter listAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, labels);
+	protected void onPostExecute(final List<AppInfo> results) {
+		ListAdapter listAdapter = new ArrayAdapter<AppInfo>(activity, R.layout.app_picker_list_item, R.id.app_picker_list_item_label, results) {
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View view = super.getView(position, convertView, parent);
+				Drawable icon = results.get(position).getIcon();
+				if (icon != null) {
+					((ImageView) view.findViewById(R.id.app_picker_list_item_icon)).setImageDrawable(icon);
+				}
+				return view;
+			}
+		};
 		activity.setListAdapter(listAdapter);
-	}
-
-	@SuppressWarnings("serial")
-	private static class ByFirstStringComparator implements Comparator<String[]>, Serializable {
-		@Override
-		public int compare(String[] o1, String[] o2) {
-			return o1[0].compareTo(o2[0]);
-		}
 	}
 
 }

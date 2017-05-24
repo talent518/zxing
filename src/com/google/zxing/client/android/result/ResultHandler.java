@@ -41,6 +41,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -99,15 +101,15 @@ public abstract class ResultHandler {
 		shopperButton.setVisibility(View.GONE);
 	}
 
-	public ParsedResult getResult() {
+	public final ParsedResult getResult() {
 		return result;
 	}
 
-	boolean hasCustomProductSearch() {
+	final boolean hasCustomProductSearch() {
 		return customProductSearch != null;
 	}
 
-	Activity getActivity() {
+	final Activity getActivity() {
 		return activity;
 	}
 
@@ -150,7 +152,7 @@ public abstract class ResultHandler {
 	 * @param listener
 	 *            The on click listener to install for this button.
 	 */
-	void showGoogleShopperButton(View.OnClickListener listener) {
+	final void showGoogleShopperButton(View.OnClickListener listener) {
 		View shopperButton = activity.findViewById(R.id.shopper_button);
 		shopperButton.setVisibility(View.VISIBLE);
 		shopperButton.setOnClickListener(listener);
@@ -183,14 +185,14 @@ public abstract class ResultHandler {
 	}
 
 	final void addPhoneOnlyContact(String[] phoneNumbers, String[] phoneTypes) {
-		addContact(null, null, phoneNumbers, phoneTypes, null, null, null, null, null, null, null, null, null, null);
+		addContact(null, null, null, phoneNumbers, phoneTypes, null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	final void addEmailOnlyContact(String[] emails, String[] emailTypes) {
-		addContact(null, null, null, null, emails, emailTypes, null, null, null, null, null, null, null, null);
+		addContact(null, null, null, null, null, emails, emailTypes, null, null, null, null, null, null, null, null, null);
 	}
 
-	final void addContact(String[] names, String pronunciation, String[] phoneNumbers, String[] phoneTypes, String[] emails, String[] emailTypes, String note, String instantMessenger, String address, String addressType, String org, String title, String url, String birthday) {
+	final void addContact(String[] names, String[] nicknames, String pronunciation, String[] phoneNumbers, String[] phoneTypes, String[] emails, String[] emailTypes, String note, String instantMessenger, String address, String addressType, String org, String title, String[] urls, String birthday, String[] geo) {
 
 		// Only use the first name in the array, if present.
 		Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, ContactsContract.Contacts.CONTENT_URI);
@@ -223,16 +225,32 @@ public abstract class ResultHandler {
 
 		// No field for URL, birthday; use notes
 		StringBuilder aggregatedNotes = new StringBuilder();
-		for (String aNote : new String[] { url, birthday, note }) {
-			if (aNote != null) {
-				if (aggregatedNotes.length() > 0) {
-					aggregatedNotes.append('\n');
+		if (urls != null) {
+			for (String url : urls) {
+				if (url != null && url.length() > 0) {
+					aggregatedNotes.append('\n').append(url);
 				}
-				aggregatedNotes.append(aNote);
 			}
 		}
+		for (String aNote : new String[] { birthday, note }) {
+			if (aNote != null) {
+				aggregatedNotes.append('\n').append(aNote);
+			}
+		}
+		if (nicknames != null) {
+			for (String nickname : nicknames) {
+				if (nickname != null && nickname.length() > 0) {
+					aggregatedNotes.append('\n').append(nickname);
+				}
+			}
+		}
+		if (geo != null) {
+			aggregatedNotes.append('\n').append(geo[0]).append(',').append(geo[1]);
+		}
+
 		if (aggregatedNotes.length() > 0) {
-			putExtra(intent, ContactsContract.Intents.Insert.NOTES, aggregatedNotes.toString());
+			// Remove extra leading '\n'
+			putExtra(intent, ContactsContract.Intents.Insert.NOTES, aggregatedNotes.substring(1));
 		}
 
 		putExtra(intent, ContactsContract.Intents.Insert.IM_HANDLE, instantMessenger);
@@ -387,7 +405,7 @@ public abstract class ResultHandler {
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		try {
 			launchIntent(intent);
-		} catch (ActivityNotFoundException anfe) {
+		} catch (ActivityNotFoundException ignored) {
 			Log.w(TAG, "Nothing available to handle " + intent);
 		}
 	}
@@ -429,7 +447,7 @@ public abstract class ResultHandler {
 	 * 
 	 * @throws ActivityNotFoundException
 	 */
-	void rawLaunchIntent(Intent intent) {
+	final void rawLaunchIntent(Intent intent) {
 		if (intent != null) {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			Log.d(TAG, "Launching intent: " + intent + " with extras: " + intent.getExtras());
@@ -440,10 +458,10 @@ public abstract class ResultHandler {
 	/**
 	 * Like {@link #rawLaunchIntent(Intent)} but will show a user dialog if nothing is available to handle.
 	 */
-	void launchIntent(Intent intent) {
+	final void launchIntent(Intent intent) {
 		try {
 			rawLaunchIntent(intent);
-		} catch (ActivityNotFoundException e) {
+		} catch (ActivityNotFoundException ignored) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 			builder.setTitle(R.string.app_name);
 			builder.setMessage(R.string.msg_intent_failed);
@@ -467,9 +485,14 @@ public abstract class ResultHandler {
 		return customProductSearch;
 	}
 
-	String fillInCustomSearchURL(String text) {
+	final String fillInCustomSearchURL(String text) {
 		if (customProductSearch == null) {
 			return text; // ?
+		}
+		try {
+			text = URLEncoder.encode(text, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// can't happen; UTF-8 is always supported. Continue, I guess, without encoding
 		}
 		String url = customProductSearch.replace("%s", text);
 		if (rawResult != null) {

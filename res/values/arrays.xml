@@ -7,6 +7,7 @@
     <item>BR</item>
     <item>BG</item>
     <item>CA</item>
+    <item>CH</item>
     <item>CN</item>
     <item>CZ</item>
     <item>DE</item>
@@ -31,5 +32,15 @@
     <item>TR</item>
     <item>TW</item>
     <item>US</item>
+  </string-array>
+  <string-array name="preferences_front_light_values">
+    <item>ON</item>
+    <item>AUTO</item>
+    <item>OFF</item>
+  </string-array>
+  <string-array name="preferences_front_light_options">
+    <item>@string/preferences_front_light_on</item>
+    <item>@string/preferences_front_light_auto</item>
+    <item>@string/preferences_front_light_off</item>
   </string-array>
 </resources>

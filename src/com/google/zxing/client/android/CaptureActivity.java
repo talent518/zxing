@@ -17,8 +17,6 @@
 package com.google.zxing.client.android;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -62,6 +60,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
@@ -93,9 +92,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	private static final String PRODUCT_SEARCH_URL_PREFIX = "http://www.google";
 	private static final String PRODUCT_SEARCH_URL_SUFFIX = "/m/products/scan";
 	private static final String[] ZXING_URLS = { "http://zxing.appspot.com/scan", "zxing://scan/" };
-	private static final String RETURN_CODE_PLACEHOLDER = "{CODE}";
-	private static final String RETURN_URL_PARAM = "ret";
-	private static final String RAW_PARAM = "raw";
 
 	public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
 
@@ -112,13 +108,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	private boolean copyToClipboard;
 	private IntentSource source;
 	private String sourceUrl;
-	private String returnUrlTemplate;
-	private boolean returnRaw;
+	private ScanFromWebPageManager scanFromWebPageManager;
 	private Collection<BarcodeFormat> decodeFormats;
+	private Map<DecodeHintType, ?> decodeHints;
 	private String characterSet;
 	private HistoryManager historyManager;
 	private InactivityTimer inactivityTimer;
 	private BeepManager beepManager;
+	private AmbientLightManager ambientLightManager;
 
 	private static TextView messageView;
 
@@ -151,6 +148,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		historyManager.trimHistory();
 		inactivityTimer = new InactivityTimer(this);
 		beepManager = new BeepManager(this);
+		ambientLightManager = new AmbientLightManager(this);
+
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
 		messageView = (TextView) findViewById(R.id.transfer_view);
 		dateView = (TextView) findViewById(R.id.date_view);
@@ -206,6 +206,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		}
 
 		beepManager.updatePrefs();
+		ambientLightManager.start(cameraManager);
 
 		inactivityTimer.onResume();
 
@@ -228,6 +229,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				// Scan the formats the intent requested, and return the result to the calling activity.
 				source = IntentSource.NATIVE_APP_INTENT;
 				decodeFormats = DecodeFormatManager.parseDecodeFormats(intent);
+				decodeHints = DecodeHintManager.parseDecodeHints(intent);
 
 				if (intent.hasExtra(Intents.Scan.WIDTH) && intent.hasExtra(Intents.Scan.HEIGHT)) {
 					int width = intent.getIntExtra(Intents.Scan.WIDTH, 0);
@@ -255,10 +257,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				// If a return URL is specified, send the results there. Otherwise, handle it ourselves.
 				source = IntentSource.ZXING_LINK;
 				sourceUrl = dataString;
-				Uri inputUri = Uri.parse(sourceUrl);
-				returnUrlTemplate = inputUri.getQueryParameter(RETURN_URL_PARAM);
-				returnRaw = inputUri.getQueryParameter(RAW_PARAM) != null;
+				Uri inputUri = Uri.parse(dataString);
+				scanFromWebPageManager = new ScanFromWebPageManager(inputUri);
 				decodeFormats = DecodeFormatManager.parseDecodeFormats(inputUri);
+				// Allow a sub-set of the hints to be specified by the caller.
+				decodeHints = DecodeHintManager.parseDecodeHints(inputUri);
 
 			}
 
@@ -286,6 +289,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			handler = null;
 		}
 		inactivityTimer.onPause();
+		ambientLightManager.stop();
 		cameraManager.closeDriver();
 		if (!hasSurface) {
 			SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
@@ -419,10 +423,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	 * 
 	 * @param rawResult
 	 *            The contents of the barcode.
+	 * @param scaleFactor
+	 *            amount by which thumbnail was scaled
 	 * @param barcode
 	 *            A greyscale bitmap of the camera data which was decoded.
 	 */
-	public void handleDecode(Result rawResult, Bitmap barcode) {
+	public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
 		inactivityTimer.onActivity();
 		lastResult = rawResult;
 		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
@@ -432,7 +438,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			historyManager.addHistoryItem(rawResult, resultHandler);
 			// Then not from history, so beep/vibrate and we have an image to draw on
 			beepManager.playBeepSoundAndVibrate();
-			drawResultPoints(barcode, rawResult);
+			drawResultPoints(barcode, scaleFactor, rawResult);
 		}
 
 		switch (source) {
@@ -441,7 +447,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			handleDecodeExternally(rawResult, resultHandler, barcode);
 			break;
 		case ZXING_LINK:
-			if (returnUrlTemplate == null) {
+			if (scanFromWebPageManager == null || !scanFromWebPageManager.isScanFromWebPage()) {
 				handleDecodeInternally(rawResult, resultHandler, barcode);
 			} else {
 				handleDecodeExternally(rawResult, resultHandler, barcode);
@@ -451,7 +457,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			if (fromLiveScan && prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
 				String message = getResources().getString(R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')';
-				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				// Wait a moment or else it will scan the same barcode continuously about 3 times
 				restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
 			} else {
@@ -466,10 +472,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	 * 
 	 * @param barcode
 	 *            A bitmap of the captured image.
+	 * @param scaleFactor
+	 *            amount by which thumbnail was scaled
 	 * @param rawResult
 	 *            The decoded results which contains the points to draw.
 	 */
-	private void drawResultPoints(Bitmap barcode, Result rawResult) {
+	private void drawResultPoints(Bitmap barcode, float scaleFactor, Result rawResult) {
 		ResultPoint[] points = rawResult.getResultPoints();
 		if (points != null && points.length > 0) {
 			Canvas canvas = new Canvas(barcode);
@@ -477,22 +485,24 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			paint.setColor(getResources().getColor(R.color.result_points));
 			if (points.length == 2) {
 				paint.setStrokeWidth(4.0f);
-				drawLine(canvas, paint, points[0], points[1]);
+				drawLine(canvas, paint, points[0], points[1], scaleFactor);
 			} else if (points.length == 4 && (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A || rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13)) {
 				// Hacky special case -- draw two lines, for the barcode and metadata
-				drawLine(canvas, paint, points[0], points[1]);
-				drawLine(canvas, paint, points[2], points[3]);
+				drawLine(canvas, paint, points[0], points[1], scaleFactor);
+				drawLine(canvas, paint, points[2], points[3], scaleFactor);
 			} else {
 				paint.setStrokeWidth(10.0f);
 				for (ResultPoint point : points) {
-					canvas.drawPoint(point.getX(), point.getY(), paint);
+					canvas.drawPoint(scaleFactor * point.getX(), scaleFactor * point.getY(), paint);
 				}
 			}
 		}
 	}
 
-	private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b) {
-		canvas.drawLine(a.getX(), a.getY(), b.getX(), b.getY(), paint);
+	private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
+		if (a != null && b != null) {
+			canvas.drawLine(scaleFactor * a.getX(), scaleFactor * a.getY(), scaleFactor * b.getX(), scaleFactor * b.getY(), paint);
+		}
 	}
 
 	// Put up our own UI for how to handle the decoded contents.
@@ -570,7 +580,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		if (copyToClipboard && !resultHandler.areContentsSecure()) {
 			ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			if (displayContents != null) {
-				clipboard.setText(displayContents);
+				try {
+					clipboard.setText(displayContents);
+				} catch (NullPointerException npe) {
+					// Some kind of bug inside the clipboard implementation, not due to null input
+					Log.w(TAG, "Clipboard bug", npe);
+				}
 			}
 		}
 	}
@@ -589,18 +604,24 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			resultDurationMS = getIntent().getLongExtra(Intents.Scan.RESULT_DISPLAY_DURATION_MS, DEFAULT_INTENT_RESULT_DURATION_MS);
 		}
 
-		// Since this message will only be shown for a second, just tell the user what kind of
-		// barcode was found (e.g. contact info) rather than the full contents, which they won't
-		// have time to read.
 		if (resultDurationMS > 0) {
-			statusView.setText(getString(resultHandler.getDisplayTitle()));
+			String rawResultString = String.valueOf(rawResult);
+			if (rawResultString.length() > 32) {
+				rawResultString = rawResultString.substring(0, 32) + " ...";
+			}
+			statusView.setText(getString(resultHandler.getDisplayTitle()) + " : " + rawResultString);
 		}
 
 		if (copyToClipboard && !resultHandler.areContentsSecure()) {
 			ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			CharSequence text = resultHandler.getDisplayContents();
 			if (text != null) {
-				clipboard.setText(text);
+				try {
+					clipboard.setText(text);
+				} catch (NullPointerException npe) {
+					// Some kind of bug inside the clipboard implementation, not due to null input
+					Log.w(TAG, "Clipboard bug", npe);
+				}
 			}
 		}
 
@@ -629,7 +650,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				if (ecLevel != null) {
 					intent.putExtra(Intents.Scan.RESULT_ERROR_CORRECTION_LEVEL, ecLevel);
 				}
-				@SuppressWarnings("unchecked")
 				Iterable<byte[]> byteSegments = (Iterable<byte[]>) metadata.get(ResultMetadataType.BYTE_SEGMENTS);
 				if (byteSegments != null) {
 					int i = 0;
@@ -651,16 +671,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 		} else if (source == IntentSource.ZXING_LINK) {
 
-			// Replace each occurrence of RETURN_CODE_PLACEHOLDER in the returnUrlTemplate
-			// with the scanned code. This allows both queries and REST-style URLs to work.
-			if (returnUrlTemplate != null) {
-				CharSequence codeReplacement = returnRaw ? rawResult.getText() : resultHandler.getDisplayContents();
-				try {
-					codeReplacement = URLEncoder.encode(codeReplacement.toString(), "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					// can't happen; UTF-8 is always supported. Continue, I guess, without encoding
-				}
-				String replyURL = returnUrlTemplate.replace(RETURN_CODE_PLACEHOLDER, codeReplacement);
+			if (scanFromWebPageManager != null && scanFromWebPageManager.isScanFromWebPage()) {
+				String replyURL = scanFromWebPageManager.buildReplyURL(rawResult, resultHandler);
 				sendReplyMessage(R.id.launch_product_query, replyURL, resultDurationMS);
 			}
 
@@ -713,7 +725,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			cameraManager.openDriver(surfaceHolder);
 			// Creating the handler starts the preview, which can also throw a RuntimeException.
 			if (handler == null) {
-				handler = new CaptureActivityHandler(this, decodeFormats, characterSet, cameraManager);
+				handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
 			}
 			decodeOrStoreSavedBitmap(null, null);
 		} catch (IOException ioe) {
@@ -755,8 +767,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		viewfinderView.drawViewfinder();
 	}
 
-	public void handleTransfer(ResultTransfer result, Bitmap barcode) {
-		drawResultPoints(barcode, result.rawResult);
+	public void handleTransfer(ResultTransfer result, Bitmap barcode, float scaleFactor) {
+		drawResultPoints(barcode, scaleFactor, result.rawResult);
 		// Wait a moment or else it will scan the same barcode
 		// continuously about 3 times
 		if (handler != null) {

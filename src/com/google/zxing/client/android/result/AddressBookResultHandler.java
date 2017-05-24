@@ -72,7 +72,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 		super(activity, result);
 		AddressBookParsedResult addressResult = (AddressBookParsedResult) result;
 		String[] addresses = addressResult.getAddresses();
-		boolean hasAddress = addresses != null && addresses.length > 0 && addresses[0].length() > 0;
+		boolean hasAddress = addresses != null && addresses.length > 0 && addresses[0] != null && addresses[0].length() > 0;
 		String[] phoneNumbers = addressResult.getPhoneNumbers();
 		boolean hasPhoneNumber = phoneNumbers != null && phoneNumbers.length > 0;
 		String[] emails = addressResult.getEmails();
@@ -112,7 +112,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 		int action = mapIndexToAction(index);
 		switch (action) {
 		case 0:
-			addContact(addressResult.getNames(), addressResult.getPronunciation(), addressResult.getPhoneNumbers(), addressResult.getPhoneTypes(), addressResult.getEmails(), addressResult.getEmailTypes(), addressResult.getNote(), addressResult.getInstantMessenger(), address1, address1Type, addressResult.getOrg(), addressResult.getTitle(), addressResult.getURL(), addressResult.getBirthday());
+			addContact(addressResult.getNames(), addressResult.getNicknames(), addressResult.getPronunciation(), addressResult.getPhoneNumbers(), addressResult.getPhoneTypes(), addressResult.getEmails(), addressResult.getEmailTypes(), addressResult.getNote(), addressResult.getInstantMessenger(), address1, address1Type, addressResult.getOrg(), addressResult.getTitle(), addressResult.getURLs(), addressResult.getBirthday(), addressResult.getGeo());
 			break;
 		case 1:
 			String[] names = addressResult.getNames();
@@ -166,7 +166,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 			}
 		}
 		ParsedResult.maybeAppend(result.getEmails(), contents);
-		ParsedResult.maybeAppend(result.getURL(), contents);
+		ParsedResult.maybeAppend(result.getURLs(), contents);
 
 		String birthday = result.getBirthday();
 		if (birthday != null && birthday.length() > 0) {
