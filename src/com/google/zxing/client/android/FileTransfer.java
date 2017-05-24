@@ -20,28 +20,28 @@ import com.google.zxing.client.android.transfer.Transfer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import android.R.integer;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.TextView;
 
 /**
  * 文件传输(QRCODE 二维码)
  * 
  * @author abao<talent518@yeah.net>
  */
-public abstract class FileTransfer {
+public class FileTransfer {
 	private static final String TAG = FileTransfer.class.getSimpleName();
-	private static final File basePath = new File(Environment.getExternalStorageDirectory(), "BarcodeScanner");
-	private static final File transferPath = new File(basePath, "Transfer");
+	private final File basePath = new File(Environment.getExternalStorageDirectory(), "BarcodeScanner");
+	private final File transferPath = new File(basePath, "Transfer");
 
-	private static XStream xStream = new XStream(new DomDriver());
+	private final XStream xStream = new XStream(new DomDriver());
 
-	private static Transfer fileTransfer;
+	private final CaptureActivity activity;
+	private Transfer fileTransfer;
 
-	static {
+	public FileTransfer(CaptureActivity activity) {
+		this.activity = activity;
 		if (!transferPath.exists() && !transferPath.mkdirs()) {
 			Log.w(TAG, "Couldn't make dir " + transferPath);
 		}
@@ -51,7 +51,7 @@ public abstract class FileTransfer {
 		xStream.toXML(new Block());
 	}
 
-	public static ResultTransfer saveToTarget(Result result, CaptureActivity activity) {
+	public ResultTransfer saveToTarget(Result result) {
 		String xml = result.getText();
 		Resources res = activity.getResources();
 		Object object;
@@ -128,7 +128,7 @@ public abstract class FileTransfer {
 
 			if (fileTransfer.blockCount == fileTransfer.completeBlockCount) {
 				resultTransfer.status = true;
-				resultTransfer.message = complete(activity, dataFile);
+				resultTransfer.message = complete( dataFile);
 			} else if (block.blockSeek == fileTransfer.completeBlockCount + 1 && block.blockSeek <= fileTransfer.blockCount) {
 				try {
 					if (!dataFile.exists()) {
@@ -149,7 +149,7 @@ public abstract class FileTransfer {
 					} catch (IOException e) {
 					}
 					resultTransfer.status = true;
-					resultTransfer.message = complete(activity, dataFile);
+					resultTransfer.message = complete(dataFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 
@@ -170,7 +170,7 @@ public abstract class FileTransfer {
 	 * @param activity
 	 * @param dataFile
 	 */
-	public static String complete(CaptureActivity activity, File dataFile) {
+	public String complete(File dataFile) {
 		Resources res = activity.getResources();
 
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

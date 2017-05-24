@@ -109,7 +109,10 @@ public final class CaptureActivityHandler extends Handler {
 			state = State.SUCCESS;
 			bundle = message.getData();
 			barcode = bundle == null ? null : (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
-			activity.handleTransfer((ResultTransfer) message.obj,barcode);
+			activity.handleTransfer((ResultTransfer) message.obj, barcode);
+			break;
+		case R.id.datetime:
+			activity.handlerDatetime();
 			break;
 		}
 	}

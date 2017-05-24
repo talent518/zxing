@@ -40,9 +40,12 @@ final class DecodeHandler extends Handler {
 	private final CaptureActivity activity;
 	private final MultiFormatReader multiFormatReader;
 
+	private final FileTransfer fileTransfer;
+
 	DecodeHandler(CaptureActivity activity, Hashtable<DecodeHintType, Object> hints) {
 		multiFormatReader = new MultiFormatReader();
 		multiFormatReader.setHints(hints);
+		fileTransfer = new FileTransfer(activity);
 		this.activity = activity;
 	}
 
@@ -85,15 +88,20 @@ final class DecodeHandler extends Handler {
 		if (rawResult != null) {
 			long end = System.currentTimeMillis();
 			Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
-			
+
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
-			ResultTransfer transfer=FileTransfer.saveToTarget(rawResult, activity);
+			
+			start=System.currentTimeMillis();
+			ResultTransfer transfer = fileTransfer.saveToTarget(rawResult);
+			end=System.currentTimeMillis();
 			
 			Message message;
-			if(transfer==null) {
+			if (transfer == null) {
+				Log.d(TAG, "Not found fileTransfer (" + (end - start) + " ms)");
 				message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
 			} else {
+				Log.d(TAG, "Found fileTransfer (" + (end - start) + " ms)");
 				message = Message.obtain(activity.getHandler(), R.id.transfer, transfer);
 			}
 			message.setData(bundle);

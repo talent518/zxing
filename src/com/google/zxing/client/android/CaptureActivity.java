@@ -28,7 +28,6 @@ import com.google.zxing.client.android.result.ResultHandlerFactory;
 import com.google.zxing.client.android.share.ShareActivity;
 import com.google.zxing.client.android.transfer.ResultTransfer;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -70,10 +69,13 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -139,6 +141,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 	private static TextView messageView;
 
+	private TextView dateView, timeView;
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+
 	/**
 	 * When the beep has finished playing, rewind to queue up another one.
 	 */
@@ -176,13 +182,29 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		resultView = findViewById(R.id.result_view);
 		statusView = (TextView) findViewById(R.id.status_view);
-		messageView = (TextView) findViewById(R.id.transfer_message);
+		messageView = (TextView) findViewById(R.id.transfer_view);
 		handler = null;
 		lastResult = null;
 		hasSurface = false;
 		historyManager = new HistoryManager(this);
 		historyManager.trimHistory();
 		inactivityTimer = new InactivityTimer(this);
+
+		dateView = (TextView) findViewById(R.id.date_view);
+		timeView = (TextView) findViewById(R.id.time_view);
+
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (handler == null) {
+					return;
+				}
+				
+				Message message = Message.obtain(handler, R.id.datetime);
+				message.sendToTarget();
+			}
+		}, 0, 100);
 
 		// showHelpOnFirstLaunch();
 	}
@@ -500,6 +522,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		View metaTextViewLabel = findViewById(R.id.meta_text_view_label);
 		metaTextView.setVisibility(View.GONE);
 		metaTextViewLabel.setVisibility(View.GONE);
+		@SuppressWarnings("unchecked")
 		Map<ResultMetadataType, Object> metadata = (Map<ResultMetadataType, Object>) rawResult.getResultMetadata();
 		if (metadata != null) {
 			StringBuilder metadataText = new StringBuilder(20);
@@ -697,12 +720,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	}
 
 	public void handleTransfer(ResultTransfer result, Bitmap barcode) {
-		if (result.status) {
-			playBeepSoundAndVibrate();
-		}
-
-		messageView.setText(result.message);
-
 		drawResultPoints(barcode, result.rawResult);
 		// Wait a moment or else it will scan the same barcode
 		// continuously about 3 times
@@ -710,5 +727,18 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 			handler.sendEmptyMessageDelayed(R.id.restart_preview, BULK_MODE_SCAN_DELAY_MS);
 		}
 		resetStatusView();
+
+		if (result.status) {
+			playBeepSoundAndVibrate();
+		}
+
+		messageView.setText(result.message);
+	}
+
+	public void handlerDatetime() {
+		long now = System.currentTimeMillis();
+
+		dateView.setText(dateFormat.format(now));
+		timeView.setText(timeFormat.format(now).substring(0, 10));
 	}
 }
