@@ -16,8 +16,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.google.zxing.client.android"
-          android:versionName="4.3.2"
-          android:versionCode="88"
+          android:versionName="4.7.5"
+          android:versionCode="105"
           android:installLocation="auto">
 
   <uses-permission android:name="android.permission.CAMERA"/>
@@ -25,12 +25,13 @@
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.FLASHLIGHT"/>
   <uses-permission android:name="android.permission.READ_CONTACTS"/>
+  <!-- unavailable in API 23 -->
   <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
-  <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="10"/>
+  <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="22"/>
 
   <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
   <uses-feature android:name="android.hardware.camera" android:required="false"/>
@@ -45,7 +46,6 @@
   <uses-feature android:name="android.hardware.touchscreen"/>
   <!-- TODO make this not required again after android.hardware.camera.any is available -->
 
-  <!-- Donut-specific flags which allow us to run on any dpi screens. -->
   <supports-screens android:xlargeScreens="true"
                     android:largeScreens="true"
                     android:normalScreens="true"
@@ -57,11 +57,10 @@
                android:label="@string/app_name"
                android:allowBackup="true">
     <activity android:name=".CaptureActivity"
-              android:screenOrientation="landscape"
+              android:screenOrientation="sensorLandscape"
               android:clearTaskOnLaunch="true"
               android:stateNotNeeded="true"
-              android:configChanges="orientation|keyboardHidden"
-              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+              android:theme="@style/CaptureTheme"
               android:windowSoftInputMode="stateAlwaysHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -102,8 +101,7 @@
     </activity>
     <activity android:name=".PreferencesActivity"
               android:label="@string/preferences_name"
-              android:stateNotNeeded="true">
-    </activity>
+              android:stateNotNeeded="true"/>
     <activity android:name=".encode.EncodeActivity"
               android:stateNotNeeded="true">
       <intent-filter>
@@ -126,8 +124,7 @@
     <activity android:name=".book.SearchBookContentsActivity"
               android:label="@string/sbc_name"
               android:stateNotNeeded="true"
-              android:screenOrientation="landscape"
-              android:configChanges="orientation|keyboardHidden">
+              android:screenOrientation="sensorLandscape">
       <intent-filter>
         <action android:name="com.google.zxing.client.android.SEARCH_BOOK_CONTENTS"/>
         <category android:name="android.intent.category.DEFAULT"/>
@@ -135,8 +132,7 @@
     </activity>
     <activity android:name=".share.ShareActivity"
               android:stateNotNeeded="true"
-              android:screenOrientation="user"
-              android:theme="@android:style/Theme.Light">
+              android:screenOrientation="user">
       <intent-filter>
         <action android:name="com.google.zxing.client.android.SHARE"/>
         <category android:name="android.intent.category.DEFAULT"/>
@@ -144,36 +140,17 @@
     </activity>
     <activity android:name=".history.HistoryActivity"
               android:label="@string/history_title"
-              android:stateNotNeeded="true">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
+              android:stateNotNeeded="true"/>
     <activity android:name=".share.BookmarkPickerActivity"
               android:label="@string/bookmark_picker_name"
-              android:stateNotNeeded="true">
-      <intent-filter>
-        <action android:name="android.intent.action.PICK"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
+              android:stateNotNeeded="true"/>
     <activity android:name=".share.AppPickerActivity"
               android:label="@string/app_picker_name"
-              android:stateNotNeeded="true"
-              android:configChanges="orientation">
-      <intent-filter>
-        <action android:name="android.intent.action.PICK"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
+              android:stateNotNeeded="true"/>
     <activity android:name=".HelpActivity"
-              android:screenOrientation="user">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
+              android:label="@string/menu_help"
+              android:screenOrientation="user"
+              android:stateNotNeeded="true"/>
   </application>
 
 </manifest>

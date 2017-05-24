@@ -18,6 +18,7 @@ package com.google.zxing.client.android.share;
 
 import android.app.ListActivity;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -37,7 +38,7 @@ import java.util.List;
  * 
  * @author Sean Owen
  */
-final class LoadPackagesAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
+final class LoadPackagesAsyncTask extends AsyncTask<Object, Object, List<AppInfo>> {
 
 	private static final String[] PKG_PREFIX_WHITELIST = { "com.google.android.apps.", };
 	private static final String[] PKG_PREFIX_BLACKLIST = { "com.android.", "android", "com.google.android.", "com.htc", };
@@ -49,11 +50,11 @@ final class LoadPackagesAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
 	}
 
 	@Override
-	protected List<AppInfo> doInBackground(Void... objects) {
-		List<AppInfo> labelsPackages = new ArrayList<AppInfo>();
+	protected List<AppInfo> doInBackground(Object... objects) {
+		List<AppInfo> labelsPackages = new ArrayList<>();
 		PackageManager packageManager = activity.getPackageManager();
-		List<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
-		for (ApplicationInfo appInfo : appInfos) {
+		Iterable<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
+		for (PackageItemInfo appInfo : appInfos) {
 			String packageName = appInfo.packageName;
 			if (!isHidden(packageName)) {
 				CharSequence label = appInfo.loadLabel(packageManager);

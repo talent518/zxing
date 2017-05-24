@@ -34,10 +34,6 @@ final class AppInfo implements Comparable<AppInfo> {
 		return packageName;
 	}
 
-	String getLabel() {
-		return label;
-	}
-
 	Drawable getIcon() {
 		return icon;
 	}

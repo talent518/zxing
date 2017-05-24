@@ -16,27 +16,27 @@
 
 package com.google.zxing.client.android;
 
-import java.util.Collection;
-import java.util.Map;
-
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Browser;
-import android.util.Log;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.camera.CameraManager;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+import java.util.Collection;
+import java.util.Map;
 import com.google.zxing.client.android.transfer.ResultTransfer;
 
 /**
@@ -71,16 +71,14 @@ public final class CaptureActivityHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message message) {
-		float scaleFactor = 1.0f;
-		Bundle bundle;
+		Bundle bundle = null;
 		Bitmap barcode = null;
+		float scaleFactor = 1.0f;
 		switch (message.what) {
 		case R.id.restart_preview:
-			Log.d(TAG, "Got restart preview message");
 			restartPreviewAndDecode();
 			break;
 		case R.id.decode_succeeded:
-			Log.d(TAG, "Got decode succeeded message");
 			state = State.SUCCESS;
 			bundle = message.getData();
 			if (bundle != null) {
@@ -100,12 +98,10 @@ public final class CaptureActivityHandler extends Handler {
 			cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
 			break;
 		case R.id.return_scan_result:
-			Log.d(TAG, "Got return scan result message");
 			activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
 			activity.finish();
 			break;
 		case R.id.launch_product_query:
-			Log.d(TAG, "Got product query message");
 			String url = (String) message.obj;
 
 			Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -114,7 +110,7 @@ public final class CaptureActivityHandler extends Handler {
 
 			ResolveInfo resolveInfo = activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
 			String browserPackageName = null;
-			if (resolveInfo.activityInfo != null) {
+			if (resolveInfo != null && resolveInfo.activityInfo != null) {
 				browserPackageName = resolveInfo.activityInfo.packageName;
 				Log.d(TAG, "Using browser in package " + browserPackageName);
 			}

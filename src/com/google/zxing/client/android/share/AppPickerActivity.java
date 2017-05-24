@@ -18,33 +18,27 @@ package com.google.zxing.client.android.share;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.provider.Browser;
+import android.os.AsyncTask;
 import android.view.View;
-import android.widget.ListAdapter;
+import android.widget.Adapter;
 import android.widget.ListView;
 
-import com.google.zxing.client.android.common.executor.AsyncTaskExecInterface;
-import com.google.zxing.client.android.common.executor.AsyncTaskExecManager;
+import java.util.List;
 
 public final class AppPickerActivity extends ListActivity {
 
-	private LoadPackagesAsyncTask backgroundTask;
-	private final AsyncTaskExecInterface taskExec;
-
-	public AppPickerActivity() {
-		taskExec = new AsyncTaskExecManager().build();
-	}
+	private AsyncTask<Object, Object, List<AppInfo>> backgroundTask;
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		backgroundTask = new LoadPackagesAsyncTask(this);
-		taskExec.execute(backgroundTask);
+		backgroundTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	@Override
 	protected void onPause() {
-		LoadPackagesAsyncTask task = backgroundTask;
+		AsyncTask<?, ?, ?> task = backgroundTask;
 		if (task != null) {
 			task.cancel(true);
 			backgroundTask = null;
@@ -54,12 +48,12 @@ public final class AppPickerActivity extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View view, int position, long id) {
-		ListAdapter adapter = getListAdapter();
+		Adapter adapter = getListAdapter();
 		if (position >= 0 && position < adapter.getCount()) {
 			String packageName = ((AppInfo) adapter.getItem(position)).getPackageName();
 			Intent intent = new Intent();
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			intent.putExtra(Browser.BookmarkColumns.URL, "market://details?id=" + packageName);
+			intent.putExtra("url", "market://details?id=" + packageName); // Browser.BookmarkColumns.URL
 			setResult(RESULT_OK, intent);
 		} else {
 			setResult(RESULT_CANCELED);

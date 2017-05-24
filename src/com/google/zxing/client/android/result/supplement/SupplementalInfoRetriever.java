@@ -30,10 +30,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
-import com.google.zxing.client.android.common.executor.AsyncTaskExecInterface;
-import com.google.zxing.client.android.common.executor.AsyncTaskExecManager;
 import com.google.zxing.client.android.history.HistoryManager;
 import com.google.zxing.client.result.ISBNParsedResult;
 import com.google.zxing.client.result.ParsedResult;
@@ -45,39 +43,39 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object, Object
 	private static final String TAG = "SupplementalInfo";
 
 	public static void maybeInvokeRetrieval(TextView textView, ParsedResult result, HistoryManager historyManager, Context context) {
-		AsyncTaskExecInterface taskExec = new AsyncTaskExecManager().build();
-		if (result instanceof URIParsedResult) {
-			taskExec.execute(new URIResultInfoRetriever(textView, (URIParsedResult) result, historyManager, context));
-			taskExec.execute(new TitleRetriever(textView, (URIParsedResult) result, historyManager));
-		} else if (result instanceof ProductParsedResult) {
-			String productID = ((ProductParsedResult) result).getProductID();
-			taskExec.execute(new ProductResultInfoRetriever(textView, productID, historyManager, context));
-			switch (productID.length()) {
-			case 12:
-				taskExec.execute(new AmazonInfoRetriever(textView, "UPC", productID, historyManager, context));
-				break;
-			case 13:
-				taskExec.execute(new AmazonInfoRetriever(textView, "EAN", productID, historyManager, context));
-				break;
+		try {
+			if (result instanceof URIParsedResult) {
+				SupplementalInfoRetriever uriRetriever = new URIResultInfoRetriever(textView, (URIParsedResult) result, historyManager, context);
+				uriRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				SupplementalInfoRetriever titleRetriever = new TitleRetriever(textView, (URIParsedResult) result, historyManager);
+				titleRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else if (result instanceof ProductParsedResult) {
+				ProductParsedResult productParsedResult = (ProductParsedResult) result;
+				String productID = productParsedResult.getProductID();
+				SupplementalInfoRetriever productRetriever = new ProductResultInfoRetriever(textView, productID, historyManager, context);
+				productRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else if (result instanceof ISBNParsedResult) {
+				String isbn = ((ISBNParsedResult) result).getISBN();
+				SupplementalInfoRetriever productInfoRetriever = new ProductResultInfoRetriever(textView, isbn, historyManager, context);
+				productInfoRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				SupplementalInfoRetriever bookInfoRetriever = new BookResultInfoRetriever(textView, isbn, historyManager, context);
+				bookInfoRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
-		} else if (result instanceof ISBNParsedResult) {
-			String isbn = ((ISBNParsedResult) result).getISBN();
-			taskExec.execute(new ProductResultInfoRetriever(textView, isbn, historyManager, context));
-			taskExec.execute(new BookResultInfoRetriever(textView, isbn, historyManager, context));
-			taskExec.execute(new AmazonInfoRetriever(textView, "ISBN", isbn, historyManager, context));
+		} catch (RejectedExecutionException ree) {
+			// do nothing
 		}
 	}
 
 	private final WeakReference<TextView> textViewRef;
 	private final WeakReference<HistoryManager> historyManagerRef;
-	private final List<Spannable> newContents;
-	private final List<String[]> newHistories;
+	private final Collection<Spannable> newContents;
+	private final Collection<String[]> newHistories;
 
 	SupplementalInfoRetriever(TextView textView, HistoryManager historyManager) {
-		textViewRef = new WeakReference<TextView>(textView);
-		historyManagerRef = new WeakReference<HistoryManager>(historyManager);
-		newContents = new ArrayList<Spannable>();
-		newHistories = new ArrayList<String[]>();
+		textViewRef = new WeakReference<>(textView);
+		historyManagerRef = new WeakReference<>(historyManager);
+		newContents = new ArrayList<>();
+		newHistories = new ArrayList<>();
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object, Object
 	protected final void onPostExecute(Object arg) {
 		TextView textView = textViewRef.get();
 		if (textView != null) {
-			for (Spannable content : newContents) {
+			for (CharSequence content : newContents) {
 				textView.append(content);
 			}
 			textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -151,7 +149,7 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object, Object
 	}
 
 	static void maybeAddText(String text, Collection<String> texts) {
-		if (text != null && text.length() > 0) {
+		if (text != null && !text.isEmpty()) {
 			texts.add(text);
 		}
 	}

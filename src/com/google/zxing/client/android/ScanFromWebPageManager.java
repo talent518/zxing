@@ -24,17 +24,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * Manages functionality related to responding to requests to scan from an HTTP link in a web page. See <a href="http://code.google.com/p/zxing/wiki/ScanningFromWebPages">ScanningFromWebPages</a>.
+ * Manages functionality related to responding to requests to scan from an HTTP link in a web page. See <a href="http://github.com/zxing/zxing/wiki/ScanningFromWebPages">ScanningFromWebPages</a>.
  * 
  * @author Sean Owen
  */
 final class ScanFromWebPageManager {
 
-	private static final String CODE_PLACEHOLDER = "{CODE}";
-	private static final String RAW_CODE_PLACEHOLDER = "{RAWCODE}";
-	private static final String META_PLACEHOLDER = "{META}";
-	private static final String FORMAT_PLACEHOLDER = "{FORMAT}";
-	private static final String TYPE_PLACEHOLDER = "{TYPE}";
+	private static final CharSequence CODE_PLACEHOLDER = "{CODE}";
+	private static final CharSequence RAW_CODE_PLACEHOLDER = "{RAWCODE}";
+	private static final CharSequence META_PLACEHOLDER = "{META}";
+	private static final CharSequence FORMAT_PLACEHOLDER = "{FORMAT}";
+	private static final CharSequence TYPE_PLACEHOLDER = "{TYPE}";
 
 	private static final String RETURN_URL_PARAM = "ret";
 	private static final String RAW_PARAM = "raw";
