@@ -33,21 +33,21 @@ import java.util.List;
  * 
  * @author Sean Owen
  */
-final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Void, List<String[]>> {
+final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Object, List<String[]>> {
 
 	private static final String[] PKG_PREFIX_WHITELIST = { "com.google.android.apps.", };
 	private static final String[] PKG_PREFIX_BLACKLIST = { "com.android.", "android", "com.google.android.", "com.htc", };
 
-	private final AppPickerActivity appPickerActivity;
+	private final AppPickerActivity activity;
 
-	LoadPackagesAsyncTask(AppPickerActivity appPickerActivity) {
-		this.appPickerActivity = appPickerActivity;
+	LoadPackagesAsyncTask(AppPickerActivity activity) {
+		this.activity = activity;
 	}
 
 	@Override
 	protected List<String[]> doInBackground(List<String[]>... objects) {
 		List<String[]> labelsPackages = objects[0];
-		PackageManager packageManager = appPickerActivity.getPackageManager();
+		PackageManager packageManager = activity.getPackageManager();
 		List<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
 		for (ApplicationInfo appInfo : appInfos) {
 			CharSequence label = appInfo.loadLabel(packageManager);
@@ -80,17 +80,18 @@ final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Void, List<S
 	}
 
 	@Override
-	protected void onPostExecute(List<String[]> results) {
+	protected synchronized void onPostExecute(List<String[]> results) {
 		List<String> labels = new ArrayList<String>(results.size());
 		for (String[] result : results) {
 			labels.add(result[0]);
 		}
-		ListAdapter listAdapter = new ArrayAdapter<String>(appPickerActivity, android.R.layout.simple_list_item_1, labels);
-		appPickerActivity.setListAdapter(listAdapter);
-		appPickerActivity.getProgressDialog().dismiss();
+		ListAdapter listAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, labels);
+		activity.setListAdapter(listAdapter);
 	}
 
+	@SuppressWarnings("serial")
 	private static class ByFirstStringComparator implements Comparator<String[]>, Serializable {
+		@Override
 		public int compare(String[] o1, String[] o2) {
 			return o1[0].compareTo(o2[0]);
 		}

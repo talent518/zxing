@@ -16,6 +16,7 @@
 
 package com.google.zxing.client.android.result;
 
+import com.google.zxing.Result;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.result.ParsedResult;
 
@@ -30,8 +31,8 @@ public final class TextResultHandler extends ResultHandler {
 
 	private static final int[] buttons = { R.string.button_web_search, R.string.button_share_by_email, R.string.button_share_by_sms, R.string.button_custom_product_search, };
 
-	public TextResultHandler(Activity activity, ParsedResult result) {
-		super(activity, result);
+	public TextResultHandler(Activity activity, ParsedResult result, Result rawResult) {
+		super(activity, result, rawResult);
 	}
 
 	@Override

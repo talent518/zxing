@@ -29,10 +29,10 @@ public class Transfer {
 
 	@XStreamAlias("cbc")
 	public int completeBlockCount = 0;
-	
+
 	@XStreamAlias("ct")
 	public long createDateline = 0;
-	
+
 	@XStreamAlias("mt")
 	public long modifyDateline = 0;
 }

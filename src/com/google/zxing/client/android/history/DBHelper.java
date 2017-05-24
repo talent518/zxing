@@ -25,7 +25,7 @@ import android.content.Context;
  */
 final class DBHelper extends SQLiteOpenHelper {
 
-	private static final int DB_VERSION = 2;
+	private static final int DB_VERSION = 5;
 	private static final String DB_NAME = "barcode_scanner_history.db";
 	static final String TABLE_NAME = "history";
 	static final String ID_COL = "id";
@@ -33,6 +33,7 @@ final class DBHelper extends SQLiteOpenHelper {
 	static final String FORMAT_COL = "format";
 	static final String DISPLAY_COL = "display";
 	static final String TIMESTAMP_COL = "timestamp";
+	static final String DETAILS_COL = "details";
 
 	DBHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
@@ -40,7 +41,7 @@ final class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase sqLiteDatabase) {
-		sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID_COL + " INTEGER PRIMARY KEY, " + TEXT_COL + " TEXT, " + FORMAT_COL + " TEXT, " + DISPLAY_COL + " TEXT, " + TIMESTAMP_COL + " INTEGER" + ");");
+		sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID_COL + " INTEGER PRIMARY KEY, " + TEXT_COL + " TEXT, " + FORMAT_COL + " TEXT, " + DISPLAY_COL + " TEXT, " + TIMESTAMP_COL + " INTEGER, " + DETAILS_COL + " TEXT);");
 	}
 
 	@Override

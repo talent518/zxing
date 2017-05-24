@@ -17,11 +17,9 @@
 package com.google.zxing.client.android.result;
 
 import com.google.zxing.Result;
+import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.result.ParsedResult;
-import com.google.zxing.client.result.ParsedResultType;
 import com.google.zxing.client.result.ResultParser;
-
-import android.app.Activity;
 
 /**
  * Manufactures Android-specific handlers based on the barcode content's type.
@@ -32,34 +30,31 @@ public final class ResultHandlerFactory {
 	private ResultHandlerFactory() {
 	}
 
-	public static ResultHandler makeResultHandler(Activity activity, Result rawResult) {
+	public static ResultHandler makeResultHandler(CaptureActivity activity, Result rawResult) {
 		ParsedResult result = parseResult(rawResult);
-		ParsedResultType type = result.getType();
-		if (type.equals(ParsedResultType.ADDRESSBOOK)) {
+		switch (result.getType()) {
+		case ADDRESSBOOK:
 			return new AddressBookResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.EMAIL_ADDRESS)) {
+		case EMAIL_ADDRESS:
 			return new EmailAddressResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.PRODUCT)) {
+		case PRODUCT:
 			return new ProductResultHandler(activity, result, rawResult);
-		} else if (type.equals(ParsedResultType.URI)) {
+		case URI:
 			return new URIResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.WIFI)) {
+		case WIFI:
 			return new WifiResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.TEXT)) {
-			return new TextResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.GEO)) {
+		case GEO:
 			return new GeoResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.TEL)) {
+		case TEL:
 			return new TelResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.SMS)) {
+		case SMS:
 			return new SMSResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.CALENDAR)) {
+		case CALENDAR:
 			return new CalendarResultHandler(activity, result);
-		} else if (type.equals(ParsedResultType.ISBN)) {
+		case ISBN:
 			return new ISBNResultHandler(activity, result, rawResult);
-		} else {
-			// The TextResultHandler is the fallthrough for unsupported formats.
-			return new TextResultHandler(activity, result);
+		default:
+			return new TextResultHandler(activity, result, rawResult);
 		}
 	}
 

@@ -43,9 +43,15 @@ public final class PreferencesActivity extends PreferenceActivity implements OnS
 	public static final String KEY_COPY_TO_CLIPBOARD = "preferences_copy_to_clipboard";
 	public static final String KEY_FRONT_LIGHT = "preferences_front_light";
 	public static final String KEY_BULK_MODE = "preferences_bulk_mode";
+	public static final String KEY_REMEMBER_DUPLICATES = "preferences_remember_duplicates";
+	public static final String KEY_SUPPLEMENTAL = "preferences_supplemental";
+	public static final String KEY_AUTO_FOCUS = "preferences_auto_focus";
+	public static final String KEY_SEARCH_COUNTRY = "preferences_search_country";
+
+	public static final String KEY_DISABLE_CONTINUOUS_FOCUS = "preferences_disable_continuous_focus";
+	// public static final String KEY_DISABLE_EXPOSURE = "preferences_disable_exposure";
 
 	public static final String KEY_HELP_VERSION_SHOWN = "preferences_help_version_shown";
-	public static final String KEY_NOT_OUR_RESULTS_SHOWN = "preferences_not_out_results_shown";
 
 	private CheckBoxPreference decode1D;
 	private CheckBoxPreference decodeQR;
@@ -64,6 +70,7 @@ public final class PreferencesActivity extends PreferenceActivity implements OnS
 		disableLastCheckedPref();
 	}
 
+	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		disableLastCheckedPref();
 	}
@@ -80,7 +87,8 @@ public final class PreferencesActivity extends PreferenceActivity implements OnS
 			checked.add(decodeDataMatrix);
 		}
 		boolean disable = checked.size() < 2;
-		for (CheckBoxPreference pref : new CheckBoxPreference[] { decode1D, decodeQR, decodeDataMatrix }) {
+		CheckBoxPreference[] checkBoxPreferences = { decode1D, decodeQR, decodeDataMatrix };
+		for (CheckBoxPreference pref : checkBoxPreferences) {
 			pref.setEnabled(!(disable && checked.contains(pref)));
 		}
 	}

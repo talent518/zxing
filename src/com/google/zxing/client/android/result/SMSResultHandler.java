@@ -50,8 +50,7 @@ public final class SMSResultHandler extends ResultHandler {
 		SMSParsedResult smsResult = (SMSParsedResult) getResult();
 		switch (index) {
 		case 0:
-			// Don't know of a way yet to express a SENDTO intent with multiple
-			// recipients
+			// Don't know of a way yet to express a SENDTO intent with multiple recipients
 			sendSMS(smsResult.getNumbers()[0], smsResult.getBody());
 			break;
 		case 1:
@@ -63,7 +62,7 @@ public final class SMSResultHandler extends ResultHandler {
 	@Override
 	public CharSequence getDisplayContents() {
 		SMSParsedResult smsResult = (SMSParsedResult) getResult();
-		StringBuffer contents = new StringBuffer(50);
+		StringBuilder contents = new StringBuilder(50);
 		String[] rawNumbers = smsResult.getNumbers();
 		String[] formattedNumbers = new String[rawNumbers.length];
 		for (int i = 0; i < rawNumbers.length; i++) {

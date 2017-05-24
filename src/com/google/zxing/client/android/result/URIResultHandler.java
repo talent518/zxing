@@ -16,11 +16,14 @@
 
 package com.google.zxing.client.android.result;
 
+import com.google.zxing.client.android.LocaleManager;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.URIParsedResult;
 
 import android.app.Activity;
+
+import java.util.Locale;
 
 /**
  * Offers appropriate actions for URLS.
@@ -28,6 +31,9 @@ import android.app.Activity;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class URIResultHandler extends ResultHandler {
+	// URIs beginning with entries in this array will not be saved to history or copied to the
+	// clipboard for security.
+	private static final String[] SECURE_PROTOCOLS = { "otpauth:" };
 
 	private static final int[] buttons = { R.string.button_open_browser, R.string.button_share_by_email, R.string.button_share_by_sms, R.string.button_search_book_contents, };
 
@@ -37,7 +43,10 @@ public final class URIResultHandler extends ResultHandler {
 
 	@Override
 	public int getButtonCount() {
-		return isGoogleBooksURI() ? buttons.length : buttons.length - 1;
+		if (LocaleManager.isBookSearchUrl(((URIParsedResult) getResult()).getURI())) {
+			return buttons.length;
+		}
+		return buttons.length - 1;
 	}
 
 	@Override
@@ -70,8 +79,15 @@ public final class URIResultHandler extends ResultHandler {
 		return R.string.result_uri;
 	}
 
-	private boolean isGoogleBooksURI() {
-		return ((URIParsedResult) getResult()).getURI().startsWith("http://google.com/books?id=");
+	@Override
+	public boolean areContentsSecure() {
+		URIParsedResult uriResult = (URIParsedResult) getResult();
+		String uri = uriResult.getURI().toLowerCase(Locale.ENGLISH);
+		for (String secure : SECURE_PROTOCOLS) {
+			if (uri.startsWith(secure)) {
+				return true;
+			}
+		}
+		return false;
 	}
-
 }

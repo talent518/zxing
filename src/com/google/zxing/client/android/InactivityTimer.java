@@ -16,52 +16,93 @@
 
 package com.google.zxing.client.android;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
+import android.os.BatteryManager;
+import android.util.Log;
+
+import com.google.zxing.client.android.common.executor.AsyncTaskExecInterface;
+import com.google.zxing.client.android.common.executor.AsyncTaskExecManager;
 
 /**
- * Finishes an activity after a period of inactivity.
+ * Finishes an activity after a period of inactivity if the device is on battery power.
  */
 final class InactivityTimer {
 
-	private static final int INACTIVITY_DELAY_SECONDS = 5 * 60;
+	private static final String TAG = InactivityTimer.class.getSimpleName();
 
-	private final ScheduledExecutorService inactivityTimer = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
+	private static final long INACTIVITY_DELAY_MS = 5 * 60 * 1000L;
+
 	private final Activity activity;
-	private ScheduledFuture<?> inactivityFuture = null;
+	private final AsyncTaskExecInterface taskExec;
+	private final BroadcastReceiver powerStatusReceiver;
+	private InactivityAsyncTask inactivityTask;
 
 	InactivityTimer(Activity activity) {
 		this.activity = activity;
+		taskExec = new AsyncTaskExecManager().build();
+		powerStatusReceiver = new PowerStatusReceiver();
 		onActivity();
 	}
 
-	void onActivity() {
+	synchronized void onActivity() {
 		cancel();
-		inactivityFuture = inactivityTimer.schedule(new FinishListener(activity), INACTIVITY_DELAY_SECONDS, TimeUnit.SECONDS);
+		inactivityTask = new InactivityAsyncTask();
+		taskExec.execute(inactivityTask);
 	}
 
-	private void cancel() {
-		if (inactivityFuture != null) {
-			inactivityFuture.cancel(true);
-			inactivityFuture = null;
+	public void onPause() {
+		cancel();
+		activity.unregisterReceiver(powerStatusReceiver);
+	}
+
+	public void onResume() {
+		activity.registerReceiver(powerStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+		onActivity();
+	}
+
+	private synchronized void cancel() {
+		AsyncTask<?, ?, ?> task = inactivityTask;
+		if (task != null) {
+			task.cancel(true);
+			inactivityTask = null;
 		}
 	}
 
 	void shutdown() {
 		cancel();
-		inactivityTimer.shutdown();
 	}
 
-	private static final class DaemonThreadFactory implements ThreadFactory {
-		public Thread newThread(Runnable runnable) {
-			Thread thread = new Thread(runnable);
-			thread.setDaemon(true);
-			return thread;
+	private final class PowerStatusReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
+				// 0 indicates that we're on battery
+				boolean onBatteryNow = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) <= 0;
+				if (onBatteryNow) {
+					InactivityTimer.this.onActivity();
+				} else {
+					InactivityTimer.this.cancel();
+				}
+			}
+		}
+	}
+
+	private final class InactivityAsyncTask extends AsyncTask<Object, Object, Object> {
+		@Override
+		protected Object doInBackground(Object... objects) {
+			try {
+				Thread.sleep(INACTIVITY_DELAY_MS);
+				Log.i(TAG, "Finishing activity due to inactivity");
+				activity.finish();
+			} catch (InterruptedException e) {
+				// continue without killing
+			}
+			return null;
 		}
 	}
 

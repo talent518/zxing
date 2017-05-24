@@ -128,7 +128,7 @@ public class FileTransfer {
 
 			if (fileTransfer.blockCount == fileTransfer.completeBlockCount) {
 				resultTransfer.status = true;
-				resultTransfer.message = complete( dataFile);
+				resultTransfer.message = complete(dataFile);
 			} else if (block.blockSeek == fileTransfer.completeBlockCount + 1 && block.blockSeek <= fileTransfer.blockCount) {
 				try {
 					if (!dataFile.exists()) {
