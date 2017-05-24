@@ -27,8 +27,7 @@ import java.util.Hashtable;
 
 /**
  * <p>
- * Encapsulates logic that can detect a PDF417 Code in an image, even if the
- * PDF417 Code is rotated or skewed, or partially obscured.
+ * Encapsulates logic that can detect a PDF417 Code in an image, even if the PDF417 Code is rotated or skewed, or partially obscured.
  * </p>
  * 
  * @author SITA Lab (kevin.osullivan@sita.aero)
@@ -52,8 +51,7 @@ public final class Detector {
 
 	// B S B S B S B S B Bar/Space pattern
 	// 1111111 0 1 000 1 0 1 00 1
-	private static final int[] STOP_PATTERN_REVERSE = { 1, 2, 1, 1, 1, 3, 1, 1,
-			7 };
+	private static final int[] STOP_PATTERN_REVERSE = { 1, 2, 1, 1, 1, 3, 1, 1, 7 };
 
 	private final BinaryBitmap image;
 
@@ -66,8 +64,7 @@ public final class Detector {
 	 * Detects a PDF417 Code in an image, simply.
 	 * </p>
 	 * 
-	 * @return {@link DetectorResult} encapsulating results of detecting a
-	 *         PDF417 Code
+	 * @return {@link DetectorResult} encapsulating results of detecting a PDF417 Code
 	 * @throws NotFoundException
 	 *             if no QR Code can be found
 	 */
@@ -77,14 +74,12 @@ public final class Detector {
 
 	/**
 	 * <p>
-	 * Detects a PDF417 Code in an image. Only checks 0 and 180 degree
-	 * rotations.
+	 * Detects a PDF417 Code in an image. Only checks 0 and 180 degree rotations.
 	 * </p>
 	 * 
 	 * @param hints
 	 *            optional hints to detector
-	 * @return {@link DetectorResult} encapsulating results of detecting a
-	 *         PDF417 Code
+	 * @return {@link DetectorResult} encapsulating results of detecting a PDF417 Code
 	 * @throws NotFoundException
 	 *             if no PDF417 Code can be found
 	 */
@@ -113,32 +108,22 @@ public final class Detector {
 			throw NotFoundException.getNotFoundInstance();
 		}
 
-		int dimension = computeDimension(vertices[4], vertices[6], vertices[5],
-				vertices[7], moduleWidth);
+		int dimension = computeDimension(vertices[4], vertices[6], vertices[5], vertices[7], moduleWidth);
 		if (dimension < 1) {
 			throw NotFoundException.getNotFoundInstance();
 		}
 
 		// Deskew and sample image.
-		BitMatrix bits = sampleGrid(matrix, vertices[4], vertices[5],
-				vertices[6], vertices[7], dimension);
-		return new DetectorResult(bits, new ResultPoint[] { vertices[4],
-				vertices[5], vertices[6], vertices[7] });
+		BitMatrix bits = sampleGrid(matrix, vertices[4], vertices[5], vertices[6], vertices[7], dimension);
+		return new DetectorResult(bits, new ResultPoint[] { vertices[4], vertices[5], vertices[6], vertices[7] });
 	}
 
 	/**
-	 * Locate the vertices and the codewords area of a black blob using the
-	 * Start and Stop patterns as locators. TODO: Scanning every row is very
-	 * expensive. We should only do this for TRY_HARDER.
+	 * Locate the vertices and the codewords area of a black blob using the Start and Stop patterns as locators. TODO: Scanning every row is very expensive. We should only do this for TRY_HARDER.
 	 * 
 	 * @param matrix
 	 *            the scanned barcode image.
-	 * @return an array containing the vertices: vertices[0] x, y top left
-	 *         barcode vertices[1] x, y bottom left barcode vertices[2] x, y top
-	 *         right barcode vertices[3] x, y bottom right barcode vertices[4]
-	 *         x, y top left codeword area vertices[5] x, y bottom left codeword
-	 *         area vertices[6] x, y top right codeword area vertices[7] x, y
-	 *         bottom right codeword area
+	 * @return an array containing the vertices: vertices[0] x, y top left barcode vertices[1] x, y bottom left barcode vertices[2] x, y top right barcode vertices[3] x, y bottom right barcode vertices[4] x, y top left codeword area vertices[5] x, y bottom left codeword area vertices[6] x, y top right codeword area vertices[7] x, y bottom right codeword area
 	 */
 	private static ResultPoint[] findVertices(BitMatrix matrix) {
 		int height = matrix.getHeight();
@@ -149,8 +134,7 @@ public final class Detector {
 
 		// Top Left
 		for (int i = 0; i < height; i++) {
-			int[] loc = findGuardPattern(matrix, 0, i, width, false,
-					START_PATTERN);
+			int[] loc = findGuardPattern(matrix, 0, i, width, false, START_PATTERN);
 			if (loc != null) {
 				result[0] = new ResultPoint(loc[0], i);
 				result[4] = new ResultPoint(loc[1], i);
@@ -162,8 +146,7 @@ public final class Detector {
 		if (found) { // Found the Top Left vertex
 			found = false;
 			for (int i = height - 1; i > 0; i--) {
-				int[] loc = findGuardPattern(matrix, 0, i, width, false,
-						START_PATTERN);
+				int[] loc = findGuardPattern(matrix, 0, i, width, false, START_PATTERN);
 				if (loc != null) {
 					result[1] = new ResultPoint(loc[0], i);
 					result[5] = new ResultPoint(loc[1], i);
@@ -176,8 +159,7 @@ public final class Detector {
 		if (found) { // Found the Bottom Left vertex
 			found = false;
 			for (int i = 0; i < height; i++) {
-				int[] loc = findGuardPattern(matrix, 0, i, width, false,
-						STOP_PATTERN);
+				int[] loc = findGuardPattern(matrix, 0, i, width, false, STOP_PATTERN);
 				if (loc != null) {
 					result[2] = new ResultPoint(loc[1], i);
 					result[6] = new ResultPoint(loc[0], i);
@@ -190,8 +172,7 @@ public final class Detector {
 		if (found) { // Found the Top right vertex
 			found = false;
 			for (int i = height - 1; i > 0; i--) {
-				int[] loc = findGuardPattern(matrix, 0, i, width, false,
-						STOP_PATTERN);
+				int[] loc = findGuardPattern(matrix, 0, i, width, false, STOP_PATTERN);
 				if (loc != null) {
 					result[3] = new ResultPoint(loc[1], i);
 					result[7] = new ResultPoint(loc[0], i);
@@ -204,21 +185,11 @@ public final class Detector {
 	}
 
 	/**
-	 * Locate the vertices and the codewords area of a black blob using the
-	 * Start and Stop patterns as locators. This assumes that the image is
-	 * rotated 180 degrees and if it locates the start and stop patterns at it
-	 * will re-map the vertices for a 0 degree rotation. TODO: Change assumption
-	 * about barcode location. TODO: Scanning every row is very expensive. We
-	 * should only do this for TRY_HARDER.
+	 * Locate the vertices and the codewords area of a black blob using the Start and Stop patterns as locators. This assumes that the image is rotated 180 degrees and if it locates the start and stop patterns at it will re-map the vertices for a 0 degree rotation. TODO: Change assumption about barcode location. TODO: Scanning every row is very expensive. We should only do this for TRY_HARDER.
 	 * 
 	 * @param matrix
 	 *            the scanned barcode image.
-	 * @return an array containing the vertices: vertices[0] x, y top left
-	 *         barcode vertices[1] x, y bottom left barcode vertices[2] x, y top
-	 *         right barcode vertices[3] x, y bottom right barcode vertices[4]
-	 *         x, y top left codeword area vertices[5] x, y bottom left codeword
-	 *         area vertices[6] x, y top right codeword area vertices[7] x, y
-	 *         bottom right codeword area
+	 * @return an array containing the vertices: vertices[0] x, y top left barcode vertices[1] x, y bottom left barcode vertices[2] x, y top right barcode vertices[3] x, y bottom right barcode vertices[4] x, y top left codeword area vertices[5] x, y bottom left codeword area vertices[6] x, y top right codeword area vertices[7] x, y bottom right codeword area
 	 */
 	private static ResultPoint[] findVertices180(BitMatrix matrix) {
 		int height = matrix.getHeight();
@@ -230,8 +201,7 @@ public final class Detector {
 
 		// Top Left
 		for (int i = height - 1; i > 0; i--) {
-			int[] loc = findGuardPattern(matrix, halfWidth, i, halfWidth, true,
-					START_PATTERN_REVERSE);
+			int[] loc = findGuardPattern(matrix, halfWidth, i, halfWidth, true, START_PATTERN_REVERSE);
 			if (loc != null) {
 				result[0] = new ResultPoint(loc[1], i);
 				result[4] = new ResultPoint(loc[0], i);
@@ -243,8 +213,7 @@ public final class Detector {
 		if (found) { // Found the Top Left vertex
 			found = false;
 			for (int i = 0; i < height; i++) {
-				int[] loc = findGuardPattern(matrix, halfWidth, i, halfWidth,
-						true, START_PATTERN_REVERSE);
+				int[] loc = findGuardPattern(matrix, halfWidth, i, halfWidth, true, START_PATTERN_REVERSE);
 				if (loc != null) {
 					result[1] = new ResultPoint(loc[1], i);
 					result[5] = new ResultPoint(loc[0], i);
@@ -257,8 +226,7 @@ public final class Detector {
 		if (found) { // Found the Bottom Left vertex
 			found = false;
 			for (int i = height - 1; i > 0; i--) {
-				int[] loc = findGuardPattern(matrix, 0, i, halfWidth, false,
-						STOP_PATTERN_REVERSE);
+				int[] loc = findGuardPattern(matrix, 0, i, halfWidth, false, STOP_PATTERN_REVERSE);
 				if (loc != null) {
 					result[2] = new ResultPoint(loc[0], i);
 					result[6] = new ResultPoint(loc[1], i);
@@ -271,8 +239,7 @@ public final class Detector {
 		if (found) { // Found the Top Right vertex
 			found = false;
 			for (int i = 0; i < height; i++) {
-				int[] loc = findGuardPattern(matrix, 0, i, halfWidth, false,
-						STOP_PATTERN_REVERSE);
+				int[] loc = findGuardPattern(matrix, 0, i, halfWidth, false, STOP_PATTERN_REVERSE);
 				if (loc != null) {
 					result[3] = new ResultPoint(loc[0], i);
 					result[7] = new ResultPoint(loc[1], i);
@@ -285,17 +252,12 @@ public final class Detector {
 	}
 
 	/**
-	 * Because we scan horizontally to detect the start and stop patterns, the
-	 * vertical component of the codeword coordinates will be slightly wrong if
-	 * there is any skew or rotation in the image. This method moves those
-	 * points back onto the edges of the theoretically perfect bounding
-	 * quadrilateral if needed.
+	 * Because we scan horizontally to detect the start and stop patterns, the vertical component of the codeword coordinates will be slightly wrong if there is any skew or rotation in the image. This method moves those points back onto the edges of the theoretically perfect bounding quadrilateral if needed.
 	 * 
 	 * @param vertices
 	 *            The eight vertices located by findVertices().
 	 */
-	private static void correctCodeWordVertices(ResultPoint[] vertices,
-			boolean upsideDown) {
+	private static void correctCodeWordVertices(ResultPoint[] vertices, boolean upsideDown) {
 		float skew = vertices[4].getY() - vertices[6].getY();
 		if (upsideDown) {
 			skew = -skew;
@@ -306,16 +268,14 @@ public final class Detector {
 			float deltax = vertices[6].getX() - vertices[0].getX();
 			float deltay = vertices[6].getY() - vertices[0].getY();
 			float correction = length * deltay / deltax;
-			vertices[4] = new ResultPoint(vertices[4].getX(),
-					vertices[4].getY() + correction);
+			vertices[4] = new ResultPoint(vertices[4].getX(), vertices[4].getY() + correction);
 		} else if (-skew > SKEW_THRESHOLD) {
 			// Fix v6
 			float length = vertices[2].getX() - vertices[6].getX();
 			float deltax = vertices[2].getX() - vertices[4].getX();
 			float deltay = vertices[2].getY() - vertices[4].getY();
 			float correction = length * deltay / deltax;
-			vertices[6] = new ResultPoint(vertices[6].getX(),
-					vertices[6].getY() - correction);
+			vertices[6] = new ResultPoint(vertices[6].getX(), vertices[6].getY() - correction);
 		}
 
 		skew = vertices[7].getY() - vertices[5].getY();
@@ -328,32 +288,24 @@ public final class Detector {
 			float deltax = vertices[7].getX() - vertices[1].getX();
 			float deltay = vertices[7].getY() - vertices[1].getY();
 			float correction = length * deltay / deltax;
-			vertices[5] = new ResultPoint(vertices[5].getX(),
-					vertices[5].getY() + correction);
+			vertices[5] = new ResultPoint(vertices[5].getX(), vertices[5].getY() + correction);
 		} else if (-skew > SKEW_THRESHOLD) {
 			// Fix v7
 			float length = vertices[3].getX() - vertices[7].getX();
 			float deltax = vertices[3].getX() - vertices[5].getX();
 			float deltay = vertices[3].getY() - vertices[5].getY();
 			float correction = length * deltay / deltax;
-			vertices[7] = new ResultPoint(vertices[7].getX(),
-					vertices[7].getY() - correction);
+			vertices[7] = new ResultPoint(vertices[7].getX(), vertices[7].getY() - correction);
 		}
 	}
 
 	/**
 	 * <p>
-	 * Estimates module size (pixels in a module) based on the Start and End
-	 * finder patterns.
+	 * Estimates module size (pixels in a module) based on the Start and End finder patterns.
 	 * </p>
 	 * 
 	 * @param vertices
-	 *            an array of vertices: vertices[0] x, y top left barcode
-	 *            vertices[1] x, y bottom left barcode vertices[2] x, y top
-	 *            right barcode vertices[3] x, y bottom right barcode
-	 *            vertices[4] x, y top left codeword area vertices[5] x, y
-	 *            bottom left codeword area vertices[6] x, y top right codeword
-	 *            area vertices[7] x, y bottom right codeword area
+	 *            an array of vertices: vertices[0] x, y top left barcode vertices[1] x, y bottom left barcode vertices[2] x, y top right barcode vertices[3] x, y bottom right barcode vertices[4] x, y top left codeword area vertices[5] x, y bottom left codeword area vertices[6] x, y top right codeword area vertices[7] x, y bottom right codeword area
 	 * @return the module size.
 	 */
 	private static float computeModuleWidth(ResultPoint[] vertices) {
@@ -367,8 +319,7 @@ public final class Detector {
 	}
 
 	/**
-	 * Computes the dimension (number of modules in a row) of the PDF417 Code
-	 * based on vertices of the codeword area and estimated module size.
+	 * Computes the dimension (number of modules in a row) of the PDF417 Code based on vertices of the codeword area and estimated module size.
 	 * 
 	 * @param topLeft
 	 *            of codeword area
@@ -382,28 +333,16 @@ public final class Detector {
 	 *            estimated module size
 	 * @return the number of modules in a row.
 	 */
-	private static int computeDimension(ResultPoint topLeft,
-			ResultPoint topRight, ResultPoint bottomLeft,
-			ResultPoint bottomRight, float moduleWidth) {
-		int topRowDimension = round(ResultPoint.distance(topLeft, topRight)
-				/ moduleWidth);
-		int bottomRowDimension = round(ResultPoint.distance(bottomLeft,
-				bottomRight) / moduleWidth);
+	private static int computeDimension(ResultPoint topLeft, ResultPoint topRight, ResultPoint bottomLeft, ResultPoint bottomRight, float moduleWidth) {
+		int topRowDimension = round(ResultPoint.distance(topLeft, topRight) / moduleWidth);
+		int bottomRowDimension = round(ResultPoint.distance(bottomLeft, bottomRight) / moduleWidth);
 		return ((((topRowDimension + bottomRowDimension) >> 1) + 8) / 17) * 17;
 		/*
-		 * int topRowDimension = round(ResultPoint.distance(topLeft, topRight));
-		 * //moduleWidth); int bottomRowDimension =
-		 * round(ResultPoint.distance(bottomLeft, bottomRight)); //
-		 * moduleWidth); int dimension = ((topRowDimension + bottomRowDimension)
-		 * >> 1); // Round up to nearest 17 modules i.e. there are 17 modules
-		 * per codeword //int dimension = ((((topRowDimension +
-		 * bottomRowDimension) >> 1) + 8) / 17) * 17; return dimension;
+		 * int topRowDimension = round(ResultPoint.distance(topLeft, topRight)); //moduleWidth); int bottomRowDimension = round(ResultPoint.distance(bottomLeft, bottomRight)); // moduleWidth); int dimension = ((topRowDimension + bottomRowDimension) >> 1); // Round up to nearest 17 modules i.e. there are 17 modules per codeword //int dimension = ((((topRowDimension + bottomRowDimension) >> 1) + 8) / 17) * 17; return dimension;
 		 */
 	}
 
-	private static BitMatrix sampleGrid(BitMatrix matrix, ResultPoint topLeft,
-			ResultPoint bottomLeft, ResultPoint topRight,
-			ResultPoint bottomRight, int dimension) throws NotFoundException {
+	private static BitMatrix sampleGrid(BitMatrix matrix, ResultPoint topLeft, ResultPoint bottomLeft, ResultPoint topRight, ResultPoint bottomRight, int dimension) throws NotFoundException {
 
 		// Note that unlike the QR Code sampler, we didn't find the center of
 		// modules, but the
@@ -411,26 +350,25 @@ public final class Detector {
 		GridSampler sampler = GridSampler.getInstance();
 
 		return sampler.sampleGrid(matrix, dimension, 0.0f, // p1ToX
-				0.0f, // p1ToY
-				dimension, // p2ToX
-				0.0f, // p2ToY
-				dimension, // p3ToX
-				dimension, // p3ToY
-				0.0f, // p4ToX
-				dimension, // p4ToY
-				topLeft.getX(), // p1FromX
-				topLeft.getY(), // p1FromY
-				topRight.getX(), // p2FromX
-				topRight.getY(), // p2FromY
-				bottomRight.getX(), // p3FromX
-				bottomRight.getY(), // p3FromY
-				bottomLeft.getX(), // p4FromX
-				bottomLeft.getY()); // p4FromY
+			0.0f, // p1ToY
+			dimension, // p2ToX
+			0.0f, // p2ToY
+			dimension, // p3ToX
+			dimension, // p3ToY
+			0.0f, // p4ToX
+			dimension, // p4ToY
+			topLeft.getX(), // p1FromX
+			topLeft.getY(), // p1FromY
+			topRight.getX(), // p2FromX
+			topRight.getY(), // p2FromY
+			bottomRight.getX(), // p3FromX
+			bottomRight.getY(), // p3FromY
+			bottomLeft.getX(), // p4FromX
+			bottomLeft.getY()); // p4FromY
 	}
 
 	/**
-	 * Ends up being a bit faster than Math.round(). This merely rounds its
-	 * argument to the nearest int, where x.5 rounds up.
+	 * Ends up being a bit faster than Math.round(). This merely rounds its argument to the nearest int, where x.5 rounds up.
 	 */
 	private static int round(float d) {
 		return (int) (d + 0.5f);
@@ -446,13 +384,10 @@ public final class Detector {
 	 * @param width
 	 *            the number of pixels to search on this row
 	 * @param pattern
-	 *            pattern of counts of number of black and white pixels that are
-	 *            being searched for as a pattern
-	 * @return start/end horizontal offset of guard pattern, as an array of two
-	 *         ints.
+	 *            pattern of counts of number of black and white pixels that are being searched for as a pattern
+	 * @return start/end horizontal offset of guard pattern, as an array of two ints.
 	 */
-	private static int[] findGuardPattern(BitMatrix matrix, int column,
-			int row, int width, boolean whiteFirst, int[] pattern) {
+	private static int[] findGuardPattern(BitMatrix matrix, int column, int row, int width, boolean whiteFirst, int[] pattern) {
 		int patternLength = pattern.length;
 		// TODO: Find a way to cache this array, as this method is called
 		// hundreds of times
@@ -468,8 +403,7 @@ public final class Detector {
 				counters[counterPosition]++;
 			} else {
 				if (counterPosition == patternLength - 1) {
-					if (patternMatchVariance(counters, pattern,
-							MAX_INDIVIDUAL_VARIANCE) < MAX_AVG_VARIANCE) {
+					if (patternMatchVariance(counters, pattern, MAX_INDIVIDUAL_VARIANCE) < MAX_AVG_VARIANCE) {
 						return new int[] { patternStart, x };
 					}
 					patternStart += counters[0] + counters[1];
@@ -490,10 +424,7 @@ public final class Detector {
 	}
 
 	/**
-	 * Determines how closely a set of observed counts of runs of black/white
-	 * values matches a given target pattern. This is reported as the ratio of
-	 * the total variance from the expected pattern proportions across all
-	 * pattern elements, to the length of the pattern.
+	 * Determines how closely a set of observed counts of runs of black/white values matches a given target pattern. This is reported as the ratio of the total variance from the expected pattern proportions across all pattern elements, to the length of the pattern.
 	 * 
 	 * @param counters
 	 *            observed counters
@@ -501,14 +432,9 @@ public final class Detector {
 	 *            expected pattern
 	 * @param maxIndividualVariance
 	 *            The most any counter can differ before we give up
-	 * @return ratio of total variance between counters and pattern compared to
-	 *         total pattern size, where the ratio has been multiplied by 256.
-	 *         So, 0 means no variance (perfect match); 256 means the total
-	 *         variance between counters and patterns equals the pattern length,
-	 *         higher values mean even more variance
+	 * @return ratio of total variance between counters and pattern compared to total pattern size, where the ratio has been multiplied by 256. So, 0 means no variance (perfect match); 256 means the total variance between counters and patterns equals the pattern length, higher values mean even more variance
 	 */
-	private static int patternMatchVariance(int[] counters, int[] pattern,
-			int maxIndividualVariance) {
+	private static int patternMatchVariance(int[] counters, int[] pattern, int maxIndividualVariance) {
 		int numCounters = counters.length;
 		int total = 0;
 		int patternLength = 0;
@@ -534,8 +460,7 @@ public final class Detector {
 		for (int x = 0; x < numCounters; x++) {
 			int counter = counters[x] << 8;
 			int scaledPattern = pattern[x] * unitBarWidth;
-			int variance = counter > scaledPattern ? counter - scaledPattern
-					: scaledPattern - counter;
+			int variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
 			if (variance > maxIndividualVariance) {
 				return Integer.MAX_VALUE;
 			}

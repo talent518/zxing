@@ -29,8 +29,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
- * Decodes RSS-14, including truncated and stacked variants. See ISO/IEC
- * 24724:2006.
+ * Decodes RSS-14, including truncated and stacked variants. See ISO/IEC 24724:2006.
  */
 public final class RSS14Reader extends AbstractRSSReader {
 
@@ -41,9 +40,7 @@ public final class RSS14Reader extends AbstractRSSReader {
 	private static final int[] OUTSIDE_ODD_WIDEST = { 8, 6, 4, 3, 1 };
 	private static final int[] INSIDE_ODD_WIDEST = { 2, 4, 6, 8 };
 
-	private static final int[][] FINDER_PATTERNS = { { 3, 8, 2, 1 },
-			{ 3, 5, 5, 1 }, { 3, 3, 7, 1 }, { 3, 1, 9, 1 }, { 2, 7, 4, 1 },
-			{ 2, 5, 6, 1 }, { 2, 3, 8, 1 }, { 1, 5, 7, 1 }, { 1, 3, 9, 1 }, };
+	private static final int[][] FINDER_PATTERNS = { { 3, 8, 2, 1 }, { 3, 5, 5, 1 }, { 3, 3, 7, 1 }, { 3, 1, 9, 1 }, { 2, 7, 4, 1 }, { 2, 5, 6, 1 }, { 2, 3, 8, 1 }, { 1, 5, 7, 1 }, { 1, 3, 9, 1 }, };
 
 	private final Vector possibleLeftPairs;
 	private final Vector possibleRightPairs;
@@ -53,8 +50,7 @@ public final class RSS14Reader extends AbstractRSSReader {
 		possibleRightPairs = new Vector();
 	}
 
-	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
-			throws NotFoundException {
+	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints) throws NotFoundException {
 		Pair leftPair = decodePair(row, false, rowNumber, hints);
 		addOrTally(possibleLeftPairs, leftPair);
 		row.reverse();
@@ -104,8 +100,7 @@ public final class RSS14Reader extends AbstractRSSReader {
 	}
 
 	private static Result constructResult(Pair leftPair, Pair rightPair) {
-		long symbolValue = 4537077L * leftPair.getValue()
-				+ rightPair.getValue();
+		long symbolValue = 4537077L * leftPair.getValue() + rightPair.getValue();
 		String text = String.valueOf(symbolValue);
 
 		StringBuffer buffer = new StringBuffer(14);
@@ -125,25 +120,18 @@ public final class RSS14Reader extends AbstractRSSReader {
 		}
 		buffer.append(checkDigit);
 
-		ResultPoint[] leftPoints = leftPair.getFinderPattern()
-				.getResultPoints();
-		ResultPoint[] rightPoints = rightPair.getFinderPattern()
-				.getResultPoints();
-		return new Result(String.valueOf(buffer.toString()), null,
-				new ResultPoint[] { leftPoints[0], leftPoints[1],
-						rightPoints[0], rightPoints[1], }, BarcodeFormat.RSS14);
+		ResultPoint[] leftPoints = leftPair.getFinderPattern().getResultPoints();
+		ResultPoint[] rightPoints = rightPair.getFinderPattern().getResultPoints();
+		return new Result(String.valueOf(buffer.toString()), null, new ResultPoint[] { leftPoints[0], leftPoints[1], rightPoints[0], rightPoints[1], }, BarcodeFormat.RSS14);
 	}
 
 	private static boolean checkChecksum(Pair leftPair, Pair rightPair) {
 		int leftFPValue = leftPair.getFinderPattern().getValue();
 		int rightFPValue = rightPair.getFinderPattern().getValue();
-		if ((leftFPValue == 0 && rightFPValue == 8)
-				|| (leftFPValue == 8 && rightFPValue == 0)) {
+		if ((leftFPValue == 0 && rightFPValue == 8) || (leftFPValue == 8 && rightFPValue == 0)) {
 		}
-		int checkValue = (leftPair.getChecksumPortion() + 16 * rightPair
-				.getChecksumPortion()) % 79;
-		int targetCheckValue = 9 * leftPair.getFinderPattern().getValue()
-				+ rightPair.getFinderPattern().getValue();
+		int checkValue = (leftPair.getChecksumPortion() + 16 * rightPair.getChecksumPortion()) % 79;
+		int targetCheckValue = 9 * leftPair.getFinderPattern().getValue() + rightPair.getFinderPattern().getValue();
 		if (targetCheckValue > 72) {
 			targetCheckValue--;
 		}
@@ -153,16 +141,12 @@ public final class RSS14Reader extends AbstractRSSReader {
 		return checkValue == targetCheckValue;
 	}
 
-	private Pair decodePair(BitArray row, boolean right, int rowNumber,
-			Hashtable hints) {
+	private Pair decodePair(BitArray row, boolean right, int rowNumber, Hashtable hints) {
 		try {
 			int[] startEnd = findFinderPattern(row, 0, right);
-			FinderPattern pattern = parseFoundFinderPattern(row, rowNumber,
-					right, startEnd);
+			FinderPattern pattern = parseFoundFinderPattern(row, rowNumber, right, startEnd);
 
-			ResultPointCallback resultPointCallback = hints == null ? null
-					: (ResultPointCallback) hints
-							.get(DecodeHintType.NEED_RESULT_POINT_CALLBACK);
+			ResultPointCallback resultPointCallback = hints == null ? null : (ResultPointCallback) hints.get(DecodeHintType.NEED_RESULT_POINT_CALLBACK);
 
 			if (resultPointCallback != null) {
 				float center = (startEnd[0] + startEnd[1]) / 2.0f;
@@ -170,23 +154,18 @@ public final class RSS14Reader extends AbstractRSSReader {
 					// row is actually reversed
 					center = row.getSize() - 1 - center;
 				}
-				resultPointCallback.foundPossibleResultPoint(new ResultPoint(
-						center, rowNumber));
+				resultPointCallback.foundPossibleResultPoint(new ResultPoint(center, rowNumber));
 			}
 
 			DataCharacter outside = decodeDataCharacter(row, pattern, true);
 			DataCharacter inside = decodeDataCharacter(row, pattern, false);
-			return new Pair(1597 * outside.getValue() + inside.getValue(),
-					outside.getChecksumPortion() + 4
-							* inside.getChecksumPortion(), pattern);
+			return new Pair(1597 * outside.getValue() + inside.getValue(), outside.getChecksumPortion() + 4 * inside.getChecksumPortion(), pattern);
 		} catch (NotFoundException re) {
 			return null;
 		}
 	}
 
-	private DataCharacter decodeDataCharacter(BitArray row,
-			FinderPattern pattern, boolean outsideChar)
-			throws NotFoundException {
+	private DataCharacter decodeDataCharacter(BitArray row, FinderPattern pattern, boolean outsideChar) throws NotFoundException {
 
 		int[] counters = dataCharacterCounters;
 		counters[0] = 0;
@@ -265,8 +244,7 @@ public final class RSS14Reader extends AbstractRSSReader {
 			int vEven = RSSUtils.getRSSvalue(evenCounts, evenWidest, true);
 			int tEven = OUTSIDE_EVEN_TOTAL_SUBSET[group];
 			int gSum = OUTSIDE_GSUM[group];
-			return new DataCharacter(vOdd * tEven + vEven + gSum,
-					checksumPortion);
+			return new DataCharacter(vOdd * tEven + vEven + gSum, checksumPortion);
 		} else {
 			if ((evenSum & 0x01) != 0 || evenSum > 10 || evenSum < 4) {
 				throw NotFoundException.getNotFoundInstance();
@@ -278,14 +256,12 @@ public final class RSS14Reader extends AbstractRSSReader {
 			int vEven = RSSUtils.getRSSvalue(evenCounts, evenWidest, false);
 			int tOdd = INSIDE_ODD_TOTAL_SUBSET[group];
 			int gSum = INSIDE_GSUM[group];
-			return new DataCharacter(vEven * tOdd + vOdd + gSum,
-					checksumPortion);
+			return new DataCharacter(vEven * tOdd + vOdd + gSum, checksumPortion);
 		}
 
 	}
 
-	private int[] findFinderPattern(BitArray row, int rowOffset,
-			boolean rightFinderPattern) throws NotFoundException {
+	private int[] findFinderPattern(BitArray row, int rowOffset, boolean rightFinderPattern) throws NotFoundException {
 
 		int[] counters = decodeFinderCounters;
 		counters[0] = 0;
@@ -333,14 +309,12 @@ public final class RSS14Reader extends AbstractRSSReader {
 
 	}
 
-	private FinderPattern parseFoundFinderPattern(BitArray row, int rowNumber,
-			boolean right, int[] startEnd) throws NotFoundException {
+	private FinderPattern parseFoundFinderPattern(BitArray row, int rowNumber, boolean right, int[] startEnd) throws NotFoundException {
 		// Actually we found elements 2-5
 		boolean firstIsBlack = row.get(startEnd[0]);
 		int firstElementStart = startEnd[0] - 1;
 		// Locate element 1
-		while (firstElementStart >= 0 && firstIsBlack
-				^ row.get(firstElementStart)) {
+		while (firstElementStart >= 0 && firstIsBlack ^ row.get(firstElementStart)) {
 			firstElementStart--;
 		}
 		firstElementStart++;
@@ -359,21 +333,14 @@ public final class RSS14Reader extends AbstractRSSReader {
 			start = row.getSize() - 1 - start;
 			end = row.getSize() - 1 - end;
 		}
-		return new FinderPattern(value, new int[] { firstElementStart,
-				startEnd[1] }, start, end, rowNumber);
+		return new FinderPattern(value, new int[] { firstElementStart, startEnd[1] }, start, end, rowNumber);
 	}
 
 	/*
-	 * private static int[] normalizeE2SEValues(int[] counters) { int p = 0; for
-	 * (int i = 0; i < counters.length; i++) { p += counters[i]; } int[]
-	 * normalized = new int[counters.length - 2]; for (int i = 0; i <
-	 * normalized.length; i++) { int e = counters[i] + counters[i+1]; float
-	 * eRatio = (float) e / (float) p; float E = ((eRatio * 32.0f) + 1.0f) /
-	 * 2.0f; normalized[i] = (int) E; } return normalized; }
+	 * private static int[] normalizeE2SEValues(int[] counters) { int p = 0; for (int i = 0; i < counters.length; i++) { p += counters[i]; } int[] normalized = new int[counters.length - 2]; for (int i = 0; i < normalized.length; i++) { int e = counters[i] + counters[i+1]; float eRatio = (float) e / (float) p; float E = ((eRatio * 32.0f) + 1.0f) / 2.0f; normalized[i] = (int) E; } return normalized; }
 	 */
 
-	private void adjustOddEvenCounts(boolean outsideChar, int numModules)
-			throws NotFoundException {
+	private void adjustOddEvenCounts(boolean outsideChar, int numModules) throws NotFoundException {
 
 		int oddSum = count(oddCounts);
 		int evenSum = count(evenCounts);
@@ -411,11 +378,7 @@ public final class RSS14Reader extends AbstractRSSReader {
 		}
 
 		/*
-		 * if (mismatch == 2) { if (!(oddParityBad && evenParityBad)) { throw
-		 * ReaderException.getInstance(); } decrementOdd = true; decrementEven =
-		 * true; } else if (mismatch == -2) { if (!(oddParityBad &&
-		 * evenParityBad)) { throw ReaderException.getInstance(); } incrementOdd
-		 * = true; incrementEven = true; } else
+		 * if (mismatch == 2) { if (!(oddParityBad && evenParityBad)) { throw ReaderException.getInstance(); } decrementOdd = true; decrementEven = true; } else if (mismatch == -2) { if (!(oddParityBad && evenParityBad)) { throw ReaderException.getInstance(); } incrementOdd = true; incrementEven = true; } else
 		 */if (mismatch == 1) {
 			if (oddParityBad) {
 				if (evenParityBad) {

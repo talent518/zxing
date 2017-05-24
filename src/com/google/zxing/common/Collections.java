@@ -20,8 +20,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * This is basically a substitute for <code>java.util.Collections</code>, which
- * is not present in MIDP 2.0 / CLDC 1.1.
+ * This is basically a substitute for <code>java.util.Collections</code>, which is not present in MIDP 2.0 / CLDC 1.1.
  * </p>
  * 
  * @author Sean Owen
@@ -32,9 +31,7 @@ public final class Collections {
 	}
 
 	/**
-	 * Sorts its argument (destructively) using insert sort; in the context of
-	 * this package insertion sort is simple and efficient given its relatively
-	 * small inputs.
+	 * Sorts its argument (destructively) using insert sort; in the context of this package insertion sort is simple and efficient given its relatively small inputs.
 	 * 
 	 * @param vector
 	 *            vector to sort
@@ -47,9 +44,7 @@ public final class Collections {
 			Object value = vector.elementAt(i);
 			int j = i - 1;
 			Object valueB;
-			while (j >= 0
-					&& comparator
-							.compare((valueB = vector.elementAt(j)), value) > 0) {
+			while (j >= 0 && comparator.compare((valueB = vector.elementAt(j)), value) > 0) {
 				vector.setElementAt(valueB, j + 1);
 				j--;
 			}

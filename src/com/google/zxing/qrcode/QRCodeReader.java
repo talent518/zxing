@@ -60,13 +60,11 @@ public class QRCodeReader implements Reader {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public Result decode(BinaryBitmap image) throws NotFoundException,
-			ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
 		return decode(image, null);
 	}
 
-	public Result decode(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException, ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image, Hashtable hints) throws NotFoundException, ChecksumException, FormatException {
 		DecoderResult decoderResult;
 		ResultPoint[] points;
 		if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
@@ -74,21 +72,17 @@ public class QRCodeReader implements Reader {
 			decoderResult = decoder.decode(bits, hints);
 			points = NO_POINTS;
 		} else {
-			DetectorResult detectorResult = new Detector(image.getBlackMatrix())
-					.detect(hints);
+			DetectorResult detectorResult = new Detector(image.getBlackMatrix()).detect(hints);
 			decoderResult = decoder.decode(detectorResult.getBits(), hints);
 			points = detectorResult.getPoints();
 		}
 
-		Result result = new Result(decoderResult.getText(),
-				decoderResult.getRawBytes(), points, BarcodeFormat.QR_CODE);
+		Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.QR_CODE);
 		if (decoderResult.getByteSegments() != null) {
-			result.putMetadata(ResultMetadataType.BYTE_SEGMENTS,
-					decoderResult.getByteSegments());
+			result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, decoderResult.getByteSegments());
 		}
 		if (decoderResult.getECLevel() != null) {
-			result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL,
-					decoderResult.getECLevel().toString());
+			result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, decoderResult.getECLevel().toString());
 		}
 		return result;
 	}
@@ -98,13 +92,9 @@ public class QRCodeReader implements Reader {
 	}
 
 	/**
-	 * This method detects a barcode in a "pure" image -- that is, pure
-	 * monochrome image which contains only an unrotated, unskewed, image of a
-	 * barcode, with some white border around it. This is a specialized method
-	 * that works exceptionally fast in this special case.
+	 * This method detects a barcode in a "pure" image -- that is, pure monochrome image which contains only an unrotated, unskewed, image of a barcode, with some white border around it. This is a specialized method that works exceptionally fast in this special case.
 	 */
-	public static BitMatrix extractPureBits(BitMatrix image)
-			throws NotFoundException {
+	public static BitMatrix extractPureBits(BitMatrix image) throws NotFoundException {
 
 		int height = image.getHeight();
 		int width = image.getWidth();
@@ -155,8 +145,7 @@ public class QRCodeReader implements Reader {
 		x -= backOffAmount;
 		y -= backOffAmount;
 
-		if ((x + (dimension - 1) * moduleSize) >= width
-				|| (y + (dimension - 1) * moduleSize) >= height) {
+		if ((x + (dimension - 1) * moduleSize) >= width || (y + (dimension - 1) * moduleSize) >= height) {
 			throw NotFoundException.getNotFoundInstance();
 		}
 

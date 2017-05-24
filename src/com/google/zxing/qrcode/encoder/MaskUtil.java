@@ -30,8 +30,7 @@ public final class MaskUtil {
 	// with the same color and
 	// give penalty to them. Example: 00000 or 11111.
 	public static int applyMaskPenaltyRule1(ByteMatrix matrix) {
-		return applyMaskPenaltyRule1Internal(matrix, true)
-				+ applyMaskPenaltyRule1Internal(matrix, false);
+		return applyMaskPenaltyRule1Internal(matrix, true) + applyMaskPenaltyRule1Internal(matrix, false);
 	}
 
 	// Apply mask penalty rule 2 and return the penalty. Find 2x2 blocks with
@@ -45,8 +44,7 @@ public final class MaskUtil {
 		for (int y = 0; y < height - 1; ++y) {
 			for (int x = 0; x < width - 1; ++x) {
 				int value = array[y][x];
-				if (value == array[y][x + 1] && value == array[y + 1][x]
-						&& value == array[y + 1][x + 1]) {
+				if (value == array[y][x + 1] && value == array[y + 1][x] && value == array[y + 1][x + 1]) {
 					penalty += 3;
 				}
 			}
@@ -67,34 +65,10 @@ public final class MaskUtil {
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < width; ++x) {
 				// Tried to simplify following conditions but failed.
-				if (x + 6 < width
-						&& array[y][x] == 1
-						&& array[y][x + 1] == 0
-						&& array[y][x + 2] == 1
-						&& array[y][x + 3] == 1
-						&& array[y][x + 4] == 1
-						&& array[y][x + 5] == 0
-						&& array[y][x + 6] == 1
-						&& ((x + 10 < width && array[y][x + 7] == 0
-								&& array[y][x + 8] == 0 && array[y][x + 9] == 0 && array[y][x + 10] == 0) || (x - 4 >= 0
-								&& array[y][x - 1] == 0
-								&& array[y][x - 2] == 0
-								&& array[y][x - 3] == 0 && array[y][x - 4] == 0))) {
+				if (x + 6 < width && array[y][x] == 1 && array[y][x + 1] == 0 && array[y][x + 2] == 1 && array[y][x + 3] == 1 && array[y][x + 4] == 1 && array[y][x + 5] == 0 && array[y][x + 6] == 1 && ((x + 10 < width && array[y][x + 7] == 0 && array[y][x + 8] == 0 && array[y][x + 9] == 0 && array[y][x + 10] == 0) || (x - 4 >= 0 && array[y][x - 1] == 0 && array[y][x - 2] == 0 && array[y][x - 3] == 0 && array[y][x - 4] == 0))) {
 					penalty += 40;
 				}
-				if (y + 6 < height
-						&& array[y][x] == 1
-						&& array[y + 1][x] == 0
-						&& array[y + 2][x] == 1
-						&& array[y + 3][x] == 1
-						&& array[y + 4][x] == 1
-						&& array[y + 5][x] == 0
-						&& array[y + 6][x] == 1
-						&& ((y + 10 < height && array[y + 7][x] == 0
-								&& array[y + 8][x] == 0 && array[y + 9][x] == 0 && array[y + 10][x] == 0) || (y - 4 >= 0
-								&& array[y - 1][x] == 0
-								&& array[y - 2][x] == 0
-								&& array[y - 3][x] == 0 && array[y - 4][x] == 0))) {
+				if (y + 6 < height && array[y][x] == 1 && array[y + 1][x] == 0 && array[y + 2][x] == 1 && array[y + 3][x] == 1 && array[y + 4][x] == 1 && array[y + 5][x] == 0 && array[y + 6][x] == 1 && ((y + 10 < height && array[y + 7][x] == 0 && array[y + 8][x] == 0 && array[y + 9][x] == 0 && array[y + 10][x] == 0) || (y - 4 >= 0 && array[y - 1][x] == 0 && array[y - 2][x] == 0 && array[y - 3][x] == 0 && array[y - 4][x] == 0))) {
 					penalty += 40;
 				}
 			}
@@ -167,8 +141,7 @@ public final class MaskUtil {
 			intermediate = (((temp % 3) + ((y + x) & 0x1)) & 0x1);
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid mask pattern: "
-					+ maskPattern);
+			throw new IllegalArgumentException("Invalid mask pattern: " + maskPattern);
 		}
 		return intermediate == 0;
 	}
@@ -176,8 +149,7 @@ public final class MaskUtil {
 	// Helper function for applyMaskPenaltyRule1. We need this for doing this
 	// calculation in both
 	// vertical and horizontal orders respectively.
-	private static int applyMaskPenaltyRule1Internal(ByteMatrix matrix,
-			boolean isHorizontal) {
+	private static int applyMaskPenaltyRule1Internal(ByteMatrix matrix, boolean isHorizontal) {
 		int penalty = 0;
 		int numSameBitCells = 0;
 		int prevBit = -1;

@@ -26,12 +26,7 @@ import com.google.zxing.Result;
 import java.util.Hashtable;
 
 /**
- * This class attempts to decode a barcode from an image, not by scanning the
- * whole image, but by scanning subsets of the image. This is important when
- * there may be multiple barcodes in an image, and detecting a barcode may find
- * parts of multiple barcode and fail to decode (e.g. QR Codes). Instead this
- * scans the four quadrants of the image -- and also the center 'quadrant' to
- * cover the case where a barcode is found in the center.
+ * This class attempts to decode a barcode from an image, not by scanning the whole image, but by scanning subsets of the image. This is important when there may be multiple barcodes in an image, and detecting a barcode may find parts of multiple barcode and fail to decode (e.g. QR Codes). Instead this scans the four quadrants of the image -- and also the center 'quadrant' to cover the case where a barcode is found in the center.
  * 
  * @see GenericMultipleBarcodeReader
  */
@@ -43,13 +38,11 @@ public final class ByQuadrantReader implements Reader {
 		this.delegate = delegate;
 	}
 
-	public Result decode(BinaryBitmap image) throws NotFoundException,
-			ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
 		return decode(image, null);
 	}
 
-	public Result decode(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException, ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image, Hashtable hints) throws NotFoundException, ChecksumException, FormatException {
 
 		int width = image.getWidth();
 		int height = image.getHeight();
@@ -70,16 +63,14 @@ public final class ByQuadrantReader implements Reader {
 			// continue
 		}
 
-		BinaryBitmap bottomLeft = image.crop(0, halfHeight, halfWidth,
-				halfHeight);
+		BinaryBitmap bottomLeft = image.crop(0, halfHeight, halfWidth, halfHeight);
 		try {
 			return delegate.decode(bottomLeft, hints);
 		} catch (NotFoundException re) {
 			// continue
 		}
 
-		BinaryBitmap bottomRight = image.crop(halfWidth, halfHeight, halfWidth,
-				halfHeight);
+		BinaryBitmap bottomRight = image.crop(halfWidth, halfHeight, halfWidth, halfHeight);
 		try {
 			return delegate.decode(bottomRight, hints);
 		} catch (NotFoundException re) {
@@ -88,8 +79,7 @@ public final class ByQuadrantReader implements Reader {
 
 		int quarterWidth = halfWidth / 2;
 		int quarterHeight = halfHeight / 2;
-		BinaryBitmap center = image.crop(quarterWidth, quarterHeight,
-				halfWidth, halfHeight);
+		BinaryBitmap center = image.crop(quarterWidth, quarterHeight, halfWidth, halfHeight);
 		return delegate.decode(center, hints);
 	}
 

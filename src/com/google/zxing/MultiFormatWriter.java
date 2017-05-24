@@ -27,21 +27,18 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.util.Hashtable;
 
 /**
- * This is a factory class which finds the appropriate Writer subclass for the
- * BarcodeFormat requested and encodes the barcode with the supplied contents.
+ * This is a factory class which finds the appropriate Writer subclass for the BarcodeFormat requested and encodes the barcode with the supplied contents.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class MultiFormatWriter implements Writer {
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height) throws WriterException {
 
 		return encode(contents, format, width, height, null);
 	}
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height, Hashtable hints) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, Hashtable hints) throws WriterException {
 
 		Writer writer;
 		if (format == BarcodeFormat.EAN_8) {
@@ -57,8 +54,7 @@ public final class MultiFormatWriter implements Writer {
 		} else if (format == BarcodeFormat.ITF) {
 			writer = new ITFWriter();
 		} else {
-			throw new IllegalArgumentException(
-					"No encoder available for format " + format);
+			throw new IllegalArgumentException("No encoder available for format " + format);
 		}
 		return writer.encode(contents, format, width, height, hints);
 	}

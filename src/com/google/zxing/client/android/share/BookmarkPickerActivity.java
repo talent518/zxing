@@ -29,18 +29,14 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 /**
- * This class is only needed because I can't successfully send an ACTION_PICK
- * intent to com.android.browser.BrowserBookmarksPage. It can go away if that
- * starts working in the future.
+ * This class is only needed because I can't successfully send an ACTION_PICK intent to com.android.browser.BrowserBookmarksPage. It can go away if that starts working in the future.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class BookmarkPickerActivity extends ListActivity {
-	private static final String[] BOOKMARK_PROJECTION = {
-			Browser.BookmarkColumns.TITLE, Browser.BookmarkColumns.URL };
+	private static final String[] BOOKMARK_PROJECTION = { Browser.BookmarkColumns.TITLE, Browser.BookmarkColumns.URL };
 
-	private static final int[] TWO_LINE_VIEW_IDS = { R.id.bookmark_title,
-			R.id.bookmark_url };
+	private static final int[] TWO_LINE_VIEW_IDS = { R.id.bookmark_title, R.id.bookmark_url };
 
 	private static final int TITLE_COLUMN = 0;
 	private static final int URL_COLUMN = 1;
@@ -54,13 +50,10 @@ public final class BookmarkPickerActivity extends ListActivity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 
-		cursor = getContentResolver().query(Browser.BOOKMARKS_URI,
-				BOOKMARK_PROJECTION, BOOKMARK_SELECTION, null, null);
+		cursor = getContentResolver().query(Browser.BOOKMARKS_URI, BOOKMARK_PROJECTION, BOOKMARK_SELECTION, null, null);
 		startManagingCursor(cursor);
 
-		ListAdapter adapter = new SimpleCursorAdapter(this,
-				R.layout.bookmark_picker_list_item, cursor,
-				BOOKMARK_PROJECTION, TWO_LINE_VIEW_IDS);
+		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.bookmark_picker_list_item, cursor, BOOKMARK_PROJECTION, TWO_LINE_VIEW_IDS);
 		setListAdapter(adapter);
 	}
 
@@ -69,10 +62,8 @@ public final class BookmarkPickerActivity extends ListActivity {
 		if (cursor.moveToPosition(position)) {
 			Intent intent = new Intent();
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			intent.putExtra(Browser.BookmarkColumns.TITLE,
-					cursor.getString(TITLE_COLUMN));
-			intent.putExtra(Browser.BookmarkColumns.URL,
-					cursor.getString(URL_COLUMN));
+			intent.putExtra(Browser.BookmarkColumns.TITLE, cursor.getString(TITLE_COLUMN));
+			intent.putExtra(Browser.BookmarkColumns.URL, cursor.getString(URL_COLUMN));
 			setResult(RESULT_OK, intent);
 		} else {
 			setResult(RESULT_CANCELED);

@@ -56,13 +56,11 @@ public final class DataMatrixReader implements Reader {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public Result decode(BinaryBitmap image) throws NotFoundException,
-			ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
 		return decode(image, null);
 	}
 
-	public Result decode(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException, ChecksumException, FormatException {
+	public Result decode(BinaryBitmap image, Hashtable hints) throws NotFoundException, ChecksumException, FormatException {
 		DecoderResult decoderResult;
 		ResultPoint[] points;
 		if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
@@ -70,20 +68,16 @@ public final class DataMatrixReader implements Reader {
 			decoderResult = decoder.decode(bits);
 			points = NO_POINTS;
 		} else {
-			DetectorResult detectorResult = new Detector(image.getBlackMatrix())
-					.detect();
+			DetectorResult detectorResult = new Detector(image.getBlackMatrix()).detect();
 			decoderResult = decoder.decode(detectorResult.getBits());
 			points = detectorResult.getPoints();
 		}
-		Result result = new Result(decoderResult.getText(),
-				decoderResult.getRawBytes(), points, BarcodeFormat.DATA_MATRIX);
+		Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.DATA_MATRIX);
 		if (decoderResult.getByteSegments() != null) {
-			result.putMetadata(ResultMetadataType.BYTE_SEGMENTS,
-					decoderResult.getByteSegments());
+			result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, decoderResult.getByteSegments());
 		}
 		if (decoderResult.getECLevel() != null) {
-			result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL,
-					decoderResult.getECLevel().toString());
+			result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, decoderResult.getECLevel().toString());
 		}
 		return result;
 	}
@@ -93,15 +87,11 @@ public final class DataMatrixReader implements Reader {
 	}
 
 	/**
-	 * This method detects a Data Matrix code in a "pure" image -- that is, pure
-	 * monochrome image which contains only an unrotated, unskewed, image of a
-	 * Data Matrix code, with some white border around it. This is a specialized
-	 * method that works exceptionally fast in this special case.
+	 * This method detects a Data Matrix code in a "pure" image -- that is, pure monochrome image which contains only an unrotated, unskewed, image of a Data Matrix code, with some white border around it. This is a specialized method that works exceptionally fast in this special case.
 	 * 
 	 * @see com.google.zxing.qrcode.QRCodeReader#extractPureBits(BitMatrix)
 	 */
-	private static BitMatrix extractPureBits(BitMatrix image)
-			throws NotFoundException {
+	private static BitMatrix extractPureBits(BitMatrix image) throws NotFoundException {
 
 		int height = image.getHeight();
 		int width = image.getWidth();
@@ -149,8 +139,7 @@ public final class DataMatrixReader implements Reader {
 		x -= moduleSize >> 1;
 		y -= moduleSize >> 1;
 
-		if ((x + (dimension - 1) * moduleSize) >= width
-				|| (y + (dimension - 1) * moduleSize) >= height) {
+		if ((x + (dimension - 1) * moduleSize) >= width || (y + (dimension - 1) * moduleSize) >= height) {
 			throw NotFoundException.getNotFoundInstance();
 		}
 

@@ -31,8 +31,7 @@ import com.google.zxing.common.BitArray;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 final class AI013x0x1xDecoder extends AI01weightDecoder {
 
@@ -43,16 +42,14 @@ final class AI013x0x1xDecoder extends AI01weightDecoder {
 	private final String dateCode;
 	private final String firstAIdigits;
 
-	AI013x0x1xDecoder(BitArray information, String firstAIdigits,
-			String dateCode) {
+	AI013x0x1xDecoder(BitArray information, String firstAIdigits, String dateCode) {
 		super(information);
 		this.dateCode = dateCode;
 		this.firstAIdigits = firstAIdigits;
 	}
 
 	public String parseInformation() throws NotFoundException {
-		if (this.information.size != headerSize + gtinSize + weightSize
-				+ dateSize) {
+		if (this.information.size != headerSize + gtinSize + weightSize + dateSize) {
 			throw NotFoundException.getNotFoundInstance();
 		}
 
@@ -66,8 +63,7 @@ final class AI013x0x1xDecoder extends AI01weightDecoder {
 	}
 
 	private void encodeCompressedDate(StringBuffer buf, int currentPos) {
-		int numericDate = this.generalDecoder.extractNumericValueFromBitArray(
-				currentPos, dateSize);
+		int numericDate = this.generalDecoder.extractNumericValueFromBitArray(currentPos, dateSize);
 		if (numericDate == 38400) {
 			return;
 		}

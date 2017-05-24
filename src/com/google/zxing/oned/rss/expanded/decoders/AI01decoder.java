@@ -30,8 +30,7 @@ import com.google.zxing.common.BitArray;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 abstract class AI01decoder extends AbstractExpandedDecoder {
 
@@ -49,11 +48,9 @@ abstract class AI01decoder extends AbstractExpandedDecoder {
 		encodeCompressedGtinWithoutAI(buf, currentPos, initialPosition);
 	}
 
-	protected void encodeCompressedGtinWithoutAI(StringBuffer buf,
-			int currentPos, int initialBufferPosition) {
+	protected void encodeCompressedGtinWithoutAI(StringBuffer buf, int currentPos, int initialBufferPosition) {
 		for (int i = 0; i < 4; ++i) {
-			int currentBlock = this.generalDecoder
-					.extractNumericValueFromBitArray(currentPos + 10 * i, 10);
+			int currentBlock = this.generalDecoder.extractNumericValueFromBitArray(currentPos + 10 * i, 10);
 			if (currentBlock / 100 == 0) {
 				buf.append('0');
 			}

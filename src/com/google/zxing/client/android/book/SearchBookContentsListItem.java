@@ -56,8 +56,7 @@ public final class SearchBookContentsListItem extends LinearLayout {
 		String snippet = result.getSnippet();
 		if (snippet.length() > 0) {
 			if (result.getValidSnippet()) {
-				String lowerQuery = SearchBookContentsResult.getQuery()
-						.toLowerCase();
+				String lowerQuery = SearchBookContentsResult.getQuery().toLowerCase();
 				String lowerSnippet = snippet.toLowerCase();
 				Spannable styledSnippet = new SpannableString(snippet);
 				StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);

@@ -71,11 +71,7 @@ public class ExpandedProductParsedResult extends ParsedResult {
 		this.uncommonAIs = new Hashtable();
 	}
 
-	public ExpandedProductParsedResult(String productID, String sscc,
-			String lotNumber, String productionDate, String packagingDate,
-			String bestBeforeDate, String expirationDate, String weight,
-			String weightType, String weightIncrement, String price,
-			String priceIncrement, String priceCurrency, Hashtable uncommonAIs) {
+	public ExpandedProductParsedResult(String productID, String sscc, String lotNumber, String productionDate, String packagingDate, String bestBeforeDate, String expirationDate, String weight, String weightType, String weightIncrement, String price, String priceIncrement, String priceCurrency, Hashtable uncommonAIs) {
 		super(ParsedResultType.PRODUCT);
 		this.productID = productID;
 		this.sscc = sscc;
@@ -100,19 +96,7 @@ public class ExpandedProductParsedResult extends ParsedResult {
 
 		ExpandedProductParsedResult other = (ExpandedProductParsedResult) o;
 
-		return this.productID.equals(other.productID)
-				&& this.sscc.equals(other.sscc)
-				&& this.lotNumber.equals(other.lotNumber)
-				&& this.productionDate.equals(other.productionDate)
-				&& this.bestBeforeDate.equals(other.bestBeforeDate)
-				&& this.expirationDate.equals(other.expirationDate)
-				&& this.weight.equals(other.weight)
-				&& this.weightType.equals(other.weightType)
-				&& this.weightIncrement.equals(other.weightIncrement)
-				&& this.price.equals(other.price)
-				&& this.priceIncrement.equals(other.priceIncrement)
-				&& this.priceCurrency.equals(other.priceCurrency)
-				&& this.uncommonAIs.equals(other.uncommonAIs);
+		return this.productID.equals(other.productID) && this.sscc.equals(other.sscc) && this.lotNumber.equals(other.lotNumber) && this.productionDate.equals(other.productionDate) && this.bestBeforeDate.equals(other.bestBeforeDate) && this.expirationDate.equals(other.expirationDate) && this.weight.equals(other.weight) && this.weightType.equals(other.weightType) && this.weightIncrement.equals(other.weightIncrement) && this.price.equals(other.price) && this.priceIncrement.equals(other.priceIncrement) && this.priceCurrency.equals(other.priceCurrency) && this.uncommonAIs.equals(other.uncommonAIs);
 	}
 
 	public int hashCode() {

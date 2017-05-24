@@ -56,13 +56,10 @@ public final class HistoryManager {
 
 	private static final int MAX_ITEMS = 50;
 	private static final String[] TEXT_COL_PROJECTION = { DBHelper.TEXT_COL };
-	private static final String[] GET_ITEM_COL_PROJECTION = {
-			DBHelper.TEXT_COL, DBHelper.FORMAT_COL, DBHelper.TIMESTAMP_COL, };
-	private static final String[] EXPORT_COL_PROJECTION = { DBHelper.TEXT_COL,
-			DBHelper.DISPLAY_COL, DBHelper.FORMAT_COL, DBHelper.TIMESTAMP_COL, };
+	private static final String[] GET_ITEM_COL_PROJECTION = { DBHelper.TEXT_COL, DBHelper.FORMAT_COL, DBHelper.TIMESTAMP_COL, };
+	private static final String[] EXPORT_COL_PROJECTION = { DBHelper.TEXT_COL, DBHelper.DISPLAY_COL, DBHelper.FORMAT_COL, DBHelper.TIMESTAMP_COL, };
 	private static final String[] ID_COL_PROJECTION = { DBHelper.ID_COL };
-	private static final DateFormat EXPORT_DATE_TIME_FORMAT = DateFormat
-			.getDateTimeInstance();
+	private static final DateFormat EXPORT_DATE_TIME_FORMAT = DateFormat.getDateTimeInstance();
 
 	private final CaptureActivity activity;
 
@@ -76,12 +73,9 @@ public final class HistoryManager {
 		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = null;
 		try {
-			cursor = db.query(DBHelper.TABLE_NAME, GET_ITEM_COL_PROJECTION,
-					null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
+			cursor = db.query(DBHelper.TABLE_NAME, GET_ITEM_COL_PROJECTION, null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
 			while (cursor.moveToNext()) {
-				Result result = new Result(cursor.getString(0), null, null,
-						BarcodeFormat.valueOf(cursor.getString(1)),
-						cursor.getLong(2));
+				Result result = new Result(cursor.getString(0), null, null, BarcodeFormat.valueOf(cursor.getString(1)), cursor.getLong(2));
 				items.add(result);
 			}
 		} finally {
@@ -101,12 +95,9 @@ public final class HistoryManager {
 			dialogItems[i] = items.get(i).getText();
 		}
 		Resources res = activity.getResources();
-		dialogItems[dialogItems.length - 2] = res
-				.getString(R.string.history_send);
-		dialogItems[dialogItems.length - 1] = res
-				.getString(R.string.history_clear_text);
-		DialogInterface.OnClickListener clickListener = new HistoryClickListener(
-				this, activity, dialogItems, items);
+		dialogItems[dialogItems.length - 2] = res.getString(R.string.history_send);
+		dialogItems[dialogItems.length - 1] = res.getString(R.string.history_clear_text);
+		DialogInterface.OnClickListener clickListener = new HistoryClickListener(this, activity, dialogItems, items);
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.history_title);
 		builder.setItems(dialogItems, clickListener);
@@ -115,8 +106,7 @@ public final class HistoryManager {
 
 	public void addHistoryItem(Result result) {
 
-		if (!activity.getIntent().getBooleanExtra(Intents.Scan.SAVE_HISTORY,
-				true)) {
+		if (!activity.getIntent().getBooleanExtra(Intents.Scan.SAVE_HISTORY, true)) {
 			return; // Do not save this item to the history.
 		}
 
@@ -124,13 +114,11 @@ public final class HistoryManager {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		try {
 			// Delete if already exists
-			db.delete(DBHelper.TABLE_NAME, DBHelper.TEXT_COL + "=?",
-					new String[] { result.getText() });
+			db.delete(DBHelper.TABLE_NAME, DBHelper.TEXT_COL + "=?", new String[] { result.getText() });
 			// Insert
 			ContentValues values = new ContentValues();
 			values.put(DBHelper.TEXT_COL, result.getText());
-			values.put(DBHelper.FORMAT_COL, result.getBarcodeFormat()
-					.toString());
+			values.put(DBHelper.FORMAT_COL, result.getBarcodeFormat().toString());
 			values.put(DBHelper.DISPLAY_COL, result.getText()); // TODO use
 																// parsed result
 																// display
@@ -147,15 +135,13 @@ public final class HistoryManager {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		Cursor cursor = null;
 		try {
-			cursor = db.query(DBHelper.TABLE_NAME, ID_COL_PROJECTION, null,
-					null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
+			cursor = db.query(DBHelper.TABLE_NAME, ID_COL_PROJECTION, null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
 			int count = 0;
 			while (count < MAX_ITEMS && cursor.moveToNext()) {
 				count++;
 			}
 			while (cursor.moveToNext()) {
-				db.delete(DBHelper.TABLE_NAME,
-						DBHelper.ID_COL + '=' + cursor.getString(0), null);
+				db.delete(DBHelper.TABLE_NAME, DBHelper.ID_COL + '=' + cursor.getString(0), null);
 			}
 		} finally {
 			if (cursor != null) {
@@ -167,11 +153,7 @@ public final class HistoryManager {
 
 	/**
 	 * <p>
-	 * Builds a text representation of the scanning history. Each scan is
-	 * encoded on one line, terminated by a line break (\r\n). The values in
-	 * each line are comma-separated, and double-quoted. Double-quotes within
-	 * values are escaped with a sequence of two double-quotes. The fields
-	 * output are:
+	 * Builds a text representation of the scanning history. Each scan is encoded on one line, terminated by a line break (\r\n). The values in each line are comma-separated, and double-quoted. Double-quotes within values are escaped with a sequence of two double-quotes. The fields output are:
 	 * </p>
 	 * 
 	 * <ul>
@@ -188,21 +170,14 @@ public final class HistoryManager {
 		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = null;
 		try {
-			cursor = db.query(DBHelper.TABLE_NAME, EXPORT_COL_PROJECTION, null,
-					null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
+			cursor = db.query(DBHelper.TABLE_NAME, EXPORT_COL_PROJECTION, null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
 			while (cursor.moveToNext()) {
 				for (int col = 0; col < EXPORT_COL_PROJECTION.length; col++) {
-					historyText.append('"')
-							.append(massageHistoryField(cursor.getString(col)))
-							.append("\",");
+					historyText.append('"').append(massageHistoryField(cursor.getString(col))).append("\",");
 				}
 				// Add timestamp again, formatted
-				long timestamp = cursor
-						.getLong(EXPORT_COL_PROJECTION.length - 1);
-				historyText
-						.append('"')
-						.append(massageHistoryField(EXPORT_DATE_TIME_FORMAT
-								.format(new Date(timestamp)))).append("\"\r\n");
+				long timestamp = cursor.getLong(EXPORT_COL_PROJECTION.length - 1);
+				historyText.append('"').append(massageHistoryField(EXPORT_DATE_TIME_FORMAT.format(new Date(timestamp)))).append("\"\r\n");
 			}
 		} finally {
 			if (cursor != null) {
@@ -214,19 +189,16 @@ public final class HistoryManager {
 	}
 
 	static Uri saveHistory(String history) {
-		File bsRoot = new File(Environment.getExternalStorageDirectory(),
-				"BarcodeScanner");
+		File bsRoot = new File(Environment.getExternalStorageDirectory(), "BarcodeScanner");
 		File historyRoot = new File(bsRoot, "History");
 		if (!historyRoot.exists() && !historyRoot.mkdirs()) {
 			Log.w(TAG, "Couldn't make dir " + historyRoot);
 			return null;
 		}
-		File historyFile = new File(historyRoot, "history-"
-				+ System.currentTimeMillis() + ".csv");
+		File historyFile = new File(historyRoot, "history-" + System.currentTimeMillis() + ".csv");
 		OutputStreamWriter out = null;
 		try {
-			out = new OutputStreamWriter(new FileOutputStream(historyFile),
-					Charset.forName("UTF-8"));
+			out = new OutputStreamWriter(new FileOutputStream(historyFile), Charset.forName("UTF-8"));
 			out.write(history);
 			return Uri.parse("file://" + historyFile.getAbsolutePath());
 		} catch (IOException ioe) {

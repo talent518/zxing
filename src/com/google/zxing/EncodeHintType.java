@@ -17,16 +17,14 @@
 package com.google.zxing;
 
 /**
- * These are a set of hints that you may pass to Writers to specify their
- * behavior.
+ * These are a set of hints that you may pass to Writers to specify their behavior.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class EncodeHintType {
 
 	/**
-	 * Specifies what degree of error correction to use, for example in QR Codes
-	 * (type Integer).
+	 * Specifies what degree of error correction to use, for example in QR Codes (type Integer).
 	 */
 	public static final EncodeHintType ERROR_CORRECTION = new EncodeHintType();
 

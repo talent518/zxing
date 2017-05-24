@@ -21,9 +21,7 @@ import com.google.zxing.Result;
 import java.util.Vector;
 
 /**
- * Implements the "BIZCARD" address book entry format, though this has been
- * largely reverse-engineered from examples observed in the wild -- still
- * looking for a definitive reference.
+ * Implements the "BIZCARD" address book entry format, though this has been largely reverse-engineered from examples observed in the wild -- still looking for a definitive reference.
  * 
  * @author Sean Owen
  */
@@ -44,21 +42,15 @@ final class BizcardResultParser extends AbstractDoCoMoResultParser {
 		String title = matchSingleDoCoMoPrefixedField("T:", rawText, true);
 		String org = matchSingleDoCoMoPrefixedField("C:", rawText, true);
 		String[] addresses = matchDoCoMoPrefixedField("A:", rawText, true);
-		String phoneNumber1 = matchSingleDoCoMoPrefixedField("B:", rawText,
-				true);
-		String phoneNumber2 = matchSingleDoCoMoPrefixedField("M:", rawText,
-				true);
-		String phoneNumber3 = matchSingleDoCoMoPrefixedField("F:", rawText,
-				true);
+		String phoneNumber1 = matchSingleDoCoMoPrefixedField("B:", rawText, true);
+		String phoneNumber2 = matchSingleDoCoMoPrefixedField("M:", rawText, true);
+		String phoneNumber3 = matchSingleDoCoMoPrefixedField("F:", rawText, true);
 		String email = matchSingleDoCoMoPrefixedField("E:", rawText, true);
 
-		return new AddressBookParsedResult(maybeWrap(fullName), null,
-				buildPhoneNumbers(phoneNumber1, phoneNumber2, phoneNumber3),
-				maybeWrap(email), null, addresses, org, null, title, null);
+		return new AddressBookParsedResult(maybeWrap(fullName), null, buildPhoneNumbers(phoneNumber1, phoneNumber2, phoneNumber3), maybeWrap(email), null, addresses, org, null, title, null);
 	}
 
-	private static String[] buildPhoneNumbers(String number1, String number2,
-			String number3) {
+	private static String[] buildPhoneNumbers(String number1, String number2, String number3) {
 		Vector numbers = new Vector(3);
 		if (number1 != null) {
 			numbers.addElement(number1);

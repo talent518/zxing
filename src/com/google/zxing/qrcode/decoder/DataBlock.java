@@ -18,9 +18,7 @@ package com.google.zxing.qrcode.decoder;
 
 /**
  * <p>
- * Encapsulates a block of data within a QR Code. QR Codes may split their data
- * into multiple blocks, each of which is a unit of data and error-correction
- * codewords. Each is represented by an instance of this class.
+ * Encapsulates a block of data within a QR Code. QR Codes may split their data into multiple blocks, each of which is a unit of data and error-correction codewords. Each is represented by an instance of this class.
  * </p>
  * 
  * @author Sean Owen
@@ -37,10 +35,7 @@ final class DataBlock {
 
 	/**
 	 * <p>
-	 * When QR Codes use multiple data blocks, they are actually interleaved.
-	 * That is, the first byte of data block 1 to n is written, then the second
-	 * bytes, and so on. This method will separate the data into original
-	 * blocks.
+	 * When QR Codes use multiple data blocks, they are actually interleaved. That is, the first byte of data block 1 to n is written, then the second bytes, and so on. This method will separate the data into original blocks.
 	 * </p>
 	 * 
 	 * @param rawCodewords
@@ -49,11 +44,9 @@ final class DataBlock {
 	 *            version of the QR Code
 	 * @param ecLevel
 	 *            error-correction level of the QR Code
-	 * @return {@link DataBlock}s containing original bytes, "de-interleaved"
-	 *         from representation in the QR Code
+	 * @return {@link DataBlock}s containing original bytes, "de-interleaved" from representation in the QR Code
 	 */
-	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version,
-			ErrorCorrectionLevel ecLevel) {
+	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version, ErrorCorrectionLevel ecLevel) {
 
 		if (rawCodewords.length != version.getTotalCodewords()) {
 			throw new IllegalArgumentException();
@@ -79,10 +72,8 @@ final class DataBlock {
 			Version.ECB ecBlock = ecBlockArray[j];
 			for (int i = 0; i < ecBlock.getCount(); i++) {
 				int numDataCodewords = ecBlock.getDataCodewords();
-				int numBlockCodewords = ecBlocks.getECCodewordsPerBlock()
-						+ numDataCodewords;
-				result[numResultBlocks++] = new DataBlock(numDataCodewords,
-						new byte[numBlockCodewords]);
+				int numBlockCodewords = ecBlocks.getECCodewordsPerBlock() + numDataCodewords;
+				result[numResultBlocks++] = new DataBlock(numDataCodewords, new byte[numBlockCodewords]);
 			}
 		}
 
@@ -99,8 +90,7 @@ final class DataBlock {
 		}
 		longerBlocksStartAt++;
 
-		int shorterBlocksNumDataCodewords = shorterBlocksTotalCodewords
-				- ecBlocks.getECCodewordsPerBlock();
+		int shorterBlocksNumDataCodewords = shorterBlocksTotalCodewords - ecBlocks.getECCodewordsPerBlock();
 		// The last elements of result may be 1 element longer;
 		// first fill out as many elements as all of them have
 		int rawCodewordsOffset = 0;

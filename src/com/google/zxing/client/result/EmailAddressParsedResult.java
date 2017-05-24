@@ -26,8 +26,7 @@ public final class EmailAddressParsedResult extends ParsedResult {
 	private final String body;
 	private final String mailtoURI;
 
-	EmailAddressParsedResult(String emailAddress, String subject, String body,
-			String mailtoURI) {
+	EmailAddressParsedResult(String emailAddress, String subject, String body, String mailtoURI) {
 		super(ParsedResultType.EMAIL_ADDRESS);
 		this.emailAddress = emailAddress;
 		this.subject = subject;

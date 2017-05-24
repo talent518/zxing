@@ -22,9 +22,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * Encapsulates the result of decoding a matrix of bits. This typically applies
- * to 2D barcode formats. For now it contains the raw bytes obtained, as well as
- * a String interpretation of those bytes, if applicable.
+ * Encapsulates the result of decoding a matrix of bits. This typically applies to 2D barcode formats. For now it contains the raw bytes obtained, as well as a String interpretation of those bytes, if applicable.
  * </p>
  * 
  * @author Sean Owen
@@ -36,8 +34,7 @@ public final class DecoderResult {
 	private final Vector byteSegments;
 	private final ErrorCorrectionLevel ecLevel;
 
-	public DecoderResult(byte[] rawBytes, String text, Vector byteSegments,
-			ErrorCorrectionLevel ecLevel) {
+	public DecoderResult(byte[] rawBytes, String text, Vector byteSegments, ErrorCorrectionLevel ecLevel) {
 		if (rawBytes == null && text == null) {
 			throw new IllegalArgumentException();
 		}

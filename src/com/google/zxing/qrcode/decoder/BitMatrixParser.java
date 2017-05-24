@@ -44,14 +44,12 @@ final class BitMatrixParser {
 
 	/**
 	 * <p>
-	 * Reads format information from one of its two locations within the QR
-	 * Code.
+	 * Reads format information from one of its two locations within the QR Code.
 	 * </p>
 	 * 
 	 * @return {@link FormatInformation} encapsulating the QR Code's format info
 	 * @throws FormatException
-	 *             if both format information locations cannot be parsed as the
-	 *             valid encoding of format information
+	 *             if both format information locations cannot be parsed as the valid encoding of format information
 	 */
 	FormatInformation readFormatInformation() throws FormatException {
 
@@ -84,8 +82,7 @@ final class BitMatrixParser {
 			formatInfoBits2 = copyBit(8, j, formatInfoBits2);
 		}
 
-		parsedFormatInfo = FormatInformation.decodeFormatInformation(
-				formatInfoBits1, formatInfoBits2);
+		parsedFormatInfo = FormatInformation.decodeFormatInformation(formatInfoBits1, formatInfoBits2);
 		if (parsedFormatInfo != null) {
 			return parsedFormatInfo;
 		}
@@ -94,14 +91,12 @@ final class BitMatrixParser {
 
 	/**
 	 * <p>
-	 * Reads version information from one of its two locations within the QR
-	 * Code.
+	 * Reads version information from one of its two locations within the QR Code.
 	 * </p>
 	 * 
 	 * @return {@link Version} encapsulating the QR Code's version
 	 * @throws FormatException
-	 *             if both version information locations cannot be parsed as the
-	 *             valid encoding of version information
+	 *             if both version information locations cannot be parsed as the valid encoding of version information
 	 */
 	Version readVersion() throws FormatException {
 
@@ -126,8 +121,7 @@ final class BitMatrixParser {
 		}
 
 		parsedVersion = Version.decodeVersionInformation(versionBits);
-		if (parsedVersion != null
-				&& parsedVersion.getDimensionForVersion() == dimension) {
+		if (parsedVersion != null && parsedVersion.getDimensionForVersion() == dimension) {
 			return parsedVersion;
 		}
 
@@ -140,23 +134,19 @@ final class BitMatrixParser {
 		}
 
 		parsedVersion = Version.decodeVersionInformation(versionBits);
-		if (parsedVersion != null
-				&& parsedVersion.getDimensionForVersion() == dimension) {
+		if (parsedVersion != null && parsedVersion.getDimensionForVersion() == dimension) {
 			return parsedVersion;
 		}
 		throw FormatException.getFormatInstance();
 	}
 
 	private int copyBit(int i, int j, int versionBits) {
-		return bitMatrix.get(i, j) ? (versionBits << 1) | 0x1
-				: versionBits << 1;
+		return bitMatrix.get(i, j) ? (versionBits << 1) | 0x1 : versionBits << 1;
 	}
 
 	/**
 	 * <p>
-	 * Reads the bits in the {@link BitMatrix} representing the finder pattern
-	 * in the correct order in order to reconstitute the codewords bytes
-	 * contained within the QR Code.
+	 * Reads the bits in the {@link BitMatrix} representing the finder pattern in the correct order in order to reconstitute the codewords bytes contained within the QR Code.
 	 * </p>
 	 * 
 	 * @return bytes encoded within the QR Code
@@ -171,8 +161,7 @@ final class BitMatrixParser {
 		// Get the data mask for the format used in this QR Code. This will
 		// exclude
 		// some bits from reading as we wind through the bit matrix.
-		DataMask dataMask = DataMask.forReference((int) formatInfo
-				.getDataMask());
+		DataMask dataMask = DataMask.forReference((int) formatInfo.getDataMask());
 		int dimension = bitMatrix.getHeight();
 		dataMask.unmaskBitMatrix(bitMatrix, dimension);
 

@@ -75,14 +75,12 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
- * The barcode reader activity itself. This is loosely based on the
- * CameraPreview example included in the Android SDK.
+ * The barcode reader activity itself. This is loosely based on the CameraPreview example included in the Android SDK.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements
-		SurfaceHolder.Callback {
+public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
 	private static final String TAG = CaptureActivity.class.getSimpleName();
 
@@ -109,8 +107,7 @@ public final class CaptureActivity extends Activity implements
 		DISPLAYABLE_METADATA_TYPES = new HashSet<ResultMetadataType>(5);
 		DISPLAYABLE_METADATA_TYPES.add(ResultMetadataType.ISSUE_NUMBER);
 		DISPLAYABLE_METADATA_TYPES.add(ResultMetadataType.SUGGESTED_PRICE);
-		DISPLAYABLE_METADATA_TYPES
-				.add(ResultMetadataType.ERROR_CORRECTION_LEVEL);
+		DISPLAYABLE_METADATA_TYPES.add(ResultMetadataType.ERROR_CORRECTION_LEVEL);
 		DISPLAYABLE_METADATA_TYPES.add(ResultMetadataType.POSSIBLE_COUNTRY);
 	}
 
@@ -149,8 +146,7 @@ public final class CaptureActivity extends Activity implements
 
 	private final DialogInterface.OnClickListener aboutListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialogInterface, int i) {
-			Intent intent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse(getString(R.string.zxing_url)));
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.zxing_url)));
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivity(intent);
 		}
@@ -215,9 +211,7 @@ public final class CaptureActivity extends Activity implements
 				// to the calling activity.
 				source = Source.NATIVE_APP_INTENT;
 				decodeFormats = DecodeFormatManager.parseDecodeFormats(intent);
-			} else if (dataString != null
-					&& dataString.contains(PRODUCT_SEARCH_URL_PREFIX)
-					&& dataString.contains(PRODUCT_SEARCH_URL_SUFFIX)) {
+			} else if (dataString != null && dataString.contains(PRODUCT_SEARCH_URL_PREFIX) && dataString.contains(PRODUCT_SEARCH_URL_SUFFIX)) {
 				// Scan only products and send the result to mobile Product
 				// Search.
 				source = Source.PRODUCT_SEARCH_LINK;
@@ -231,10 +225,8 @@ public final class CaptureActivity extends Activity implements
 				source = Source.ZXING_LINK;
 				sourceUrl = dataString;
 				Uri inputUri = Uri.parse(sourceUrl);
-				returnUrlTemplate = inputUri
-						.getQueryParameter(RETURN_URL_PARAM);
-				decodeFormats = DecodeFormatManager
-						.parseDecodeFormats(inputUri);
+				returnUrlTemplate = inputUri.getQueryParameter(RETURN_URL_PARAM);
+				decodeFormats = DecodeFormatManager.parseDecodeFormats(inputUri);
 			} else {
 				// Scan all formats and handle the results ourselves (launched
 				// from Home).
@@ -248,8 +240,7 @@ public final class CaptureActivity extends Activity implements
 			characterSet = null;
 		}
 
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(this);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		playBeep = prefs.getBoolean(PreferencesActivity.KEY_PLAY_BEEP, true);
 		if (playBeep) {
 			// See if sound settings overrides this
@@ -259,8 +250,7 @@ public final class CaptureActivity extends Activity implements
 			}
 		}
 		vibrate = prefs.getBoolean(PreferencesActivity.KEY_VIBRATE, false);
-		copyToClipboard = prefs.getBoolean(
-				PreferencesActivity.KEY_COPY_TO_CLIPBOARD, true);
+		copyToClipboard = prefs.getBoolean(PreferencesActivity.KEY_COPY_TO_CLIPBOARD, true);
 		initBeepSound();
 	}
 
@@ -287,16 +277,14 @@ public final class CaptureActivity extends Activity implements
 				setResult(RESULT_CANCELED);
 				finish();
 				return true;
-			} else if ((source == Source.NONE || source == Source.ZXING_LINK)
-					&& lastResult != null) {
+			} else if ((source == Source.NONE || source == Source.ZXING_LINK) && lastResult != null) {
 				resetStatusView();
 				if (handler != null) {
 					handler.sendEmptyMessage(R.id.restart_preview);
 				}
 				return true;
 			}
-		} else if (keyCode == KeyEvent.KEYCODE_FOCUS
-				|| keyCode == KeyEvent.KEYCODE_CAMERA) {
+		} else if (keyCode == KeyEvent.KEYCODE_FOCUS || keyCode == KeyEvent.KEYCODE_CAMERA) {
 			// Handle these events so they don't launch the Camera app
 			return true;
 		}
@@ -306,16 +294,11 @@ public final class CaptureActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, SHARE_ID, 0, R.string.menu_share).setIcon(
-				android.R.drawable.ic_menu_share);
-		menu.add(0, HISTORY_ID, 0, R.string.menu_history).setIcon(
-				android.R.drawable.ic_menu_recent_history);
-		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings).setIcon(
-				android.R.drawable.ic_menu_preferences);
-		menu.add(0, HELP_ID, 0, R.string.menu_help).setIcon(
-				android.R.drawable.ic_menu_help);
-		menu.add(0, ABOUT_ID, 0, R.string.menu_about).setIcon(
-				android.R.drawable.ic_menu_info_details);
+		menu.add(0, SHARE_ID, 0, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
+		menu.add(0, HISTORY_ID, 0, R.string.menu_history).setIcon(android.R.drawable.ic_menu_recent_history);
+		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, HELP_ID, 0, R.string.menu_help).setIcon(android.R.drawable.ic_menu_help);
+		menu.add(0, ABOUT_ID, 0, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
 		return true;
 	}
 
@@ -359,11 +342,9 @@ public final class CaptureActivity extends Activity implements
 		case ABOUT_ID:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getString(R.string.title_about) + versionName);
-			builder.setMessage(getString(R.string.msg_about) + "\n\n"
-					+ getString(R.string.zxing_url));
+			builder.setMessage(getString(R.string.msg_about) + "\n\n" + getString(R.string.zxing_url));
 			builder.setIcon(R.drawable.launcher_icon);
-			builder.setPositiveButton(R.string.button_open_browser,
-					aboutListener);
+			builder.setPositiveButton(R.string.button_open_browser, aboutListener);
 			builder.setNegativeButton(R.string.button_cancel, null);
 			builder.show();
 			break;
@@ -389,14 +370,12 @@ public final class CaptureActivity extends Activity implements
 		hasSurface = false;
 	}
 
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
 	}
 
 	/**
-	 * A valid barcode has been found, so give an indication of success and show
-	 * the results.
+	 * A valid barcode has been found, so give an indication of success and show the results.
 	 * 
 	 * @param rawResult
 	 *            The contents of the barcode.
@@ -426,16 +405,13 @@ public final class CaptureActivity extends Activity implements
 				}
 				break;
 			case NONE:
-				SharedPreferences prefs = PreferenceManager
-						.getDefaultSharedPreferences(this);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 				if (prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
-					Toast.makeText(this, R.string.msg_bulk_mode_scanned,
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, R.string.msg_bulk_mode_scanned, Toast.LENGTH_SHORT).show();
 					// Wait a moment or else it will scan the same barcode
 					// continuously about 3 times
 					if (handler != null) {
-						handler.sendEmptyMessageDelayed(R.id.restart_preview,
-								BULK_MODE_SCAN_DELAY_MS);
+						handler.sendEmptyMessageDelayed(R.id.restart_preview, BULK_MODE_SCAN_DELAY_MS);
 					}
 					resetStatusView();
 				} else {
@@ -447,8 +423,7 @@ public final class CaptureActivity extends Activity implements
 	}
 
 	/**
-	 * Superimpose a line for 1D or dots for 2D to highlight the key features of
-	 * the barcode.
+	 * Superimpose a line for 1D or dots for 2D to highlight the key features of the barcode.
 	 * 
 	 * @param barcode
 	 *            A bitmap of the captured image.
@@ -463,19 +438,14 @@ public final class CaptureActivity extends Activity implements
 			paint.setColor(getResources().getColor(R.color.result_image_border));
 			paint.setStrokeWidth(3.0f);
 			paint.setStyle(Paint.Style.STROKE);
-			Rect border = new Rect(2, 2, barcode.getWidth() - 2,
-					barcode.getHeight() - 2);
+			Rect border = new Rect(2, 2, barcode.getWidth() - 2, barcode.getHeight() - 2);
 			canvas.drawRect(border, paint);
 
 			paint.setColor(getResources().getColor(R.color.result_points));
 			if (points.length == 2) {
 				paint.setStrokeWidth(4.0f);
 				drawLine(canvas, paint, points[0], points[1]);
-			} else if (points.length == 4
-					&& (rawResult.getBarcodeFormat()
-							.equals(BarcodeFormat.UPC_A))
-					|| (rawResult.getBarcodeFormat()
-							.equals(BarcodeFormat.EAN_13))) {
+			} else if (points.length == 4 && (rawResult.getBarcodeFormat().equals(BarcodeFormat.UPC_A)) || (rawResult.getBarcodeFormat().equals(BarcodeFormat.EAN_13))) {
 				// Hacky special case -- draw two lines, for the barcode and
 				// metadata
 				drawLine(canvas, paint, points[0], points[1]);
@@ -489,8 +459,7 @@ public final class CaptureActivity extends Activity implements
 		}
 	}
 
-	private static void drawLine(Canvas canvas, Paint paint, ResultPoint a,
-			ResultPoint b) {
+	private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b) {
 		canvas.drawLine(a.getX(), a.getY(), b.getX(), b.getY(), paint);
 	}
 
@@ -502,8 +471,7 @@ public final class CaptureActivity extends Activity implements
 
 		ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
 		if (barcode == null) {
-			barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(
-					getResources(), R.drawable.launcher_icon));
+			barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.launcher_icon));
 		} else {
 			barcodeImageView.setImageBitmap(barcode);
 		}
@@ -511,15 +479,12 @@ public final class CaptureActivity extends Activity implements
 		TextView formatTextView = (TextView) findViewById(R.id.format_text_view);
 		formatTextView.setText(rawResult.getBarcodeFormat().toString());
 
-		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(
-				this, rawResult);
+		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
 		TextView typeTextView = (TextView) findViewById(R.id.type_text_view);
 		typeTextView.setText(resultHandler.getType().toString());
 
-		DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-				DateFormat.SHORT);
-		String formattedTime = formatter.format(new Date(rawResult
-				.getTimestamp()));
+		DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+		String formattedTime = formatter.format(new Date(rawResult.getTimestamp()));
 		TextView timeTextView = (TextView) findViewById(R.id.time_text_view);
 		timeTextView.setText(formattedTime);
 
@@ -527,12 +492,10 @@ public final class CaptureActivity extends Activity implements
 		View metaTextViewLabel = findViewById(R.id.meta_text_view_label);
 		metaTextView.setVisibility(View.GONE);
 		metaTextViewLabel.setVisibility(View.GONE);
-		Map<ResultMetadataType, Object> metadata = (Map<ResultMetadataType, Object>) rawResult
-				.getResultMetadata();
+		Map<ResultMetadataType, Object> metadata = (Map<ResultMetadataType, Object>) rawResult.getResultMetadata();
 		if (metadata != null) {
 			StringBuilder metadataText = new StringBuilder(20);
-			for (Map.Entry<ResultMetadataType, Object> entry : metadata
-					.entrySet()) {
+			for (Map.Entry<ResultMetadataType, Object> entry : metadata.entrySet()) {
 				if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
 					metadataText.append(entry.getValue()).append('\n');
 				}
@@ -560,8 +523,7 @@ public final class CaptureActivity extends Activity implements
 			if (x < buttonCount) {
 				button.setVisibility(View.VISIBLE);
 				button.setText(resultHandler.getButtonText(x));
-				button.setOnClickListener(new ResultButtonListener(
-						resultHandler, x));
+				button.setOnClickListener(new ResultButtonListener(resultHandler, x));
 			} else {
 				button.setVisibility(View.GONE);
 			}
@@ -583,8 +545,7 @@ public final class CaptureActivity extends Activity implements
 		// barcode was found (e.g. contact info) rather than the full contents,
 		// which they won't
 		// have time to read.
-		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(
-				this, rawResult);
+		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
 		statusView.setText(getString(resultHandler.getDisplayTitle()));
 
 		if (copyToClipboard) {
@@ -599,8 +560,7 @@ public final class CaptureActivity extends Activity implements
 			Intent intent = new Intent(getIntent().getAction());
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
-			intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult
-					.getBarcodeFormat().toString());
+			intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
 			Message message = Message.obtain(handler, R.id.return_scan_result);
 			message.obj = intent;
 			handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
@@ -608,55 +568,41 @@ public final class CaptureActivity extends Activity implements
 			// Reformulate the URL which triggered us into a query, so that the
 			// request goes to the same
 			// TLD as the scan URL.
-			Message message = Message
-					.obtain(handler, R.id.launch_product_query);
+			Message message = Message.obtain(handler, R.id.launch_product_query);
 			int end = sourceUrl.lastIndexOf("/scan");
-			message.obj = sourceUrl.substring(0, end) + "?q="
-					+ resultHandler.getDisplayContents().toString()
-					+ "&source=zxing";
+			message.obj = sourceUrl.substring(0, end) + "?q=" + resultHandler.getDisplayContents().toString() + "&source=zxing";
 			handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
 		} else if (source == Source.ZXING_LINK) {
 			// Replace each occurrence of RETURN_CODE_PLACEHOLDER in the
 			// returnUrlTemplate
 			// with the scanned code. This allows both queries and REST-style
 			// URLs to work.
-			Message message = Message
-					.obtain(handler, R.id.launch_product_query);
-			message.obj = returnUrlTemplate.replace(RETURN_CODE_PLACEHOLDER,
-					resultHandler.getDisplayContents().toString());
+			Message message = Message.obtain(handler, R.id.launch_product_query);
+			message.obj = returnUrlTemplate.replace(RETURN_CODE_PLACEHOLDER, resultHandler.getDisplayContents().toString());
 			handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
 		}
 	}
 
 	/**
-	 * We want the help screen to be shown automatically the first time a new
-	 * version of the app is run. The easiest way to do this is to check
-	 * android:versionCode from the manifest, and compare it to a value stored
-	 * as a preference.
+	 * We want the help screen to be shown automatically the first time a new version of the app is run. The easiest way to do this is to check android:versionCode from the manifest, and compare it to a value stored as a preference.
 	 */
 	private boolean showHelpOnFirstLaunch() {
 		try {
-			PackageInfo info = getPackageManager().getPackageInfo(PACKAGE_NAME,
-					0);
+			PackageInfo info = getPackageManager().getPackageInfo(PACKAGE_NAME, 0);
 			int currentVersion = info.versionCode;
 			// Since we're paying to talk to the PackageManager anyway, it makes
 			// sense to cache the app
 			// version name here for display in the about box later.
 			this.versionName = info.versionName;
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			int lastVersion = prefs.getInt(
-					PreferencesActivity.KEY_HELP_VERSION_SHOWN, 0);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			int lastVersion = prefs.getInt(PreferencesActivity.KEY_HELP_VERSION_SHOWN, 0);
 			if (currentVersion > lastVersion) {
-				prefs.edit()
-						.putInt(PreferencesActivity.KEY_HELP_VERSION_SHOWN,
-								currentVersion).commit();
+				prefs.edit().putInt(PreferencesActivity.KEY_HELP_VERSION_SHOWN, currentVersion).commit();
 				Intent intent = new Intent(this, HelpActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 				// Show the default page on a clean install, and the what's new
 				// page on an upgrade.
-				String page = (lastVersion == 0) ? HelpActivity.DEFAULT_PAGE
-						: HelpActivity.WHATS_NEW_PAGE;
+				String page = (lastVersion == 0) ? HelpActivity.DEFAULT_PAGE : HelpActivity.WHATS_NEW_PAGE;
 				intent.putExtra(HelpActivity.REQUESTED_PAGE_KEY, page);
 				startActivity(intent);
 				return true;
@@ -668,8 +614,7 @@ public final class CaptureActivity extends Activity implements
 	}
 
 	/**
-	 * Creates the beep MediaPlayer in advance so that the sound can be
-	 * triggered with the least latency possible.
+	 * Creates the beep MediaPlayer in advance so that the sound can be triggered with the least latency possible.
 	 */
 	private void initBeepSound() {
 		if (playBeep && mediaPlayer == null) {
@@ -681,11 +626,9 @@ public final class CaptureActivity extends Activity implements
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setOnCompletionListener(beepListener);
 
-			AssetFileDescriptor file = getResources().openRawResourceFd(
-					R.raw.beep);
+			AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
 			try {
-				mediaPlayer.setDataSource(file.getFileDescriptor(),
-						file.getStartOffset(), file.getLength());
+				mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 				file.close();
 				mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
 				mediaPlayer.prepare();
@@ -720,8 +663,7 @@ public final class CaptureActivity extends Activity implements
 			return;
 		}
 		if (handler == null) {
-			handler = new CaptureActivityHandler(this, decodeFormats,
-					characterSet);
+			handler = new CaptureActivityHandler(this, decodeFormats, characterSet);
 		}
 	}
 

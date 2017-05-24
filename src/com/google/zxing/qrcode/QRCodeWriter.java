@@ -37,34 +37,28 @@ public final class QRCodeWriter implements Writer {
 
 	private static final int QUIET_ZONE_SIZE = 4;
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height) throws WriterException {
 
 		return encode(contents, format, width, height, null);
 	}
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height, Hashtable hints) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, Hashtable hints) throws WriterException {
 
 		if (contents == null || contents.length() == 0) {
 			throw new IllegalArgumentException("Found empty contents");
 		}
 
 		if (format != BarcodeFormat.QR_CODE) {
-			throw new IllegalArgumentException(
-					"Can only encode QR_CODE, but got " + format);
+			throw new IllegalArgumentException("Can only encode QR_CODE, but got " + format);
 		}
 
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException(
-					"Requested dimensions are too small: " + width + 'x'
-							+ height);
+			throw new IllegalArgumentException("Requested dimensions are too small: " + width + 'x' + height);
 		}
 
 		ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.L;
 		if (hints != null) {
-			ErrorCorrectionLevel requestedECLevel = (ErrorCorrectionLevel) hints
-					.get(EncodeHintType.ERROR_CORRECTION);
+			ErrorCorrectionLevel requestedECLevel = (ErrorCorrectionLevel) hints.get(EncodeHintType.ERROR_CORRECTION);
 			if (requestedECLevel != null) {
 				errorCorrectionLevel = requestedECLevel;
 			}

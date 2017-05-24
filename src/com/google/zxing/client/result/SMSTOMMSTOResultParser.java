@@ -20,14 +20,11 @@ import com.google.zxing.Result;
 
 /**
  * <p>
- * Parses an "smsto:" URI result, whose format is not standardized but appears
- * to be like: <code>smsto:number(:body)</code>.
+ * Parses an "smsto:" URI result, whose format is not standardized but appears to be like: <code>smsto:number(:body)</code>.
  * </p>
  * 
  * <p>
- * This actually also parses URIs starting with "smsto:", "mmsto:", "SMSTO:",
- * and "MMSTO:", and treats them all the same way, and effectively converts them
- * to an "sms:" URI for purposes of forwarding to the platform.
+ * This actually also parses URIs starting with "smsto:", "mmsto:", "SMSTO:", and "MMSTO:", and treats them all the same way, and effectively converts them to an "sms:" URI for purposes of forwarding to the platform.
  * </p>
  * 
  * @author Sean Owen
@@ -42,8 +39,7 @@ final class SMSTOMMSTOResultParser extends ResultParser {
 		if (rawText == null) {
 			return null;
 		}
-		if (!(rawText.startsWith("smsto:") || rawText.startsWith("SMSTO:")
-				|| rawText.startsWith("mmsto:") || rawText.startsWith("MMSTO:"))) {
+		if (!(rawText.startsWith("smsto:") || rawText.startsWith("SMSTO:") || rawText.startsWith("mmsto:") || rawText.startsWith("MMSTO:"))) {
 			return null;
 		}
 		// Thanks to dominik.wild for suggesting this enhancement to support

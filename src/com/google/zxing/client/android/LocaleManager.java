@@ -61,8 +61,7 @@ public final class LocaleManager {
 	}
 
 	/**
-	 * @return country-specific TLD suffix appropriate for the current default
-	 *         locale (e.g. "co.uk" for the United Kingdom)
+	 * @return country-specific TLD suffix appropriate for the current default locale (e.g. "co.uk" for the United Kingdom)
 	 */
 	public static String getCountryTLD() {
 		return doGetTLD(GOOGLE_COUNTRY_TLD);

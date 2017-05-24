@@ -28,17 +28,14 @@ import com.google.zxing.common.BitArray;
 final class UPCEANExtensionSupport {
 
 	private static final int[] EXTENSION_START_PATTERN = { 1, 1, 2 };
-	private static final int[] CHECK_DIGIT_ENCODINGS = { 0x18, 0x14, 0x12,
-			0x11, 0x0C, 0x06, 0x03, 0x0A, 0x09, 0x05 };
+	private static final int[] CHECK_DIGIT_ENCODINGS = { 0x18, 0x14, 0x12, 0x11, 0x0C, 0x06, 0x03, 0x0A, 0x09, 0x05 };
 
 	private final int[] decodeMiddleCounters = new int[4];
 	private final StringBuffer decodeRowStringBuffer = new StringBuffer();
 
-	Result decodeRow(int rowNumber, BitArray row, int rowOffset)
-			throws NotFoundException {
+	Result decodeRow(int rowNumber, BitArray row, int rowOffset) throws NotFoundException {
 
-		int[] extensionStartRange = UPCEANReader.findGuardPattern(row,
-				rowOffset, false, EXTENSION_START_PATTERN);
+		int[] extensionStartRange = UPCEANReader.findGuardPattern(row, rowOffset, false, EXTENSION_START_PATTERN);
 
 		StringBuffer result = decodeRowStringBuffer;
 		result.setLength(0);
@@ -47,23 +44,14 @@ final class UPCEANExtensionSupport {
 		String resultString = result.toString();
 		Hashtable extensionData = parseExtensionString(resultString);
 
-		Result extensionResult = new Result(
-				resultString,
-				null,
-				new ResultPoint[] {
-						new ResultPoint(
-								(extensionStartRange[0] + extensionStartRange[1]) / 2.0f,
-								(float) rowNumber),
-						new ResultPoint((float) end, (float) rowNumber), },
-				BarcodeFormat.UPC_EAN_EXTENSION);
+		Result extensionResult = new Result(resultString, null, new ResultPoint[] { new ResultPoint((extensionStartRange[0] + extensionStartRange[1]) / 2.0f, (float) rowNumber), new ResultPoint((float) end, (float) rowNumber), }, BarcodeFormat.UPC_EAN_EXTENSION);
 		if (extensionData != null) {
 			extensionResult.putAllMetadata(extensionData);
 		}
 		return extensionResult;
 	}
 
-	int decodeMiddle(BitArray row, int[] startRange, StringBuffer resultString)
-			throws NotFoundException {
+	int decodeMiddle(BitArray row, int[] startRange, StringBuffer resultString) throws NotFoundException {
 		int[] counters = decodeMiddleCounters;
 		counters[0] = 0;
 		counters[1] = 0;
@@ -75,8 +63,7 @@ final class UPCEANExtensionSupport {
 		int lgPatternFound = 0;
 
 		for (int x = 0; x < 5 && rowOffset < end; x++) {
-			int bestMatch = UPCEANReader.decodeDigit(row, counters, rowOffset,
-					UPCEANReader.L_AND_G_PATTERNS);
+			int bestMatch = UPCEANReader.decodeDigit(row, counters, rowOffset, UPCEANReader.L_AND_G_PATTERNS);
 			resultString.append((char) ('0' + bestMatch % 10));
 			for (int i = 0; i < counters.length; i++) {
 				rowOffset += counters[i];
@@ -121,8 +108,7 @@ final class UPCEANExtensionSupport {
 		return sum % 10;
 	}
 
-	private static int determineCheckDigit(int lgPatternFound)
-			throws NotFoundException {
+	private static int determineCheckDigit(int lgPatternFound) throws NotFoundException {
 		for (int d = 0; d < 10; d++) {
 			if (lgPatternFound == CHECK_DIGIT_ENCODINGS[d]) {
 				return d;
@@ -134,9 +120,7 @@ final class UPCEANExtensionSupport {
 	/**
 	 * @param raw
 	 *            raw content of extension
-	 * @return formatted interpretation of raw content as a {@link Hashtable}
-	 *         mapping one {@link ResultMetadataType} to appropriate value, or
-	 *         <code>null</code> if not known
+	 * @return formatted interpretation of raw content as a {@link Hashtable} mapping one {@link ResultMetadataType} to appropriate value, or <code>null</code> if not known
 	 */
 	private static Hashtable parseExtensionString(String raw) {
 		ResultMetadataType type;

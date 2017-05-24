@@ -29,9 +29,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * A reader that can read all available UPC/EAN formats. If a caller wants to
- * try to read all such formats, it is most efficient to use this implementation
- * rather than invoke individual readers.
+ * A reader that can read all available UPC/EAN formats. If a caller wants to try to read all such formats, it is most efficient to use this implementation rather than invoke individual readers.
  * </p>
  * 
  * @author Sean Owen
@@ -41,8 +39,7 @@ public final class MultiFormatUPCEANReader extends OneDReader {
 	private final Vector readers;
 
 	public MultiFormatUPCEANReader(Hashtable hints) {
-		Vector possibleFormats = hints == null ? null : (Vector) hints
-				.get(DecodeHintType.POSSIBLE_FORMATS);
+		Vector possibleFormats = hints == null ? null : (Vector) hints.get(DecodeHintType.POSSIBLE_FORMATS);
 		readers = new Vector();
 		if (possibleFormats != null) {
 			if (possibleFormats.contains(BarcodeFormat.EAN_13)) {
@@ -65,8 +62,7 @@ public final class MultiFormatUPCEANReader extends OneDReader {
 		}
 	}
 
-	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
-			throws NotFoundException {
+	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints) throws NotFoundException {
 		// Compute this location once and reuse it on multiple implementations
 		int[] startGuardPattern = UPCEANReader.findStartGuardPattern(row);
 		int size = readers.size();
@@ -74,8 +70,7 @@ public final class MultiFormatUPCEANReader extends OneDReader {
 			UPCEANReader reader = (UPCEANReader) readers.elementAt(i);
 			Result result;
 			try {
-				result = reader.decodeRow(rowNumber, row, startGuardPattern,
-						hints);
+				result = reader.decodeRow(rowNumber, row, startGuardPattern, hints);
 			} catch (ReaderException re) {
 				continue;
 			}
@@ -98,16 +93,12 @@ public final class MultiFormatUPCEANReader extends OneDReader {
 			// result if appropriate.
 			//
 			// But, don't return UPC-A if UPC-A was not a requested format!
-			boolean ean13MayBeUPCA = BarcodeFormat.EAN_13.equals(result
-					.getBarcodeFormat()) && result.getText().charAt(0) == '0';
-			Vector possibleFormats = hints == null ? null : (Vector) hints
-					.get(DecodeHintType.POSSIBLE_FORMATS);
-			boolean canReturnUPCA = possibleFormats == null
-					|| possibleFormats.contains(BarcodeFormat.UPC_A);
+			boolean ean13MayBeUPCA = BarcodeFormat.EAN_13.equals(result.getBarcodeFormat()) && result.getText().charAt(0) == '0';
+			Vector possibleFormats = hints == null ? null : (Vector) hints.get(DecodeHintType.POSSIBLE_FORMATS);
+			boolean canReturnUPCA = possibleFormats == null || possibleFormats.contains(BarcodeFormat.UPC_A);
 
 			if (ean13MayBeUPCA && canReturnUPCA) {
-				return new Result(result.getText().substring(1), null,
-						result.getResultPoints(), BarcodeFormat.UPC_A);
+				return new Result(result.getText().substring(1), null, result.getResultPoints(), BarcodeFormat.UPC_A);
 			}
 			return result;
 		}

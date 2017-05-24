@@ -28,27 +28,20 @@ import java.util.Vector;
 
 /**
  * <p>
- * Attempts to locate multiple barcodes in an image by repeatedly decoding
- * portion of the image. After one barcode is found, the areas left, above,
- * right and below the barcode's {@link com.google.zxing.ResultPoint}s are
- * scanned, recursively.
+ * Attempts to locate multiple barcodes in an image by repeatedly decoding portion of the image. After one barcode is found, the areas left, above, right and below the barcode's {@link com.google.zxing.ResultPoint}s are scanned, recursively.
  * </p>
  * 
  * <p>
- * A caller may want to also employ {@link ByQuadrantReader} when attempting to
- * find multiple 2D barcodes, like QR Codes, in an image, where the presence of
- * multiple barcodes might prevent detecting any one of them.
+ * A caller may want to also employ {@link ByQuadrantReader} when attempting to find multiple 2D barcodes, like QR Codes, in an image, where the presence of multiple barcodes might prevent detecting any one of them.
  * </p>
  * 
  * <p>
- * That is, instead of passing a {@link Reader} a caller might pass
- * <code>new ByQuadrantReader(reader)</code>.
+ * That is, instead of passing a {@link Reader} a caller might pass <code>new ByQuadrantReader(reader)</code>.
  * </p>
  * 
  * @author Sean Owen
  */
-public final class GenericMultipleBarcodeReader implements
-		MultipleBarcodeReader {
+public final class GenericMultipleBarcodeReader implements MultipleBarcodeReader {
 
 	private static final int MIN_DIMENSION_TO_RECUR = 100;
 
@@ -62,8 +55,7 @@ public final class GenericMultipleBarcodeReader implements
 		return decodeMultiple(image, null);
 	}
 
-	public Result[] decodeMultiple(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException {
+	public Result[] decodeMultiple(BinaryBitmap image, Hashtable hints) throws NotFoundException {
 		Vector results = new Vector();
 		doDecodeMultiple(image, hints, results, 0, 0);
 		if (results.isEmpty()) {
@@ -77,8 +69,7 @@ public final class GenericMultipleBarcodeReader implements
 		return resultArray;
 	}
 
-	private void doDecodeMultiple(BinaryBitmap image, Hashtable hints,
-			Vector results, int xOffset, int yOffset) {
+	private void doDecodeMultiple(BinaryBitmap image, Hashtable hints, Vector results, int xOffset, int yOffset) {
 		Result result;
 		try {
 			result = delegate.decode(image, hints);
@@ -127,39 +118,30 @@ public final class GenericMultipleBarcodeReader implements
 
 		// Decode left of barcode
 		if (minX > MIN_DIMENSION_TO_RECUR) {
-			doDecodeMultiple(image.crop(0, 0, (int) minX, height), hints,
-					results, xOffset, yOffset);
+			doDecodeMultiple(image.crop(0, 0, (int) minX, height), hints, results, xOffset, yOffset);
 		}
 		// Decode above barcode
 		if (minY > MIN_DIMENSION_TO_RECUR) {
-			doDecodeMultiple(image.crop(0, 0, width, (int) minY), hints,
-					results, xOffset, yOffset);
+			doDecodeMultiple(image.crop(0, 0, width, (int) minY), hints, results, xOffset, yOffset);
 		}
 		// Decode right of barcode
 		if (maxX < width - MIN_DIMENSION_TO_RECUR) {
-			doDecodeMultiple(
-					image.crop((int) maxX, 0, width - (int) maxX, height),
-					hints, results, xOffset + (int) maxX, yOffset);
+			doDecodeMultiple(image.crop((int) maxX, 0, width - (int) maxX, height), hints, results, xOffset + (int) maxX, yOffset);
 		}
 		// Decode below barcode
 		if (maxY < height - MIN_DIMENSION_TO_RECUR) {
-			doDecodeMultiple(
-					image.crop(0, (int) maxY, width, height - (int) maxY),
-					hints, results, xOffset, yOffset + (int) maxY);
+			doDecodeMultiple(image.crop(0, (int) maxY, width, height - (int) maxY), hints, results, xOffset, yOffset + (int) maxY);
 		}
 	}
 
-	private static Result translateResultPoints(Result result, int xOffset,
-			int yOffset) {
+	private static Result translateResultPoints(Result result, int xOffset, int yOffset) {
 		ResultPoint[] oldResultPoints = result.getResultPoints();
 		ResultPoint[] newResultPoints = new ResultPoint[oldResultPoints.length];
 		for (int i = 0; i < oldResultPoints.length; i++) {
 			ResultPoint oldPoint = oldResultPoints[i];
-			newResultPoints[i] = new ResultPoint(oldPoint.getX() + xOffset,
-					oldPoint.getY() + yOffset);
+			newResultPoints[i] = new ResultPoint(oldPoint.getX() + xOffset, oldPoint.getY() + yOffset);
 		}
-		return new Result(result.getText(), result.getRawBytes(),
-				newResultPoints, result.getBarcodeFormat());
+		return new Result(result.getText(), result.getRawBytes(), newResultPoints, result.getBarcodeFormat());
 	}
 
 }

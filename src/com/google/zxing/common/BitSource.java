@@ -18,13 +18,11 @@ package com.google.zxing.common;
 
 /**
  * <p>
- * This provides an easy abstraction to read bits at a time from a sequence of
- * bytes, where the number of bits read is not often a multiple of 8.
+ * This provides an easy abstraction to read bits at a time from a sequence of bytes, where the number of bits read is not often a multiple of 8.
  * </p>
  * 
  * <p>
- * This class is thread-safe but not reentrant. Unless the caller modifies the
- * bytes array it passed in, in which case all bets are off.
+ * This class is thread-safe but not reentrant. Unless the caller modifies the bytes array it passed in, in which case all bets are off.
  * </p>
  * 
  * @author Sean Owen
@@ -37,9 +35,7 @@ public final class BitSource {
 
 	/**
 	 * @param bytes
-	 *            bytes from which this will read bits. Bits will be read from
-	 *            the first byte first. Bits are read within a byte from
-	 *            most-significant to least-significant bit.
+	 *            bytes from which this will read bits. Bits will be read from the first byte first. Bits are read within a byte from most-significant to least-significant bit.
 	 */
 	public BitSource(byte[] bytes) {
 		this.bytes = bytes;
@@ -48,8 +44,7 @@ public final class BitSource {
 	/**
 	 * @param numBits
 	 *            number of bits to read
-	 * @return int representing the bits read. The bits will appear as the
-	 *         least-significant bits of the int
+	 * @return int representing the bits read. The bits will appear as the least-significant bits of the int
 	 * @throws IllegalArgumentException
 	 *             if numBits isn't in [1,32]
 	 */
@@ -87,8 +82,7 @@ public final class BitSource {
 			if (numBits > 0) {
 				int bitsToNotRead = 8 - numBits;
 				int mask = (0xFF >> bitsToNotRead) << bitsToNotRead;
-				result = (result << numBits)
-						| ((bytes[byteOffset] & mask) >> bitsToNotRead);
+				result = (result << numBits) | ((bytes[byteOffset] & mask) >> bitsToNotRead);
 				bitOffset += numBits;
 			}
 		}

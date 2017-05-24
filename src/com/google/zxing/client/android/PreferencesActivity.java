@@ -31,8 +31,7 @@ import java.util.Collection;
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class PreferencesActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
+public final class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
 	public static final String KEY_DECODE_1D = "preferences_decode_1D";
 	public static final String KEY_DECODE_QR = "preferences_decode_QR";
@@ -58,25 +57,19 @@ public final class PreferencesActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.preferences);
 
 		PreferenceScreen preferences = getPreferenceScreen();
-		preferences.getSharedPreferences()
-				.registerOnSharedPreferenceChangeListener(this);
-		decode1D = (CheckBoxPreference) preferences
-				.findPreference(KEY_DECODE_1D);
-		decodeQR = (CheckBoxPreference) preferences
-				.findPreference(KEY_DECODE_QR);
-		decodeDataMatrix = (CheckBoxPreference) preferences
-				.findPreference(KEY_DECODE_DATA_MATRIX);
+		preferences.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+		decode1D = (CheckBoxPreference) preferences.findPreference(KEY_DECODE_1D);
+		decodeQR = (CheckBoxPreference) preferences.findPreference(KEY_DECODE_QR);
+		decodeDataMatrix = (CheckBoxPreference) preferences.findPreference(KEY_DECODE_DATA_MATRIX);
 		disableLastCheckedPref();
 	}
 
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		disableLastCheckedPref();
 	}
 
 	private void disableLastCheckedPref() {
-		Collection<CheckBoxPreference> checked = new ArrayList<CheckBoxPreference>(
-				3);
+		Collection<CheckBoxPreference> checked = new ArrayList<CheckBoxPreference>(3);
 		if (decode1D.isChecked()) {
 			checked.add(decode1D);
 		}
@@ -87,8 +80,7 @@ public final class PreferencesActivity extends PreferenceActivity implements
 			checked.add(decodeDataMatrix);
 		}
 		boolean disable = checked.size() < 2;
-		for (CheckBoxPreference pref : new CheckBoxPreference[] { decode1D,
-				decodeQR, decodeDataMatrix }) {
+		for (CheckBoxPreference pref : new CheckBoxPreference[] { decode1D, decodeQR, decodeDataMatrix }) {
 			pref.setEnabled(!(disable && checked.contains(pref)));
 		}
 	}

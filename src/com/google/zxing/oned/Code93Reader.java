@@ -41,27 +41,18 @@ public final class Code93Reader extends OneDReader {
 	private static final char[] ALPHABET = ALPHABET_STRING.toCharArray();
 
 	/**
-	 * These represent the encodings of characters, as patterns of wide and
-	 * narrow bars. The 9 least-significant bits of each int correspond to the
-	 * pattern of wide and narrow.
+	 * These represent the encodings of characters, as patterns of wide and narrow bars. The 9 least-significant bits of each int correspond to the pattern of wide and narrow.
 	 */
-	private static final int[] CHARACTER_ENCODINGS = { 0x114, 0x148, 0x144,
-			0x142, 0x128, 0x124, 0x122, 0x150,
-			0x112,
-			0x10A, // 0-9
-			0x1A8, 0x1A4, 0x1A2, 0x194, 0x192, 0x18A, 0x168, 0x164,
-			0x162,
-			0x134, // A-J
-			0x11A, 0x158, 0x14C, 0x146, 0x12C, 0x116, 0x1B4, 0x1B2, 0x1AC,
-			0x1A6, // K-T
-			0x196, 0x19A, 0x16C, 0x166, 0x136, 0x13A, // U-Z
-			0x12E, 0x1D4, 0x1D2, 0x1CA, 0x16E, 0x176, 0x1AE, // - - %
-			0x126, 0x1DA, 0x1D6, 0x132, 0x15E, // Control chars? $-*
+	private static final int[] CHARACTER_ENCODINGS = { 0x114, 0x148, 0x144, 0x142, 0x128, 0x124, 0x122, 0x150, 0x112, 0x10A, // 0-9
+		0x1A8, 0x1A4, 0x1A2, 0x194, 0x192, 0x18A, 0x168, 0x164, 0x162, 0x134, // A-J
+		0x11A, 0x158, 0x14C, 0x146, 0x12C, 0x116, 0x1B4, 0x1B2, 0x1AC, 0x1A6, // K-T
+		0x196, 0x19A, 0x16C, 0x166, 0x136, 0x13A, // U-Z
+		0x12E, 0x1D4, 0x1D2, 0x1CA, 0x16E, 0x176, 0x1AE, // - - %
+		0x126, 0x1DA, 0x1D6, 0x132, 0x15E, // Control chars? $-*
 	};
 	private static final int ASTERISK_ENCODING = CHARACTER_ENCODINGS[47];
 
-	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
-			throws NotFoundException, ChecksumException, FormatException {
+	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints) throws NotFoundException, ChecksumException, FormatException {
 
 		int[] start = findAsteriskPattern(row);
 		int nextStart = start[1];
@@ -113,15 +104,11 @@ public final class Code93Reader extends OneDReader {
 
 		float left = (float) (start[1] + start[0]) / 2.0f;
 		float right = (float) (nextStart + lastStart) / 2.0f;
-		return new Result(resultString, null, new ResultPoint[] {
-				new ResultPoint(left, (float) rowNumber),
-				new ResultPoint(right, (float) rowNumber) },
-				BarcodeFormat.CODE_93);
+		return new Result(resultString, null, new ResultPoint[] { new ResultPoint(left, (float) rowNumber), new ResultPoint(right, (float) rowNumber) }, BarcodeFormat.CODE_93);
 
 	}
 
-	private static int[] findAsteriskPattern(BitArray row)
-			throws NotFoundException {
+	private static int[] findAsteriskPattern(BitArray row) throws NotFoundException {
 		int width = row.getSize();
 		int rowOffset = 0;
 		while (rowOffset < width) {
@@ -199,8 +186,7 @@ public final class Code93Reader extends OneDReader {
 		throw NotFoundException.getNotFoundInstance();
 	}
 
-	private static String decodeExtended(StringBuffer encoded)
-			throws FormatException {
+	private static String decodeExtended(StringBuffer encoded) throws FormatException {
 		int length = encoded.length();
 		StringBuffer decoded = new StringBuffer(length);
 		for (int i = 0; i < length; i++) {
@@ -256,15 +242,13 @@ public final class Code93Reader extends OneDReader {
 		return decoded.toString();
 	}
 
-	private static void checkChecksums(StringBuffer result)
-			throws ChecksumException {
+	private static void checkChecksums(StringBuffer result) throws ChecksumException {
 		int length = result.length();
 		checkOneChecksum(result, length - 2, 20);
 		checkOneChecksum(result, length - 1, 15);
 	}
 
-	private static void checkOneChecksum(StringBuffer result,
-			int checkPosition, int weightMax) throws ChecksumException {
+	private static void checkOneChecksum(StringBuffer result, int checkPosition, int weightMax) throws ChecksumException {
 		int weight = 1;
 		int total = 0;
 		for (int i = checkPosition - 1; i >= 0; i--) {

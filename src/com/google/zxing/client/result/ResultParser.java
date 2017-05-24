@@ -23,16 +23,11 @@ import java.util.Vector;
 
 /**
  * <p>
- * Abstract class representing the result of decoding a barcode, as more than a
- * String -- as some type of structured data. This might be a subclass which
- * represents a URL, or an e-mail address.
- * {@link #parseResult(com.google.zxing.Result)} will turn a raw decoded string
- * into the most appropriate type of structured representation.
+ * Abstract class representing the result of decoding a barcode, as more than a String -- as some type of structured data. This might be a subclass which represents a URL, or an e-mail address. {@link #parseResult(com.google.zxing.Result)} will turn a raw decoded string into the most appropriate type of structured representation.
  * </p>
  * 
  * <p>
- * Thanks to Jeff Griffin for proposing rewrite of these classes that relies
- * less on exception-based mechanisms during parsing.
+ * Thanks to Jeff Griffin for proposing rewrite of these classes that relies less on exception-based mechanisms during parsing.
  * </p>
  * 
  * @author Sean Owen
@@ -169,8 +164,7 @@ public abstract class ResultParser {
 						unescaped.append(escapedArray[i - 1]);
 						unescaped.append(escapedArray[i]);
 					}
-					unescaped
-							.append((char) ((firstDigitValue << 4) + secondDigitValue));
+					unescaped.append((char) ((firstDigitValue << 4) + secondDigitValue));
 				}
 			} else {
 				unescaped.append(c);
@@ -224,8 +218,7 @@ public abstract class ResultParser {
 		return true;
 	}
 
-	protected static boolean isSubstringOfDigits(String value, int offset,
-			int length) {
+	protected static boolean isSubstringOfDigits(String value, int offset, int length) {
 		if (value == null) {
 			return false;
 		}
@@ -259,8 +252,7 @@ public abstract class ResultParser {
 		return result;
 	}
 
-	private static void appendKeyValue(String uri, int paramStart,
-			int paramEnd, Hashtable result) {
+	private static void appendKeyValue(String uri, int paramStart, int paramEnd, Hashtable result) {
 		int separator = uri.indexOf('=', paramStart);
 		if (separator >= 0) {
 			// key = value
@@ -272,8 +264,7 @@ public abstract class ResultParser {
 		// Can't put key, null into a hashtable
 	}
 
-	static String[] matchPrefixedField(String prefix, String rawText,
-			char endChar, boolean trim) {
+	static String[] matchPrefixedField(String prefix, String rawText, char endChar, boolean trim) {
 		Vector matches = null;
 		int i = 0;
 		int max = rawText.length();
@@ -300,8 +291,7 @@ public abstract class ResultParser {
 					if (matches == null) {
 						matches = new Vector(3); // lazy init
 					}
-					String element = unescapeBackslash(rawText.substring(start,
-							i));
+					String element = unescapeBackslash(rawText.substring(start, i));
 					if (trim) {
 						element = element.trim();
 					}
@@ -317,8 +307,7 @@ public abstract class ResultParser {
 		return toStringArray(matches);
 	}
 
-	static String matchSinglePrefixedField(String prefix, String rawText,
-			char endChar, boolean trim) {
+	static String matchSinglePrefixedField(String prefix, String rawText, char endChar, boolean trim) {
 		String[] matches = matchPrefixedField(prefix, rawText, endChar, trim);
 		return matches == null ? null : matches[0];
 	}

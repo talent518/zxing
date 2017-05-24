@@ -26,8 +26,7 @@ import com.google.zxing.common.DecoderResult;
 
 /**
  * <p>
- * The main class which implements PDF417 Code decoding -- as opposed to
- * locating and extracting the PDF417 Code from an image.
+ * The main class which implements PDF417 Code decoding -- as opposed to locating and extracting the PDF417 Code from an image.
  * </p>
  * 
  * @author SITA Lab (kevin.osullivan@sita.aero)
@@ -46,8 +45,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Convenience method that can decode a PDF417 Code represented as a 2D
-	 * array of booleans. "true" is taken to mean a black module.
+	 * Convenience method that can decode a PDF417 Code represented as a 2D array of booleans. "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param image
@@ -71,8 +69,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Decodes a PDF417 Code represented as a {@link BitMatrix}. A 1 or "true"
-	 * is taken to mean a black module.
+	 * Decodes a PDF417 Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param bits
@@ -108,8 +105,7 @@ public final class Decoder {
 	 * @return an index to the first data codeword.
 	 * @throws FormatException
 	 */
-	private static void verifyCodewordCount(int[] codewords, int numECCodewords)
-			throws FormatException {
+	private static void verifyCodewordCount(int[] codewords, int numECCodewords) throws FormatException {
 		if (codewords.length < 4) {
 			// Codeword array size should be at least 4 allowing for
 			// Count CW, At least one Data CW, Error Correction CW, Error
@@ -138,9 +134,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Given data and error-correction codewords received, possibly corrupted by
-	 * errors, attempts to correct the errors in-place using Reed-Solomon error
-	 * correction.
+	 * Given data and error-correction codewords received, possibly corrupted by errors, attempts to correct the errors in-place using Reed-Solomon error correction.
 	 * </p>
 	 * 
 	 * @param codewords
@@ -148,11 +142,8 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	private static int correctErrors(int[] codewords, int[] erasures,
-			int numECCodewords) throws FormatException {
-		if ((erasures != null && erasures.length > numECCodewords / 2
-				+ MAX_ERRORS)
-				|| (numECCodewords < 0 || numECCodewords > MAX_EC_CODEWORDS)) {
+	private static int correctErrors(int[] codewords, int[] erasures, int numECCodewords) throws FormatException {
+		if ((erasures != null && erasures.length > numECCodewords / 2 + MAX_ERRORS) || (numECCodewords < 0 || numECCodewords > MAX_EC_CODEWORDS)) {
 			// Too many errors or EC Codewords is corrupted
 			throw FormatException.getFormatInstance();
 		}

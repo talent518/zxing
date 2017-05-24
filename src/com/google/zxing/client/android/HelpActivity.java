@@ -44,11 +44,10 @@ public final class HelpActivity extends Activity {
 																				// doesn't
 																				// come
 																				// on
-			"Geeksphone", // Doesn't support YUV?
-			"supersonic", // aka Evo
+		"Geeksphone", // Doesn't support YUV?
+		"supersonic", // aka Evo
 	};
-	private static final Uri BUGGY_URI = Uri
-			.parse("http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions");
+	private static final Uri BUGGY_URI = Uri.parse("http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions");
 
 	// Use this key and one of the values below when launching this activity via
 	// intent. If not
@@ -131,8 +130,7 @@ public final class HelpActivity extends Activity {
 				if (model.contains(buggyModelSubstring)) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
 					builder.setMessage(R.string.msg_buggy);
-					builder.setPositiveButton(R.string.button_ok,
-							groupsListener);
+					builder.setPositiveButton(R.string.button_ok, groupsListener);
 					builder.setNegativeButton(R.string.button_cancel, null);
 					builder.show();
 					break;

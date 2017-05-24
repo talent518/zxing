@@ -26,8 +26,7 @@ import com.google.zxing.common.reedsolomon.ReedSolomonException;
 
 /**
  * <p>
- * The main class which implements Data Matrix Code decoding -- as opposed to
- * locating and extracting the Data Matrix Code from an image.
+ * The main class which implements Data Matrix Code decoding -- as opposed to locating and extracting the Data Matrix Code from an image.
  * </p>
  * 
  * @author bbrown@google.com (Brian Brown)
@@ -42,8 +41,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Convenience method that can decode a Data Matrix Code represented as a 2D
-	 * array of booleans. "true" is taken to mean a black module.
+	 * Convenience method that can decode a Data Matrix Code represented as a 2D array of booleans. "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param image
@@ -54,8 +52,7 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public DecoderResult decode(boolean[][] image) throws FormatException,
-			ChecksumException {
+	public DecoderResult decode(boolean[][] image) throws FormatException, ChecksumException {
 		int dimension = image.length;
 		BitMatrix bits = new BitMatrix(dimension);
 		for (int i = 0; i < dimension; i++) {
@@ -70,8 +67,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Decodes a Data Matrix Code represented as a {@link BitMatrix}. A 1 or
-	 * "true" is taken to mean a black module.
+	 * Decodes a Data Matrix Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param bits
@@ -82,8 +78,7 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public DecoderResult decode(BitMatrix bits) throws FormatException,
-			ChecksumException {
+	public DecoderResult decode(BitMatrix bits) throws FormatException, ChecksumException {
 
 		// Construct a parser and read version, error-correction level
 		BitMatrixParser parser = new BitMatrixParser(bits);
@@ -119,9 +114,7 @@ public final class Decoder {
 
 	/**
 	 * <p>
-	 * Given data and error-correction codewords received, possibly corrupted by
-	 * errors, attempts to correct the errors in-place using Reed-Solomon error
-	 * correction.
+	 * Given data and error-correction codewords received, possibly corrupted by errors, attempts to correct the errors in-place using Reed-Solomon error correction.
 	 * </p>
 	 * 
 	 * @param codewordBytes
@@ -131,8 +124,7 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	private void correctErrors(byte[] codewordBytes, int numDataCodewords)
-			throws ChecksumException {
+	private void correctErrors(byte[] codewordBytes, int numDataCodewords) throws ChecksumException {
 		int numCodewords = codewordBytes.length;
 		// First read into an array of ints
 		int[] codewordsInts = new int[numCodewords];

@@ -39,8 +39,7 @@ final class WifiReceiver extends BroadcastReceiver {
 	private final WifiActivity parent;
 	private final TextView statusView;
 
-	WifiReceiver(WifiManager wifiManager, WifiActivity wifiActivity,
-			TextView statusView, String ssid) {
+	WifiReceiver(WifiManager wifiManager, WifiActivity wifiActivity, TextView statusView, String ssid) {
 		this.parent = wifiActivity;
 		this.statusView = statusView;
 		this.mWifiManager = wifiManager;
@@ -48,20 +47,12 @@ final class WifiReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals(
-				WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)) {
-			handleChange(
-					(SupplicantState) intent
-							.getParcelableExtra(WifiManager.EXTRA_NEW_STATE),
-					intent.hasExtra(WifiManager.EXTRA_SUPPLICANT_ERROR));
-		} else if (intent.getAction().equals(
-				WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
-			handleNetworkStateChanged((NetworkInfo) intent
-					.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO));
-		} else if (intent.getAction().equals(
-				ConnectivityManager.CONNECTIVITY_ACTION)) {
-			ConnectivityManager con = (ConnectivityManager) parent
-					.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)) {
+			handleChange((SupplicantState) intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE), intent.hasExtra(WifiManager.EXTRA_SUPPLICANT_ERROR));
+		} else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+			handleNetworkStateChanged((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO));
+		} else if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+			ConnectivityManager con = (ConnectivityManager) parent.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo[] s = con.getAllNetworkInfo();
 			for (NetworkInfo i : s) {
 				if (i.getTypeName().contentEquals("WIFI")) {
@@ -70,8 +61,7 @@ final class WifiReceiver extends BroadcastReceiver {
 
 					if (state == NetworkInfo.State.CONNECTED && ssid != null) {
 						mWifiManager.saveConfiguration();
-						String label = parent
-								.getString(R.string.wifi_connected);
+						String label = parent.getString(R.string.wifi_connected);
 						statusView.setText(label + '\n' + ssid);
 						Runnable delayKill = new Killer(parent);
 						delayKill.run();

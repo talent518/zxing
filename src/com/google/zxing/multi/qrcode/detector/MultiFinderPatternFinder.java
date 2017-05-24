@@ -32,17 +32,14 @@ import java.util.Vector;
 
 /**
  * <p>
- * This class attempts to find finder patterns in a QR Code. Finder patterns are
- * the square markers at three corners of a QR Code.
+ * This class attempts to find finder patterns in a QR Code. Finder patterns are the square markers at three corners of a QR Code.
  * </p>
  * 
  * <p>
- * This class is thread-safe but not reentrant. Each thread must allocate its
- * own object.
+ * This class is thread-safe but not reentrant. Each thread must allocate its own object.
  * 
  * <p>
- * In contrast to {@link FinderPatternFinder}, this class will return an array
- * of all possible QR code locations in the image.
+ * In contrast to {@link FinderPatternFinder}, this class will return an array of all possible QR code locations in the image.
  * </p>
  * 
  * <p>
@@ -66,16 +63,12 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 	private static final float MIN_MODULE_COUNT_PER_EDGE = 9;
 
 	/**
-	 * More or less arbitrary cutoff point for determining if two finder
-	 * patterns might belong to the same code if they differ less than
-	 * DIFF_MODSIZE_CUTOFF_PERCENT percent in their estimated modules sizes.
+	 * More or less arbitrary cutoff point for determining if two finder patterns might belong to the same code if they differ less than DIFF_MODSIZE_CUTOFF_PERCENT percent in their estimated modules sizes.
 	 */
 	private static final float DIFF_MODSIZE_CUTOFF_PERCENT = 0.05f;
 
 	/**
-	 * More or less arbitrary cutoff point for determining if two finder
-	 * patterns might belong to the same code if they differ less than
-	 * DIFF_MODSIZE_CUTOFF pixels/module in their estimated modules sizes.
+	 * More or less arbitrary cutoff point for determining if two finder patterns might belong to the same code if they differ less than DIFF_MODSIZE_CUTOFF pixels/module in their estimated modules sizes.
 	 */
 	private static final float DIFF_MODSIZE_CUTOFF = 0.5f;
 
@@ -84,8 +77,7 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 	 */
 	private static class ModuleSizeComparator implements Comparator {
 		public int compare(Object center1, Object center2) {
-			float value = ((FinderPattern) center2).getEstimatedModuleSize()
-					- ((FinderPattern) center1).getEstimatedModuleSize();
+			float value = ((FinderPattern) center2).getEstimatedModuleSize() - ((FinderPattern) center1).getEstimatedModuleSize();
 			return value < 0.0 ? -1 : value > 0.0 ? 1 : 0;
 		}
 	}
@@ -102,16 +94,12 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 		super(image);
 	}
 
-	MultiFinderPatternFinder(BitMatrix image,
-			ResultPointCallback resultPointCallback) {
+	MultiFinderPatternFinder(BitMatrix image, ResultPointCallback resultPointCallback) {
 		super(image, resultPointCallback);
 	}
 
 	/**
-	 * @return the 3 best {@link FinderPattern}s from our list of candidates.
-	 *         The "best" are those that have been detected at least
-	 *         {@link #CENTER_QUORUM} times, and whose module size differs from
-	 *         the average among those patterns the least
+	 * @return the 3 best {@link FinderPattern}s from our list of candidates. The "best" are those that have been detected at least {@link #CENTER_QUORUM} times, and whose module size differs from the average among those patterns the least
 	 * @throws NotFoundException
 	 *             if 3 such finder patterns do not exist
 	 */
@@ -128,30 +116,16 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 		 * Begin HE modifications to safely detect multiple codes of equal size
 		 */
 		if (size == 3) {
-			return new FinderPattern[][] { new FinderPattern[] {
-					(FinderPattern) possibleCenters.elementAt(0),
-					(FinderPattern) possibleCenters.elementAt(1),
-					(FinderPattern) possibleCenters.elementAt(2) } };
+			return new FinderPattern[][] { new FinderPattern[] { (FinderPattern) possibleCenters.elementAt(0), (FinderPattern) possibleCenters.elementAt(1), (FinderPattern) possibleCenters.elementAt(2) } };
 		}
 
 		// Sort by estimated module size to speed up the upcoming checks
 		Collections.insertionSort(possibleCenters, new ModuleSizeComparator());
 
 		/*
-		 * Now lets start: build a list of tuples of three finder locations that
-		 * - feature similar module sizes - are placed in a distance so the
-		 * estimated module count is within the QR specification - have similar
-		 * distance between upper left/right and left top/bottom finder patterns
-		 * - form a triangle with 90° angle (checked by comparing top
-		 * right/bottom left distance with pythagoras)
+		 * Now lets start: build a list of tuples of three finder locations that - feature similar module sizes - are placed in a distance so the estimated module count is within the QR specification - have similar distance between upper left/right and left top/bottom finder patterns - form a triangle with 90° angle (checked by comparing top right/bottom left distance with pythagoras)
 		 * 
-		 * Note: we allow each point to be used for more than one code region:
-		 * this might seem counterintuitive at first, but the performance
-		 * penalty is not that big. At this point, we cannot make a good quality
-		 * decision whether the three finders actually represent a QR code, or
-		 * are just by chance layouted so it looks like there might be a QR code
-		 * there. So, if the layout seems right, lets have the decoder try to
-		 * decode.
+		 * Note: we allow each point to be used for more than one code region: this might seem counterintuitive at first, but the performance penalty is not that big. At this point, we cannot make a good quality decision whether the three finders actually represent a QR code, or are just by chance layouted so it looks like there might be a QR code there. So, if the layout seems right, lets have the decoder try to decode.
 		 */
 
 		Vector results = new Vector(); // holder for the results
@@ -163,22 +137,16 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 			}
 
 			for (int i2 = i1 + 1; i2 < (size - 1); i2++) {
-				FinderPattern p2 = (FinderPattern) possibleCenters
-						.elementAt(i2);
+				FinderPattern p2 = (FinderPattern) possibleCenters.elementAt(i2);
 				if (p2 == null) {
 					continue;
 				}
 
 				// Compare the expected module sizes; if they are really off,
 				// skip
-				float vModSize12 = (p1.getEstimatedModuleSize() - p2
-						.getEstimatedModuleSize())
-						/ (Math.min(p1.getEstimatedModuleSize(),
-								p2.getEstimatedModuleSize()));
-				float vModSize12A = Math.abs(p1.getEstimatedModuleSize()
-						- p2.getEstimatedModuleSize());
-				if (vModSize12A > DIFF_MODSIZE_CUTOFF
-						&& vModSize12 >= DIFF_MODSIZE_CUTOFF_PERCENT) {
+				float vModSize12 = (p1.getEstimatedModuleSize() - p2.getEstimatedModuleSize()) / (Math.min(p1.getEstimatedModuleSize(), p2.getEstimatedModuleSize()));
+				float vModSize12A = Math.abs(p1.getEstimatedModuleSize() - p2.getEstimatedModuleSize());
+				if (vModSize12A > DIFF_MODSIZE_CUTOFF && vModSize12 >= DIFF_MODSIZE_CUTOFF_PERCENT) {
 					// break, since elements are ordered by the module size
 					// deviation there cannot be
 					// any more interesting elements for the given p1.
@@ -186,22 +154,16 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 				}
 
 				for (int i3 = i2 + 1; i3 < size; i3++) {
-					FinderPattern p3 = (FinderPattern) possibleCenters
-							.elementAt(i3);
+					FinderPattern p3 = (FinderPattern) possibleCenters.elementAt(i3);
 					if (p3 == null) {
 						continue;
 					}
 
 					// Compare the expected module sizes; if they are really
 					// off, skip
-					float vModSize23 = (p2.getEstimatedModuleSize() - p3
-							.getEstimatedModuleSize())
-							/ (Math.min(p2.getEstimatedModuleSize(),
-									p3.getEstimatedModuleSize()));
-					float vModSize23A = Math.abs(p2.getEstimatedModuleSize()
-							- p3.getEstimatedModuleSize());
-					if (vModSize23A > DIFF_MODSIZE_CUTOFF
-							&& vModSize23 >= DIFF_MODSIZE_CUTOFF_PERCENT) {
+					float vModSize23 = (p2.getEstimatedModuleSize() - p3.getEstimatedModuleSize()) / (Math.min(p2.getEstimatedModuleSize(), p3.getEstimatedModuleSize()));
+					float vModSize23A = Math.abs(p2.getEstimatedModuleSize() - p3.getEstimatedModuleSize());
+					if (vModSize23A > DIFF_MODSIZE_CUTOFF && vModSize23 >= DIFF_MODSIZE_CUTOFF_PERCENT) {
 						// break, since elements are ordered by the module size
 						// deviation there cannot be
 						// any more interesting elements for the given p1.
@@ -214,18 +176,13 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 					// Calculate the distances: a = topleft-bottomleft,
 					// b=topleft-topright, c = diagonal
 					FinderPatternInfo info = new FinderPatternInfo(test);
-					float dA = ResultPoint.distance(info.getTopLeft(),
-							info.getBottomLeft());
-					float dC = ResultPoint.distance(info.getTopRight(),
-							info.getBottomLeft());
-					float dB = ResultPoint.distance(info.getTopLeft(),
-							info.getTopRight());
+					float dA = ResultPoint.distance(info.getTopLeft(), info.getBottomLeft());
+					float dC = ResultPoint.distance(info.getTopRight(), info.getBottomLeft());
+					float dB = ResultPoint.distance(info.getTopLeft(), info.getTopRight());
 
 					// Check the sizes
-					float estimatedModuleCount = ((dA + dB) / p1
-							.getEstimatedModuleSize()) / 2;
-					if (estimatedModuleCount > MAX_MODULE_COUNT_PER_EDGE
-							|| estimatedModuleCount < MIN_MODULE_COUNT_PER_EDGE) {
+					float estimatedModuleCount = ((dA + dB) / p1.getEstimatedModuleSize()) / 2;
+					if (estimatedModuleCount > MAX_MODULE_COUNT_PER_EDGE || estimatedModuleCount < MIN_MODULE_COUNT_PER_EDGE) {
 						continue;
 					}
 
@@ -263,10 +220,8 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 		throw NotFoundException.getNotFoundInstance();
 	}
 
-	public FinderPatternInfo[] findMulti(Hashtable hints)
-			throws NotFoundException {
-		boolean tryHarder = hints != null
-				&& hints.containsKey(DecodeHintType.TRY_HARDER);
+	public FinderPatternInfo[] findMulti(Hashtable hints) throws NotFoundException {
+		boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
 		BitMatrix image = getImage();
 		int maxI = image.getHeight();
 		int maxJ = image.getWidth();
@@ -305,8 +260,7 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 					if ((currentState & 1) == 0) { // Counting black pixels
 						if (currentState == 4) { // A winner?
 							if (foundPatternCross(stateCount)) { // Yes
-								boolean confirmed = handlePossibleCenter(
-										stateCount, i, j);
+								boolean confirmed = handlePossibleCenter(stateCount, i, j);
 								if (!confirmed) {
 									do { // Advance to next black pixel
 										j++;
@@ -352,8 +306,7 @@ final class MultiFinderPatternFinder extends FinderPatternFinder {
 		if (result.isEmpty()) {
 			return EMPTY_RESULT_ARRAY;
 		} else {
-			FinderPatternInfo[] resultArray = new FinderPatternInfo[result
-					.size()];
+			FinderPatternInfo[] resultArray = new FinderPatternInfo[result.size()];
 			for (int i = 0; i < result.size(); i++) {
 				resultArray[i] = (FinderPatternInfo) result.elementAt(i);
 			}

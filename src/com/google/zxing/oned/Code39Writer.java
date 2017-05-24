@@ -28,11 +28,9 @@ import com.google.zxing.common.BitMatrix;
  */
 public final class Code39Writer extends UPCEANWriter {
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height, Hashtable hints) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, Hashtable hints) throws WriterException {
 		if (format != BarcodeFormat.CODE_39) {
-			throw new IllegalArgumentException(
-					"Can only encode CODE_39, but got " + format);
+			throw new IllegalArgumentException("Can only encode CODE_39, but got " + format);
 		}
 		return super.encode(contents, format, width, height, hints);
 	}
@@ -40,16 +38,13 @@ public final class Code39Writer extends UPCEANWriter {
 	public byte[] encode(String contents) {
 		int length = contents.length();
 		if (length > 80) {
-			throw new IllegalArgumentException(
-					"Requested contents should be less than 80 digits long, but got "
-							+ length);
+			throw new IllegalArgumentException("Requested contents should be less than 80 digits long, but got " + length);
 		}
 
 		int[] widths = new int[9];
 		int codeWidth = 24 + 1 + length;
 		for (int i = 0; i < length; i++) {
-			int indexInString = Code39Reader.ALPHABET_STRING.indexOf(contents
-					.charAt(i));
+			int indexInString = Code39Reader.ALPHABET_STRING.indexOf(contents.charAt(i));
 			toIntArray(Code39Reader.CHARACTER_ENCODINGS[indexInString], widths);
 			for (int j = 0; j < widths.length; j++) {
 				codeWidth += widths[j];
@@ -62,8 +57,7 @@ public final class Code39Writer extends UPCEANWriter {
 		pos += appendPattern(result, pos, narrowWhite, 0);
 		// append next character to bytematrix
 		for (int i = length - 1; i >= 0; i--) {
-			int indexInString = Code39Reader.ALPHABET_STRING.indexOf(contents
-					.charAt(i));
+			int indexInString = Code39Reader.ALPHABET_STRING.indexOf(contents.charAt(i));
 			toIntArray(Code39Reader.CHARACTER_ENCODINGS[indexInString], widths);
 			pos += appendPattern(result, pos, widths, 1);
 			pos += appendPattern(result, pos, narrowWhite, 0);

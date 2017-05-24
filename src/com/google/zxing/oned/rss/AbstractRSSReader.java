@@ -43,11 +43,9 @@ public abstract class AbstractRSSReader extends OneDReader {
 		evenCounts = new int[dataCharacterCounters.length / 2];
 	}
 
-	protected static int parseFinderValue(int[] counters, int[][] finderPatterns)
-			throws NotFoundException {
+	protected static int parseFinderValue(int[] counters, int[][] finderPatterns) throws NotFoundException {
 		for (int value = 0; value < finderPatterns.length; value++) {
-			if (patternMatchVariance(counters, finderPatterns[value],
-					MAX_INDIVIDUAL_VARIANCE) < MAX_AVG_VARIANCE) {
+			if (patternMatchVariance(counters, finderPatterns[value], MAX_INDIVIDUAL_VARIANCE) < MAX_AVG_VARIANCE) {
 				return value;
 			}
 		}
@@ -90,8 +88,7 @@ public abstract class AbstractRSSReader extends OneDReader {
 		int firstTwoSum = counters[0] + counters[1];
 		int sum = firstTwoSum + counters[2] + counters[3];
 		float ratio = (float) firstTwoSum / (float) sum;
-		if (ratio >= MIN_FINDER_PATTERN_RATIO
-				&& ratio <= MAX_FINDER_PATTERN_RATIO) {
+		if (ratio >= MIN_FINDER_PATTERN_RATIO && ratio <= MAX_FINDER_PATTERN_RATIO) {
 			// passes ratio test in spec, but see if the counts are unreasonable
 			int minCounter = Integer.MAX_VALUE;
 			int maxCounter = Integer.MIN_VALUE;

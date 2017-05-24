@@ -53,18 +53,15 @@ public final class PDF417Reader implements Reader {
 	 * @throws FormatException
 	 *             if a PDF417 cannot be decoded
 	 */
-	public Result decode(BinaryBitmap image) throws NotFoundException,
-			FormatException {
+	public Result decode(BinaryBitmap image) throws NotFoundException, FormatException {
 		return decode(image, null);
 	}
 
-	public Result decode(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException, FormatException {
+	public Result decode(BinaryBitmap image, Hashtable hints) throws NotFoundException, FormatException {
 		DecoderResult decoderResult;
 		ResultPoint[] points;
 		if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
-			BitMatrix bits = QRCodeReader.extractPureBits(image
-					.getBlackMatrix());
+			BitMatrix bits = QRCodeReader.extractPureBits(image.getBlackMatrix());
 			decoderResult = decoder.decode(bits);
 			points = NO_POINTS;
 		} else {
@@ -72,8 +69,7 @@ public final class PDF417Reader implements Reader {
 			decoderResult = decoder.decode(detectorResult.getBits());
 			points = detectorResult.getPoints();
 		}
-		return new Result(decoderResult.getText(), decoderResult.getRawBytes(),
-				points, BarcodeFormat.PDF417);
+		return new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.PDF417);
 	}
 
 	public void reset() {

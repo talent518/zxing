@@ -38,11 +38,7 @@ import java.util.Date;
  */
 public final class AddressBookResultHandler extends ResultHandler {
 
-	private static final DateFormat[] DATE_FORMATS = {
-			new SimpleDateFormat("yyyyMMdd"),
-			new SimpleDateFormat("yyyyMMdd'T'HHmmss"),
-			new SimpleDateFormat("yyyy-MM-dd"),
-			new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"), };
+	private static final DateFormat[] DATE_FORMATS = { new SimpleDateFormat("yyyyMMdd"), new SimpleDateFormat("yyyyMMdd'T'HHmmss"), new SimpleDateFormat("yyyy-MM-dd"), new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"), };
 
 	private final boolean[] fields;
 	private int buttonCount;
@@ -69,11 +65,9 @@ public final class AddressBookResultHandler extends ResultHandler {
 		super(activity, result);
 		AddressBookParsedResult addressResult = (AddressBookParsedResult) result;
 		String[] addresses = addressResult.getAddresses();
-		boolean hasAddress = addresses != null && addresses.length > 0
-				&& addresses[0].length() > 0;
+		boolean hasAddress = addresses != null && addresses.length > 0 && addresses[0].length() > 0;
 		String[] phoneNumbers = addressResult.getPhoneNumbers();
-		boolean hasPhoneNumber = phoneNumbers != null
-				&& phoneNumbers.length > 0;
+		boolean hasPhoneNumber = phoneNumbers != null && phoneNumbers.length > 0;
 		String[] emails = addressResult.getEmails();
 		boolean hasEmailAddress = emails != null && emails.length > 0;
 
@@ -117,15 +111,11 @@ public final class AddressBookResultHandler extends ResultHandler {
 	public void handleButtonPress(int index) {
 		AddressBookParsedResult addressResult = (AddressBookParsedResult) getResult();
 		String[] addresses = addressResult.getAddresses();
-		String address1 = addresses == null || addresses.length < 1 ? null
-				: addresses[0];
+		String address1 = addresses == null || addresses.length < 1 ? null : addresses[0];
 		int action = mapIndexToAction(index);
 		switch (action) {
 		case 0:
-			addContact(addressResult.getNames(),
-					addressResult.getPhoneNumbers(), addressResult.getEmails(),
-					addressResult.getNote(), address1, addressResult.getOrg(),
-					addressResult.getTitle());
+			addContact(addressResult.getNames(), addressResult.getPhoneNumbers(), addressResult.getEmails(), addressResult.getNote(), address1, addressResult.getOrg(), addressResult.getTitle());
 			break;
 		case 1:
 			String[] names = addressResult.getNames();
@@ -178,8 +168,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 		String[] numbers = result.getPhoneNumbers();
 		if (numbers != null) {
 			for (String number : numbers) {
-				ParsedResult.maybeAppend(PhoneNumberUtils.formatNumber(number),
-						contents);
+				ParsedResult.maybeAppend(PhoneNumberUtils.formatNumber(number), contents);
 			}
 		}
 		ParsedResult.maybeAppend(result.getEmails(), contents);
@@ -189,9 +178,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 		if (birthday != null && birthday.length() > 0) {
 			Date date = parseDate(birthday);
 			if (date != null) {
-				ParsedResult.maybeAppend(
-						DateFormat.getDateInstance().format(date.getTime()),
-						contents);
+				ParsedResult.maybeAppend(DateFormat.getDateInstance().format(date.getTime()), contents);
 			}
 		}
 		ParsedResult.maybeAppend(result.getNote(), contents);
@@ -199,8 +186,7 @@ public final class AddressBookResultHandler extends ResultHandler {
 		if (namesLength > 0) {
 			// Bold the full name to make it stand out a bit.
 			Spannable styled = new SpannableString(contents.toString());
-			styled.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
-					namesLength, 0);
+			styled.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, namesLength, 0);
 			return styled;
 		} else {
 			return contents.toString();

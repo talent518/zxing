@@ -37,18 +37,11 @@ public final class CodaBarReader extends OneDReader {
 	private static final char[] ALPHABET = ALPHABET_STRING.toCharArray();
 
 	/**
-	 * These represent the encodings of characters, as patterns of wide and
-	 * narrow bars. The 7 least-significant bits of each int correspond to the
-	 * pattern of wide and narrow, with 1s representing "wide" and 0s
-	 * representing narrow. NOTE : c is equal to the * pattern NOTE : d is equal
-	 * to the e pattern
+	 * These represent the encodings of characters, as patterns of wide and narrow bars. The 7 least-significant bits of each int correspond to the pattern of wide and narrow, with 1s representing "wide" and 0s representing narrow. NOTE : c is equal to the * pattern NOTE : d is equal to the e pattern
 	 */
-	private static final int[] CHARACTER_ENCODINGS = { 0x003, 0x006, 0x009,
-			0x060, 0x012, 0x042, 0x021, 0x024, 0x030,
-			0x048, // 0-9
-			0x00c, 0x018, 0x025, 0x051, 0x054, 0x015, 0x01A, 0x029, 0x00B,
-			0x00E, // -$:/.+ABCD
-			0x01A, 0x029 // TN
+	private static final int[] CHARACTER_ENCODINGS = { 0x003, 0x006, 0x009, 0x060, 0x012, 0x042, 0x021, 0x024, 0x030, 0x048, // 0-9
+		0x00c, 0x018, 0x025, 0x051, 0x054, 0x015, 0x01A, 0x029, 0x00B, 0x00E, // -$:/.+ABCD
+		0x01A, 0x029 // TN
 	};
 
 	// minimal number of characters that should be present (inclusing start and
@@ -61,8 +54,7 @@ public final class CodaBarReader extends OneDReader {
 
 	// multiple start/end patterns
 	// official start and end patterns
-	private static final char[] STARTEND_ENCODING = { 'E', '*', 'A', 'B', 'C',
-			'D', 'T', 'N' };
+	private static final char[] STARTEND_ENCODING = { 'E', '*', 'A', 'B', 'C', 'D', 'T', 'N' };
 
 	// some codabar generator allow the codabar string to be closed by every
 	// character
@@ -74,8 +66,7 @@ public final class CodaBarReader extends OneDReader {
 	// original codabar standard
 	// for more information see : http://www.mecsw.com/specs/codabar.html
 
-	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
-			throws NotFoundException {
+	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints) throws NotFoundException {
 		int[] start = findAsteriskPattern(row);
 		start[1] = 0; // BAS: settings this to 0 improves the recognition rate
 						// somehow?
@@ -162,14 +153,10 @@ public final class CodaBarReader extends OneDReader {
 
 		float left = (float) (start[1] + start[0]) / 2.0f;
 		float right = (float) (nextStart + lastStart) / 2.0f;
-		return new Result(result.toString(), null, new ResultPoint[] {
-				new ResultPoint(left, (float) rowNumber),
-				new ResultPoint(right, (float) rowNumber) },
-				BarcodeFormat.CODABAR);
+		return new Result(result.toString(), null, new ResultPoint[] { new ResultPoint(left, (float) rowNumber), new ResultPoint(right, (float) rowNumber) }, BarcodeFormat.CODABAR);
 	}
 
-	private static int[] findAsteriskPattern(BitArray row)
-			throws NotFoundException {
+	private static int[] findAsteriskPattern(BitArray row) throws NotFoundException {
 		int width = row.getSize();
 		int rowOffset = 0;
 		while (rowOffset < width) {
@@ -192,14 +179,10 @@ public final class CodaBarReader extends OneDReader {
 			} else {
 				if (counterPosition == patternLength - 1) {
 					try {
-						if (arrayContains(STARTEND_ENCODING,
-								toNarrowWidePattern(counters))) {
+						if (arrayContains(STARTEND_ENCODING, toNarrowWidePattern(counters))) {
 							// Look for whitespace before start pattern, >= 50%
 							// of width of start pattern
-							if (row.isRange(
-									Math.max(0, patternStart
-											- (i - patternStart) / 2),
-									patternStart, false)) {
+							if (row.isRange(Math.max(0, patternStart - (i - patternStart) / 2), patternStart, false)) {
 								return new int[] { patternStart, i };
 							}
 						}

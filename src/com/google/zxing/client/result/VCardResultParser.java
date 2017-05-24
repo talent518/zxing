@@ -23,9 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
 /**
- * Parses contact information formatted according to the VCard (2.1) format.
- * This is not a complete implementation but should parse information as
- * commonly encoded in 2D barcodes.
+ * Parses contact information formatted according to the VCard (2.1) format. This is not a complete implementation but should parse information as commonly encoded in 2D barcodes.
  * 
  * @author Sean Owen
  */
@@ -68,12 +66,10 @@ final class VCardResultParser extends ResultParser {
 		}
 		String title = matchSingleVCardPrefixedField("TITLE", rawText, true);
 		String url = matchSingleVCardPrefixedField("URL", rawText, true);
-		return new AddressBookParsedResult(names, null, phoneNumbers, emails,
-				note, addresses, org, birthday, title, url);
+		return new AddressBookParsedResult(names, null, phoneNumbers, emails, note, addresses, org, birthday, title, url);
 	}
 
-	private static String[] matchVCardPrefixedField(String prefix,
-			String rawText, boolean trim) {
+	private static String[] matchVCardPrefixedField(String prefix, String rawText, boolean trim) {
 		Vector matches = null;
 		int i = 0;
 		int max = rawText.length();
@@ -108,8 +104,7 @@ final class VCardResultParser extends ResultParser {
 				int j = metadataStart + 1;
 				while (j <= i) {
 					if (rawText.charAt(j) == ';' || rawText.charAt(j) == ':') {
-						String metadata = rawText.substring(metadataStart + 1,
-								j);
+						String metadata = rawText.substring(metadataStart + 1, j);
 						int equals = metadata.indexOf('=');
 						if (equals >= 0) {
 							String key = metadata.substring(0, equals);
@@ -136,15 +131,15 @@ final class VCardResultParser extends ResultParser {
 																// in \r\n
 				if (i < rawText.length() - 1 && // But if followed by tab or
 												// space,
-						(rawText.charAt(i + 1) == ' ' || // this is only a
-															// continuation
-						rawText.charAt(i + 1) == '\t')) {
+					(rawText.charAt(i + 1) == ' ' || // this is only a
+														// continuation
+					rawText.charAt(i + 1) == '\t')) {
 					i += 2; // Skip \n and continutation whitespace
 				} else if (quotedPrintable && // If preceded by = in quoted
 												// printable
-						(rawText.charAt(i - 1) == '=' || // this is a
-															// continuation
-						rawText.charAt(i - 2) == '=')) {
+					(rawText.charAt(i - 1) == '=' || // this is a
+														// continuation
+					rawText.charAt(i - 2) == '=')) {
 					i++; // Skip \n
 				} else {
 					break;
@@ -168,8 +163,7 @@ final class VCardResultParser extends ResultParser {
 					element = element.trim();
 				}
 				if (quotedPrintable) {
-					element = decodeQuotedPrintable(element,
-							quotedPrintableCharset);
+					element = decodeQuotedPrintable(element, quotedPrintableCharset);
 				} else {
 					element = stripContinuationCRLF(element);
 				}
@@ -229,8 +223,7 @@ final class VCardResultParser extends ResultParser {
 					} else {
 						char nextNextChar = value.charAt(i + 2);
 						try {
-							int encodedByte = 16 * toHexValue(nextChar)
-									+ toHexValue(nextNextChar);
+							int encodedByte = 16 * toHexValue(nextChar) + toHexValue(nextNextChar);
 							fragmentBuffer.write(encodedByte);
 						} catch (IllegalArgumentException iae) {
 							// continue, assume it was incorrectly encoded
@@ -259,9 +252,7 @@ final class VCardResultParser extends ResultParser {
 		throw new IllegalArgumentException();
 	}
 
-	private static void maybeAppendFragment(
-			ByteArrayOutputStream fragmentBuffer, String charset,
-			StringBuffer result) {
+	private static void maybeAppendFragment(ByteArrayOutputStream fragmentBuffer, String charset, StringBuffer result) {
 		if (fragmentBuffer.size() > 0) {
 			byte[] fragmentBytes = fragmentBuffer.toByteArray();
 			String fragment;
@@ -280,8 +271,7 @@ final class VCardResultParser extends ResultParser {
 		}
 	}
 
-	static String matchSingleVCardPrefixedField(String prefix, String rawText,
-			boolean trim) {
+	static String matchSingleVCardPrefixedField(String prefix, String rawText, boolean trim) {
 		String[] values = matchVCardPrefixedField(prefix, rawText, trim);
 		return values == null ? null : values[0];
 	}
@@ -296,10 +286,7 @@ final class VCardResultParser extends ResultParser {
 			return true;
 		}
 		// or YYYY-MM-DD
-		return value.length() == 10 && value.charAt(4) == '-'
-				&& value.charAt(7) == '-' && isSubstringOfDigits(value, 0, 4)
-				&& isSubstringOfDigits(value, 5, 2)
-				&& isSubstringOfDigits(value, 8, 2);
+		return value.length() == 10 && value.charAt(4) == '-' && value.charAt(7) == '-' && isSubstringOfDigits(value, 0, 4) && isSubstringOfDigits(value, 5, 2) && isSubstringOfDigits(value, 8, 2);
 	}
 
 	private static String formatAddress(String address) {
@@ -320,8 +307,7 @@ final class VCardResultParser extends ResultParser {
 	}
 
 	/**
-	 * Formats name fields of the form "Public;John;Q.;Reverend;III" into a form
-	 * like "Reverend John Q. Public III".
+	 * Formats name fields of the form "Public;John;Q.;Reverend;III" into a form like "Reverend John Q. Public III".
 	 * 
 	 * @param names
 	 *            name values to format, in place
@@ -351,8 +337,7 @@ final class VCardResultParser extends ResultParser {
 		}
 	}
 
-	private static void maybeAppendComponent(String[] components, int i,
-			StringBuffer newName) {
+	private static void maybeAppendComponent(String[] components, int i, StringBuffer newName) {
 		if (components[i] != null) {
 			newName.append(' ');
 			newName.append(components[i]);

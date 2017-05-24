@@ -28,8 +28,7 @@ package com.google.zxing.oned.rss.expanded.decoders;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 final class DecodedNumeric extends DecodedObject {
 
@@ -45,13 +44,11 @@ final class DecodedNumeric extends DecodedObject {
 		this.secondDigit = secondDigit;
 
 		if (this.firstDigit < 0 || this.firstDigit > 10) {
-			throw new IllegalArgumentException("Invalid firstDigit: "
-					+ firstDigit);
+			throw new IllegalArgumentException("Invalid firstDigit: " + firstDigit);
 		}
 
 		if (this.secondDigit < 0 || this.secondDigit > 10) {
-			throw new IllegalArgumentException("Invalid secondDigit: "
-					+ secondDigit);
+			throw new IllegalArgumentException("Invalid secondDigit: " + secondDigit);
 		}
 	}
 

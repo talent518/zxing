@@ -17,8 +17,7 @@
 package com.google.zxing.common;
 
 /**
- * Superclass of classes encapsulating types ECIs, according to
- * "Extended Channel Interpretations" 5.3 of ISO 18004.
+ * Superclass of classes encapsulating types ECIs, according to "Extended Channel Interpretations" 5.3 of ISO 18004.
  * 
  * @author Sean Owen
  */
@@ -37,8 +36,7 @@ public abstract class ECI {
 	/**
 	 * @param value
 	 *            ECI value
-	 * @return {@link ECI} representing ECI of given value, or null if it is
-	 *         legal but unsupported
+	 * @return {@link ECI} representing ECI of given value, or null if it is legal but unsupported
 	 * @throws IllegalArgumentException
 	 *             if ECI value is invalid
 	 */

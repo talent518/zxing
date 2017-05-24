@@ -33,8 +33,7 @@ final class EncodeThread extends Thread {
 	private final int pixelResolution;
 	private final BarcodeFormat format;
 
-	EncodeThread(String contents, Handler handler, int pixelResolution,
-			BarcodeFormat format) {
+	EncodeThread(String contents, Handler handler, int pixelResolution, BarcodeFormat format) {
 		this.contents = contents;
 		this.handler = handler;
 		this.pixelResolution = pixelResolution;
@@ -44,8 +43,7 @@ final class EncodeThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			Bitmap bitmap = QRCodeEncoder.encodeAsBitmap(contents, format,
-					pixelResolution, pixelResolution);
+			Bitmap bitmap = QRCodeEncoder.encodeAsBitmap(contents, format, pixelResolution, pixelResolution);
 			Message message = Message.obtain(handler, R.id.encode_succeeded);
 			message.obj = bitmap;
 			message.sendToTarget();

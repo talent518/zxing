@@ -33,8 +33,7 @@ public final class ReedSolomonEncoder {
 
 	public ReedSolomonEncoder(GF256 field) {
 		if (!GF256.QR_CODE_FIELD.equals(field)) {
-			throw new IllegalArgumentException(
-					"Only QR Code is supported at this time");
+			throw new IllegalArgumentException("Only QR Code is supported at this time");
 		}
 		this.field = field;
 		this.cachedGenerators = new Vector();
@@ -43,11 +42,9 @@ public final class ReedSolomonEncoder {
 
 	private GF256Poly buildGenerator(int degree) {
 		if (degree >= cachedGenerators.size()) {
-			GF256Poly lastGenerator = (GF256Poly) cachedGenerators
-					.elementAt(cachedGenerators.size() - 1);
+			GF256Poly lastGenerator = (GF256Poly) cachedGenerators.elementAt(cachedGenerators.size() - 1);
 			for (int d = cachedGenerators.size(); d <= degree; d++) {
-				GF256Poly nextGenerator = lastGenerator.multiply(new GF256Poly(
-						field, new int[] { 1, field.exp(d - 1) }));
+				GF256Poly nextGenerator = lastGenerator.multiply(new GF256Poly(field, new int[] { 1, field.exp(d - 1) }));
 				cachedGenerators.addElement(nextGenerator);
 				lastGenerator = nextGenerator;
 			}
@@ -74,8 +71,7 @@ public final class ReedSolomonEncoder {
 		for (int i = 0; i < numZeroCoefficients; i++) {
 			toEncode[dataBytes + i] = 0;
 		}
-		System.arraycopy(coefficients, 0, toEncode, dataBytes
-				+ numZeroCoefficients, coefficients.length);
+		System.arraycopy(coefficients, 0, toEncode, dataBytes + numZeroCoefficients, coefficients.length);
 	}
 
 }

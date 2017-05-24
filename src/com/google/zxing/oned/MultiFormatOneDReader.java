@@ -38,16 +38,11 @@ public final class MultiFormatOneDReader extends OneDReader {
 	private final Vector readers;
 
 	public MultiFormatOneDReader(Hashtable hints) {
-		Vector possibleFormats = hints == null ? null : (Vector) hints
-				.get(DecodeHintType.POSSIBLE_FORMATS);
-		boolean useCode39CheckDigit = hints != null
-				&& hints.get(DecodeHintType.ASSUME_CODE_39_CHECK_DIGIT) != null;
+		Vector possibleFormats = hints == null ? null : (Vector) hints.get(DecodeHintType.POSSIBLE_FORMATS);
+		boolean useCode39CheckDigit = hints != null && hints.get(DecodeHintType.ASSUME_CODE_39_CHECK_DIGIT) != null;
 		readers = new Vector();
 		if (possibleFormats != null) {
-			if (possibleFormats.contains(BarcodeFormat.EAN_13)
-					|| possibleFormats.contains(BarcodeFormat.UPC_A)
-					|| possibleFormats.contains(BarcodeFormat.EAN_8)
-					|| possibleFormats.contains(BarcodeFormat.UPC_E)) {
+			if (possibleFormats.contains(BarcodeFormat.EAN_13) || possibleFormats.contains(BarcodeFormat.UPC_A) || possibleFormats.contains(BarcodeFormat.EAN_8) || possibleFormats.contains(BarcodeFormat.UPC_E)) {
 				readers.addElement(new MultiFormatUPCEANReader(hints));
 			}
 			if (possibleFormats.contains(BarcodeFormat.CODE_39)) {
@@ -84,8 +79,7 @@ public final class MultiFormatOneDReader extends OneDReader {
 		}
 	}
 
-	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
-			throws NotFoundException {
+	public Result decodeRow(int rowNumber, BitArray row, Hashtable hints) throws NotFoundException {
 		int size = readers.size();
 		for (int i = 0; i < size; i++) {
 			OneDReader reader = (OneDReader) readers.elementAt(i);

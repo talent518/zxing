@@ -41,10 +41,7 @@ final class URIResultParser extends ResultParser {
 	}
 
 	/**
-	 * Determines whether a string is not obviously not a URI. This implements
-	 * crude checks; this class does not intend to strictly check URIs as its
-	 * only function is to represent what is in a barcode, but, it does need to
-	 * know when a string is obviously not a URI.
+	 * Determines whether a string is not obviously not a URI. This implements crude checks; this class does not intend to strictly check URIs as its only function is to represent what is in a barcode, but, it does need to know when a string is obviously not a URI.
 	 */
 	static boolean isBasicallyValidURI(String uri) {
 		if (uri == null || uri.indexOf(' ') >= 0 || uri.indexOf('\n') >= 0) {

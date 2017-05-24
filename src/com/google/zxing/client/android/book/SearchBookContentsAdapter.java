@@ -31,11 +31,9 @@ import com.google.zxing.client.android.R;
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
-final class SearchBookContentsAdapter extends
-		ArrayAdapter<SearchBookContentsResult> {
+final class SearchBookContentsAdapter extends ArrayAdapter<SearchBookContentsResult> {
 
-	SearchBookContentsAdapter(Context context,
-			List<SearchBookContentsResult> items) {
+	SearchBookContentsAdapter(Context context, List<SearchBookContentsResult> items) {
 		super(context, R.layout.search_book_contents_list_item, 0, items);
 	}
 
@@ -45,8 +43,7 @@ final class SearchBookContentsAdapter extends
 
 		if (view == null) {
 			LayoutInflater factory = LayoutInflater.from(getContext());
-			listItem = (SearchBookContentsListItem) factory.inflate(
-					R.layout.search_book_contents_list_item, viewGroup, false);
+			listItem = (SearchBookContentsListItem) factory.inflate(R.layout.search_book_contents_list_item, viewGroup, false);
 		} else {
 			if (view instanceof SearchBookContentsListItem) {
 				listItem = (SearchBookContentsListItem) view;

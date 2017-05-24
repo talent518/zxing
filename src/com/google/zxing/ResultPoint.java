@@ -18,9 +18,7 @@ package com.google.zxing;
 
 /**
  * <p>
- * Encapsulates a point of interest in an image containing a barcode. Typically,
- * this would be the location of a finder pattern or the corner of the barcode,
- * for example.
+ * Encapsulates a point of interest in an image containing a barcode. Typically, this would be the location of a finder pattern or the corner of the barcode, for example.
  * </p>
  * 
  * @author Sean Owen
@@ -67,8 +65,7 @@ public class ResultPoint {
 
 	/**
 	 * <p>
-	 * Orders an array of three ResultPoints in an order [A,B,C] such that AB <
-	 * AC and BC < AC and the angle between BC and BA is less than 180 degrees.
+	 * Orders an array of three ResultPoints in an order [A,B,C] such that AB < AC and BC < AC and the angle between BC and BA is less than 180 degrees.
 	 */
 	public static void orderBestPatterns(ResultPoint[] patterns) {
 
@@ -80,13 +77,11 @@ public class ResultPoint {
 		ResultPoint pointA, pointB, pointC;
 		// Assume one closest to other two is B; A and C will just be guesses at
 		// first
-		if (oneTwoDistance >= zeroOneDistance
-				&& oneTwoDistance >= zeroTwoDistance) {
+		if (oneTwoDistance >= zeroOneDistance && oneTwoDistance >= zeroTwoDistance) {
 			pointB = patterns[0];
 			pointA = patterns[1];
 			pointC = patterns[2];
-		} else if (zeroTwoDistance >= oneTwoDistance
-				&& zeroTwoDistance >= zeroOneDistance) {
+		} else if (zeroTwoDistance >= oneTwoDistance && zeroTwoDistance >= zeroOneDistance) {
 			pointB = patterns[1];
 			pointA = patterns[0];
 			pointC = patterns[2];
@@ -126,12 +121,10 @@ public class ResultPoint {
 	/**
 	 * Returns the z component of the cross product between vectors BC and BA.
 	 */
-	private static float crossProductZ(ResultPoint pointA, ResultPoint pointB,
-			ResultPoint pointC) {
+	private static float crossProductZ(ResultPoint pointA, ResultPoint pointB, ResultPoint pointC) {
 		float bX = pointB.x;
 		float bY = pointB.y;
-		return ((pointC.x - bX) * (pointA.y - bY))
-				- ((pointC.y - bY) * (pointA.x - bX));
+		return ((pointC.x - bX) * (pointA.y - bY)) - ((pointC.y - bY) * (pointA.x - bX));
 	}
 
 }

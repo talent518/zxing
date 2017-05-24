@@ -18,9 +18,7 @@ package com.google.zxing.client.result.optional;
 
 /**
  * <p>
- * Represents a record in an NDEF message. This class only supports certain
- * types of records -- namely, non-chunked records, where ID length is omitted,
- * and only "short records".
+ * Represents a record in an NDEF message. This class only supports certain types of records -- namely, non-chunked records, where ID length is omitted, and only "short records".
  * </p>
  * 
  * @author Sean Owen
@@ -42,8 +40,7 @@ final class NDEFRecord {
 	private final byte[] payload;
 	private final int totalRecordLength;
 
-	private NDEFRecord(int header, String type, byte[] payload,
-			int totalRecordLength) {
+	private NDEFRecord(int header, String type, byte[] payload, int totalRecordLength) {
 		this.header = header;
 		this.type = type;
 		this.payload = payload;
@@ -62,15 +59,12 @@ final class NDEFRecord {
 
 		int payloadLength = bytes[offset + 2] & 0xFF;
 
-		String type = AbstractNDEFResultParser.bytesToString(bytes, offset + 3,
-				typeLength, "US-ASCII");
+		String type = AbstractNDEFResultParser.bytesToString(bytes, offset + 3, typeLength, "US-ASCII");
 
 		byte[] payload = new byte[payloadLength];
-		System.arraycopy(bytes, offset + 3 + typeLength, payload, 0,
-				payloadLength);
+		System.arraycopy(bytes, offset + 3 + typeLength, payload, 0, payloadLength);
 
-		return new NDEFRecord(header, type, payload, 3 + typeLength
-				+ payloadLength);
+		return new NDEFRecord(header, type, payload, 3 + typeLength + payloadLength);
 	}
 
 	boolean isMessageBegin() {

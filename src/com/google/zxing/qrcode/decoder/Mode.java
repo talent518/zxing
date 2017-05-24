@@ -18,8 +18,7 @@ package com.google.zxing.qrcode.decoder;
 
 /**
  * <p>
- * See ISO 18004:2006, 6.4.1, Tables 2 and 3. This enum encapsulates the various
- * modes in which data can be encoded to bits in the QR code standard.
+ * See ISO 18004:2006, 6.4.1, Tables 2 and 3. This enum encapsulates the various modes in which data can be encoded to bits in the QR code standard.
  * </p>
  * 
  * @author Sean Owen
@@ -28,25 +27,17 @@ public final class Mode {
 
 	// No, we can't use an enum here. J2ME doesn't support it.
 
-	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00,
-			"TERMINATOR"); // Not really a mode...
-	public static final Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01,
-			"NUMERIC");
-	public static final Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 },
-			0x02, "ALPHANUMERIC");
-	public static final Mode STRUCTURED_APPEND = new Mode(
-			new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); // Not supported
-	public static final Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04,
-			"BYTE");
+	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); // Not really a mode...
+	public static final Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, "NUMERIC");
+	public static final Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, "ALPHANUMERIC");
+	public static final Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); // Not supported
+	public static final Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04, "BYTE");
 	public static final Mode ECI = new Mode(null, 0x07, "ECI"); // character
 																// counts don't
 																// apply
-	public static final Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08,
-			"KANJI");
-	public static final Mode FNC1_FIRST_POSITION = new Mode(null, 0x05,
-			"FNC1_FIRST_POSITION");
-	public static final Mode FNC1_SECOND_POSITION = new Mode(null, 0x09,
-			"FNC1_SECOND_POSITION");
+	public static final Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08, "KANJI");
+	public static final Mode FNC1_FIRST_POSITION = new Mode(null, 0x05, "FNC1_FIRST_POSITION");
+	public static final Mode FNC1_SECOND_POSITION = new Mode(null, 0x09, "FNC1_SECOND_POSITION");
 
 	private final int[] characterCountBitsForVersions;
 	private final int bits;
@@ -93,14 +84,11 @@ public final class Mode {
 	/**
 	 * @param version
 	 *            version in question
-	 * @return number of bits used, in this QR Code symbol {@link Version}, to
-	 *         encode the count of characters that will follow encoded in this
-	 *         {@link Mode}
+	 * @return number of bits used, in this QR Code symbol {@link Version}, to encode the count of characters that will follow encoded in this {@link Mode}
 	 */
 	public int getCharacterCountBits(Version version) {
 		if (characterCountBitsForVersions == null) {
-			throw new IllegalArgumentException(
-					"Character count doesn't apply to this mode");
+			throw new IllegalArgumentException("Character count doesn't apply to this mode");
 		}
 		int number = version.getVersionNumber();
 		int offset;

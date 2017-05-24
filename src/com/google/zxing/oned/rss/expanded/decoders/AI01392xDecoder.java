@@ -50,15 +50,12 @@ final class AI01392xDecoder extends AI01decoder {
 
 		encodeCompressedGtin(buf, headerSize);
 
-		int lastAIdigit = this.generalDecoder.extractNumericValueFromBitArray(
-				headerSize + gtinSize, lastDigitSize);
+		int lastAIdigit = this.generalDecoder.extractNumericValueFromBitArray(headerSize + gtinSize, lastDigitSize);
 		buf.append("(392");
 		buf.append(lastAIdigit);
 		buf.append(')');
 
-		DecodedInformation decodedInformation = this.generalDecoder
-				.decodeGeneralPurposeField(headerSize + gtinSize
-						+ lastDigitSize, null);
+		DecodedInformation decodedInformation = this.generalDecoder.decodeGeneralPurposeField(headerSize + gtinSize + lastDigitSize, null);
 		buf.append(decodedInformation.getNewString());
 
 		return buf.toString();

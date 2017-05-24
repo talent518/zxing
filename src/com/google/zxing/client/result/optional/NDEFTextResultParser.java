@@ -20,8 +20,7 @@ import com.google.zxing.Result;
 import com.google.zxing.client.result.TextParsedResult;
 
 /**
- * Recognizes an NDEF message that encodes text according to the
- * "Text Record Type Definition" specification.
+ * Recognizes an NDEF message that encodes text according to the "Text Record Type Definition" specification.
  * 
  * @author Sean Owen
  */
@@ -33,8 +32,7 @@ final class NDEFTextResultParser extends AbstractNDEFResultParser {
 			return null;
 		}
 		NDEFRecord ndefRecord = NDEFRecord.readRecord(bytes, 0);
-		if (ndefRecord == null || !ndefRecord.isMessageBegin()
-				|| !ndefRecord.isMessageEnd()) {
+		if (ndefRecord == null || !ndefRecord.isMessageBegin() || !ndefRecord.isMessageEnd()) {
 			return null;
 		}
 		if (!ndefRecord.getType().equals(NDEFRecord.TEXT_WELL_KNOWN_TYPE)) {
@@ -51,8 +49,7 @@ final class NDEFTextResultParser extends AbstractNDEFResultParser {
 		// language is always ASCII-encoded:
 		String language = bytesToString(payload, 1, languageLength, "US-ASCII");
 		String encoding = isUTF16 ? "UTF-16" : "UTF8";
-		String text = bytesToString(payload, 1 + languageLength, payload.length
-				- languageLength - 1, encoding);
+		String text = bytesToString(payload, 1 + languageLength, payload.length - languageLength - 1, encoding);
 		return new String[] { language, text };
 	}
 

@@ -29,8 +29,7 @@ import android.telephony.PhoneNumberUtils;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class TelResultHandler extends ResultHandler {
-	private static final int[] buttons = { R.string.button_dial,
-			R.string.button_add_contact };
+	private static final int[] buttons = { R.string.button_dial, R.string.button_add_contact };
 
 	public TelResultHandler(Activity activity, ParsedResult result) {
 		super(activity, result);

@@ -26,8 +26,7 @@ public final class SMSParsedResult extends ParsedResult {
 	private final String subject;
 	private final String body;
 
-	public SMSParsedResult(String number, String via, String subject,
-			String body) {
+	public SMSParsedResult(String number, String via, String subject, String body) {
 		super(ParsedResultType.SMS);
 		this.numbers = new String[] { number };
 		this.vias = new String[] { via };
@@ -35,8 +34,7 @@ public final class SMSParsedResult extends ParsedResult {
 		this.body = body;
 	}
 
-	public SMSParsedResult(String[] numbers, String[] vias, String subject,
-			String body) {
+	public SMSParsedResult(String[] numbers, String[] vias, String subject, String body) {
 		super(ParsedResultType.SMS);
 		this.numbers = numbers;
 		this.vias = vias;

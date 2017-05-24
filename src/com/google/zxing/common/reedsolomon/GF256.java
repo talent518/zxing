@@ -18,15 +18,11 @@ package com.google.zxing.common.reedsolomon;
 
 /**
  * <p>
- * This class contains utility methods for performing mathematical operations
- * over the Galois Field GF(256). Operations use a given primitive polynomial in
- * calculations.
+ * This class contains utility methods for performing mathematical operations over the Galois Field GF(256). Operations use a given primitive polynomial in calculations.
  * </p>
  * 
  * <p>
- * Throughout this package, elements of GF(256) are represented as an
- * <code>int</code> for convenience and speed (but at the cost of memory). Only
- * the bottom 8 bits are really used.
+ * Throughout this package, elements of GF(256) are represented as an <code>int</code> for convenience and speed (but at the cost of memory). Only the bottom 8 bits are really used.
  * </p>
  * 
  * @author Sean Owen
@@ -51,9 +47,7 @@ public final class GF256 {
 	 * Create a representation of GF(256) using the given primitive polynomial.
 	 * 
 	 * @param primitive
-	 *            irreducible polynomial whose coefficients are represented by
-	 *            the bits of an int, where the least-significant bit represents
-	 *            the constant coefficient
+	 *            irreducible polynomial whose coefficients are represented by the bits of an int, where the least-significant bit represents the constant coefficient
 	 */
 	private GF256(int primitive) {
 		expTable = new int[256];

@@ -22,22 +22,16 @@ package com.google.zxing.common.reedsolomon;
  * </p>
  * 
  * <p>
- * The algorithm will not be explained here, but the following references were
- * helpful in creating this implementation:
+ * The algorithm will not be explained here, but the following references were helpful in creating this implementation:
  * </p>
  * 
  * <ul>
- * <li>Bruce Maggs. <a href=
- * "http://www.cs.cmu.edu/afs/cs.cmu.edu/project/pscico-guyb/realworld/www/rs_decode.ps"
- * > "Decoding Reed-Solomon Codes"</a> (see discussion of Forney's Formula)</li>
- * <li>J.I. Hall. <a href="www.mth.msu.edu/~jhall/classes/codenotes/GRS.pdf">
- * "Chapter 5. Generalized Reed-Solomon Codes"</a> (see discussion of Euclidean
- * algorithm)</li>
+ * <li>Bruce Maggs. <a href= "http://www.cs.cmu.edu/afs/cs.cmu.edu/project/pscico-guyb/realworld/www/rs_decode.ps" > "Decoding Reed-Solomon Codes"</a> (see discussion of Forney's Formula)</li>
+ * <li>J.I. Hall. <a href="www.mth.msu.edu/~jhall/classes/codenotes/GRS.pdf"> "Chapter 5. Generalized Reed-Solomon Codes"</a> (see discussion of Euclidean algorithm)</li>
  * </ul>
  * 
  * <p>
- * Much credit is due to William Rucklidge since portions of this code are an
- * indirect port of his C++ Reed-Solomon implementation.
+ * Much credit is due to William Rucklidge since portions of this code are an indirect port of his C++ Reed-Solomon implementation.
  * </p>
  * 
  * @author Sean Owen
@@ -54,9 +48,7 @@ public final class ReedSolomonDecoder {
 
 	/**
 	 * <p>
-	 * Decodes given set of received codewords, which include both data and
-	 * error-correction codewords. Really, this means it uses Reed-Solomon to
-	 * detect and correct errors, in-place, in the input.
+	 * Decodes given set of received codewords, which include both data and error-correction codewords. Really, this means it uses Reed-Solomon to detect and correct errors, in-place, in the input.
 	 * </p>
 	 * 
 	 * @param received
@@ -83,25 +75,21 @@ public final class ReedSolomonDecoder {
 			return;
 		}
 		GF256Poly syndrome = new GF256Poly(field, syndromeCoefficients);
-		GF256Poly[] sigmaOmega = runEuclideanAlgorithm(
-				field.buildMonomial(twoS, 1), syndrome, twoS);
+		GF256Poly[] sigmaOmega = runEuclideanAlgorithm(field.buildMonomial(twoS, 1), syndrome, twoS);
 		GF256Poly sigma = sigmaOmega[0];
 		GF256Poly omega = sigmaOmega[1];
 		int[] errorLocations = findErrorLocations(sigma);
-		int[] errorMagnitudes = findErrorMagnitudes(omega, errorLocations,
-				dataMatrix);
+		int[] errorMagnitudes = findErrorMagnitudes(omega, errorLocations, dataMatrix);
 		for (int i = 0; i < errorLocations.length; i++) {
 			int position = received.length - 1 - field.log(errorLocations[i]);
 			if (position < 0) {
 				throw new ReedSolomonException("Bad error location");
 			}
-			received[position] = GF256.addOrSubtract(received[position],
-					errorMagnitudes[i]);
+			received[position] = GF256.addOrSubtract(received[position], errorMagnitudes[i]);
 		}
 	}
 
-	private GF256Poly[] runEuclideanAlgorithm(GF256Poly a, GF256Poly b, int R)
-			throws ReedSolomonException {
+	private GF256Poly[] runEuclideanAlgorithm(GF256Poly a, GF256Poly b, int R) throws ReedSolomonException {
 		// Assume a's degree is >= b's
 		if (a.getDegree() < b.getDegree()) {
 			GF256Poly temp = a;
@@ -132,13 +120,11 @@ public final class ReedSolomonDecoder {
 			}
 			r = rLastLast;
 			GF256Poly q = field.getZero();
-			int denominatorLeadingTerm = rLast
-					.getCoefficient(rLast.getDegree());
+			int denominatorLeadingTerm = rLast.getCoefficient(rLast.getDegree());
 			int dltInverse = field.inverse(denominatorLeadingTerm);
 			while (r.getDegree() >= rLast.getDegree() && !r.isZero()) {
 				int degreeDiff = r.getDegree() - rLast.getDegree();
-				int scale = field.multiply(r.getCoefficient(r.getDegree()),
-						dltInverse);
+				int scale = field.multiply(r.getCoefficient(r.getDegree()), dltInverse);
 				q = q.addOrSubtract(field.buildMonomial(degreeDiff, scale));
 				r = r.addOrSubtract(rLast.multiplyByMonomial(degreeDiff, scale));
 			}
@@ -158,8 +144,7 @@ public final class ReedSolomonDecoder {
 		return new GF256Poly[] { sigma, omega };
 	}
 
-	private int[] findErrorLocations(GF256Poly errorLocator)
-			throws ReedSolomonException {
+	private int[] findErrorLocations(GF256Poly errorLocator) throws ReedSolomonException {
 		// This is a direct application of Chien's search
 		int numErrors = errorLocator.getDegree();
 		if (numErrors == 1) { // shortcut
@@ -174,14 +159,12 @@ public final class ReedSolomonDecoder {
 			}
 		}
 		if (e != numErrors) {
-			throw new ReedSolomonException(
-					"Error locator degree does not match number of roots");
+			throw new ReedSolomonException("Error locator degree does not match number of roots");
 		}
 		return result;
 	}
 
-	private int[] findErrorMagnitudes(GF256Poly errorEvaluator,
-			int[] errorLocations, boolean dataMatrix) {
+	private int[] findErrorMagnitudes(GF256Poly errorEvaluator, int[] errorLocations, boolean dataMatrix) {
 		// This is directly applying Forney's Formula
 		int s = errorLocations.length;
 		int[] result = new int[s];
@@ -197,13 +180,11 @@ public final class ReedSolomonDecoder {
 					// due to a Hotspot bug.
 					// Below is a funny-looking workaround from Steven Parkes
 					int term = field.multiply(errorLocations[j], xiInverse);
-					int termPlus1 = ((term & 0x1) == 0) ? (term | 1)
-							: (term & ~1);
+					int termPlus1 = ((term & 0x1) == 0) ? (term | 1) : (term & ~1);
 					denominator = field.multiply(denominator, termPlus1);
 				}
 			}
-			result[i] = field.multiply(errorEvaluator.evaluateAt(xiInverse),
-					field.inverse(denominator));
+			result[i] = field.multiply(errorEvaluator.evaluateAt(xiInverse), field.inverse(denominator));
 			// Thanks to sanfordsquires for this fix:
 			if (dataMatrix) {
 				result[i] = field.multiply(result[i], xiInverse);

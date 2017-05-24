@@ -44,15 +44,11 @@ import java.io.IOException;
 
 /**
  * <p>
- * Subclass of the Apache {@link DefaultHttpClient} that is configured with
- * reasonable default settings and registered schemes for Android, and also lets
- * the user add {@link HttpRequestInterceptor} classes. Don't create this
- * directly, use the {@link #newInstance} factory method.
+ * Subclass of the Apache {@link DefaultHttpClient} that is configured with reasonable default settings and registered schemes for Android, and also lets the user add {@link HttpRequestInterceptor} classes. Don't create this directly, use the {@link #newInstance} factory method.
  * </p>
  * <p/>
  * <p>
- * This client processes cookies but does not retain them by default. To retain
- * cookies, simply add a cookie store to the HttpContext:
+ * This client processes cookies but does not retain them by default. To retain cookies, simply add a cookie store to the HttpContext:
  * 
  * <pre>
  * context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -104,12 +100,9 @@ public final class AndroidHttpClient implements HttpClient {
 		// Set the specified user agent and register standard protocols.
 		HttpProtocolParams.setUserAgent(params, userAgent);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", SSLSocketFactory
-				.getSocketFactory(), 443));
-		ClientConnectionManager manager = new ThreadSafeClientConnManager(
-				params, schemeRegistry);
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		ClientConnectionManager manager = new ThreadSafeClientConnManager(params, schemeRegistry);
 
 		// We use a factory method to modify superclass initialization
 		// parameters without the funny call-a-static-method dance.
@@ -133,20 +126,16 @@ public final class AndroidHttpClient implements HttpClient {
 				// Same as DefaultHttpClient.createHttpContext() minus the
 				// cookie store.
 				HttpContext context = new BasicHttpContext();
-				context.setAttribute(ClientContext.AUTHSCHEME_REGISTRY,
-						getAuthSchemes());
-				context.setAttribute(ClientContext.COOKIESPEC_REGISTRY,
-						getCookieSpecs());
-				context.setAttribute(ClientContext.CREDS_PROVIDER,
-						getCredentialsProvider());
+				context.setAttribute(ClientContext.AUTHSCHEME_REGISTRY, getAuthSchemes());
+				context.setAttribute(ClientContext.COOKIESPEC_REGISTRY, getCookieSpecs());
+				context.setAttribute(ClientContext.CREDS_PROVIDER, getCredentialsProvider());
 				return context;
 			}
 		};
 	}
 
 	/**
-	 * Release resources associated with this client. You must call this, or
-	 * significant resources (sockets and memory) may be leaked.
+	 * Release resources associated with this client. You must call this, or significant resources (sockets and memory) may be leaked.
 	 */
 	public void close() {
 		getConnectionManager().shutdown();
@@ -164,40 +153,31 @@ public final class AndroidHttpClient implements HttpClient {
 		return delegate.execute(request);
 	}
 
-	public HttpResponse execute(HttpUriRequest request, HttpContext context)
-			throws IOException {
+	public HttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException {
 		return delegate.execute(request, context);
 	}
 
-	public HttpResponse execute(HttpHost target, HttpRequest request)
-			throws IOException {
+	public HttpResponse execute(HttpHost target, HttpRequest request) throws IOException {
 		return delegate.execute(target, request);
 	}
 
-	public HttpResponse execute(HttpHost target, HttpRequest request,
-			HttpContext context) throws IOException {
+	public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException {
 		return delegate.execute(target, request, context);
 	}
 
-	public <T> T execute(HttpUriRequest request,
-			ResponseHandler<? extends T> responseHandler) throws IOException {
+	public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException {
 		return delegate.execute(request, responseHandler);
 	}
 
-	public <T> T execute(HttpUriRequest request,
-			ResponseHandler<? extends T> responseHandler, HttpContext context)
-			throws IOException {
+	public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException {
 		return delegate.execute(request, responseHandler, context);
 	}
 
-	public <T> T execute(HttpHost target, HttpRequest request,
-			ResponseHandler<? extends T> responseHandler) throws IOException {
+	public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler) throws IOException {
 		return delegate.execute(target, request, responseHandler);
 	}
 
-	public <T> T execute(HttpHost target, HttpRequest request,
-			ResponseHandler<? extends T> responseHandler, HttpContext context)
-			throws IOException {
+	public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException {
 		return delegate.execute(target, request, responseHandler, context);
 	}
 

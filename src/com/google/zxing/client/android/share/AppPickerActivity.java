@@ -37,8 +37,7 @@ public final class AppPickerActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		dialog = ProgressDialog.show(this, "",
-				getString(R.string.msg_loading_apps), true, true);
+		dialog = ProgressDialog.show(this, "", getString(R.string.msg_loading_apps), true, true);
 		if (labelsPackages.isEmpty()) {
 			new LoadPackagesAsyncTask(this).execute(labelsPackages);
 		}
@@ -50,8 +49,7 @@ public final class AppPickerActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View view, int position, long id) {
 		if (position >= 0 && position < labelsPackages.size()) {
-			String url = "market://search?q=pname:"
-					+ labelsPackages.get(position)[1];
+			String url = "market://search?q=pname:" + labelsPackages.get(position)[1];
 			Intent intent = new Intent();
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			intent.putExtra(Browser.BookmarkColumns.URL, url);

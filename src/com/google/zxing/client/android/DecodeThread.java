@@ -43,8 +43,7 @@ final class DecodeThread extends Thread {
 	private Handler handler;
 	private final CountDownLatch handlerInitLatch;
 
-	DecodeThread(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats,
-			String characterSet, ResultPointCallback resultPointCallback) {
+	DecodeThread(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats, String characterSet, ResultPointCallback resultPointCallback) {
 
 		this.activity = activity;
 		handlerInitLatch = new CountDownLatch(1);
@@ -54,8 +53,7 @@ final class DecodeThread extends Thread {
 		// The prefs can't change while the thread is running, so pick them up
 		// once here.
 		if (decodeFormats == null || decodeFormats.isEmpty()) {
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(activity);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 			decodeFormats = new Vector<BarcodeFormat>();
 			if (prefs.getBoolean(PreferencesActivity.KEY_DECODE_1D, true)) {
 				decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
@@ -63,8 +61,7 @@ final class DecodeThread extends Thread {
 			if (prefs.getBoolean(PreferencesActivity.KEY_DECODE_QR, true)) {
 				decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
 			}
-			if (prefs.getBoolean(PreferencesActivity.KEY_DECODE_DATA_MATRIX,
-					true)) {
+			if (prefs.getBoolean(PreferencesActivity.KEY_DECODE_DATA_MATRIX, true)) {
 				decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
 			}
 		}
@@ -74,8 +71,7 @@ final class DecodeThread extends Thread {
 			hints.put(DecodeHintType.CHARACTER_SET, characterSet);
 		}
 
-		hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK,
-				resultPointCallback);
+		hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK, resultPointCallback);
 	}
 
 	Handler getHandler() {

@@ -122,18 +122,13 @@ public final class QRCode {
 	public boolean isValid() {
 		return
 		// First check if all version are not uninitialized.
-		mode != null && ecLevel != null && version != -1 && matrixWidth != -1
-				&& maskPattern != -1 && numTotalBytes != -1
-				&& numDataBytes != -1 && numECBytes != -1
-				&& numRSBlocks != -1
-				&&
-				// Then check them in other ways..
-				isValidMaskPattern(maskPattern)
-				&& numTotalBytes == numDataBytes + numECBytes &&
-				// ByteMatrix stuff.
-				matrix != null && matrixWidth == matrix.getWidth() &&
-				// See 7.3.1 of JISX0510:2004 (p.5).
-				matrix.getWidth() == matrix.getHeight(); // Must be square.
+		mode != null && ecLevel != null && version != -1 && matrixWidth != -1 && maskPattern != -1 && numTotalBytes != -1 && numDataBytes != -1 && numECBytes != -1 && numRSBlocks != -1 &&
+		// Then check them in other ways..
+			isValidMaskPattern(maskPattern) && numTotalBytes == numDataBytes + numECBytes &&
+			// ByteMatrix stuff.
+			matrix != null && matrixWidth == matrix.getWidth() &&
+			// See 7.3.1 of JISX0510:2004 (p.5).
+			matrix.getWidth() == matrix.getHeight(); // Must be square.
 	}
 
 	// Return debug String.
@@ -222,11 +217,7 @@ public final class QRCode {
 	// should be removed entirely
 	// if ByteMatrix is changed never to contain a -1.
 	/*
-	 * private static boolean EverythingIsBinary(final ByteMatrix matrix) { for
-	 * (int y = 0; y < matrix.height(); ++y) { for (int x = 0; x <
-	 * matrix.width(); ++x) { int value = matrix.get(y, x); if (!(value == 0 ||
-	 * value == 1)) { // Found non zero/one value. return false; } } } return
-	 * true; }
+	 * private static boolean EverythingIsBinary(final ByteMatrix matrix) { for (int y = 0; y < matrix.height(); ++y) { for (int x = 0; x < matrix.width(); ++x) { int value = matrix.get(y, x); if (!(value == 0 || value == 1)) { // Found non zero/one value. return false; } } } return true; }
 	 */
 
 }

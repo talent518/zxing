@@ -31,8 +31,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * Encapsulates logic that can detect a Data Matrix Code in an image, even if
- * the Data Matrix Code is rotated or skewed, or partially obscured.
+ * Encapsulates logic that can detect a Data Matrix Code in an image, even if the Data Matrix Code is rotated or skewed, or partially obscured.
  * </p>
  * 
  * @author Sean Owen
@@ -42,8 +41,7 @@ public final class Detector {
 	// Trick to avoid creating new Integer objects below -- a sort of crude copy
 	// of
 	// the Integer.valueOf(int) optimization added in Java 5, not in J2ME
-	private static final Integer[] INTEGERS = { new Integer(0), new Integer(1),
-			new Integer(2), new Integer(3), new Integer(4) };
+	private static final Integer[] INTEGERS = { new Integer(0), new Integer(1), new Integer(2), new Integer(3), new Integer(4) };
 	// No, can't use valueOf()
 
 	private final BitMatrix image;
@@ -59,8 +57,7 @@ public final class Detector {
 	 * Detects a Data Matrix Code in an image.
 	 * </p>
 	 * 
-	 * @return {@link DetectorResult} encapsulating results of detecting a Data
-	 *         Matrix Code
+	 * @return {@link DetectorResult} encapsulating results of detecting a Data Matrix Code
 	 * @throws NotFoundException
 	 *             if no Data Matrix Code can be found
 	 */
@@ -80,16 +77,13 @@ public final class Detector {
 		transitions.addElement(transitionsBetween(pointA, pointC));
 		transitions.addElement(transitionsBetween(pointB, pointD));
 		transitions.addElement(transitionsBetween(pointC, pointD));
-		Collections.insertionSort(transitions,
-				new ResultPointsAndTransitionsComparator());
+		Collections.insertionSort(transitions, new ResultPointsAndTransitionsComparator());
 
 		// Sort by number of transitions. First two will be the two solid sides;
 		// last two
 		// will be the two alternating black/white sides
-		ResultPointsAndTransitions lSideOne = (ResultPointsAndTransitions) transitions
-				.elementAt(0);
-		ResultPointsAndTransitions lSideTwo = (ResultPointsAndTransitions) transitions
-				.elementAt(1);
+		ResultPointsAndTransitions lSideOne = (ResultPointsAndTransitions) transitions.elementAt(0);
+		ResultPointsAndTransitions lSideTwo = (ResultPointsAndTransitions) transitions.elementAt(1);
 
 		// Figure out which point is their intersection by tallying up the
 		// number of times we see the
@@ -121,8 +115,7 @@ public final class Detector {
 			}
 		}
 
-		if (maybeTopLeft == null || bottomLeft == null
-				|| maybeBottomRight == null) {
+		if (maybeTopLeft == null || bottomLeft == null || maybeBottomRight == null) {
 			throw NotFoundException.getNotFoundInstance();
 		}
 
@@ -163,9 +156,7 @@ public final class Detector {
 		// adjacent to the white module at the top right. Tracing to that corner
 		// from either the top left
 		// or bottom right should work here.
-		int dimension = Math.min(transitionsBetween(topLeft, topRight)
-				.getTransitions(), transitionsBetween(bottomRight, topRight)
-				.getTransitions());
+		int dimension = Math.min(transitionsBetween(topLeft, topRight).getTransitions(), transitionsBetween(bottomRight, topRight).getTransitions());
 		if ((dimension & 0x01) == 1) {
 			// it can't be odd, so, round... up?
 			dimension++;
@@ -173,53 +164,41 @@ public final class Detector {
 		dimension += 2;
 
 		// correct top right point to match the white module
-		ResultPoint correctedTopRight = correctTopRight(bottomLeft,
-				bottomRight, topLeft, topRight, dimension);
+		ResultPoint correctedTopRight = correctTopRight(bottomLeft, bottomRight, topLeft, topRight, dimension);
 		if (correctedTopRight == null) {
 			correctedTopRight = topRight;
 		}
 
 		// We redetermine the dimension using the corrected top right point
-		int dimension2 = Math
-				.max(transitionsBetween(topLeft, correctedTopRight)
-						.getTransitions(),
-						transitionsBetween(bottomRight, correctedTopRight)
-								.getTransitions());
+		int dimension2 = Math.max(transitionsBetween(topLeft, correctedTopRight).getTransitions(), transitionsBetween(bottomRight, correctedTopRight).getTransitions());
 		dimension2++;
 		if ((dimension2 & 0x01) == 1) {
 			dimension2++;
 		}
 
-		BitMatrix bits = sampleGrid(image, topLeft, bottomLeft, bottomRight,
-				correctedTopRight, dimension2);
+		BitMatrix bits = sampleGrid(image, topLeft, bottomLeft, bottomRight, correctedTopRight, dimension2);
 
-		return new DetectorResult(bits, new ResultPoint[] { topLeft,
-				bottomLeft, bottomRight, correctedTopRight });
+		return new DetectorResult(bits, new ResultPoint[] { topLeft, bottomLeft, bottomRight, correctedTopRight });
 	}
 
 	/**
-	 * Calculates the position of the white top right module using the output of
-	 * the rectangle detector
+	 * Calculates the position of the white top right module using the output of the rectangle detector
 	 */
-	private ResultPoint correctTopRight(ResultPoint bottomLeft,
-			ResultPoint bottomRight, ResultPoint topLeft, ResultPoint topRight,
-			int dimension) {
+	private ResultPoint correctTopRight(ResultPoint bottomLeft, ResultPoint bottomRight, ResultPoint topLeft, ResultPoint topRight, int dimension) {
 
 		float corr = distance(bottomLeft, bottomRight) / (float) dimension;
 		int norm = distance(topLeft, topRight);
 		float cos = (topRight.getX() - topLeft.getX()) / norm;
 		float sin = (topRight.getY() - topLeft.getY()) / norm;
 
-		ResultPoint c1 = new ResultPoint(topRight.getX() + corr * cos,
-				topRight.getY() + corr * sin);
+		ResultPoint c1 = new ResultPoint(topRight.getX() + corr * cos, topRight.getY() + corr * sin);
 
 		corr = distance(bottomLeft, bottomRight) / (float) dimension;
 		norm = distance(bottomRight, topRight);
 		cos = (topRight.getX() - bottomRight.getX()) / norm;
 		sin = (topRight.getY() - bottomRight.getY()) / norm;
 
-		ResultPoint c2 = new ResultPoint(topRight.getX() + corr * cos,
-				topRight.getY() + corr * sin);
+		ResultPoint c2 = new ResultPoint(topRight.getX() + corr * cos, topRight.getY() + corr * sin);
 
 		if (!isValid(c1)) {
 			if (isValid(c2)) {
@@ -230,10 +209,8 @@ public final class Detector {
 			return c1;
 		}
 
-		int l1 = Math.abs(transitionsBetween(topLeft, c1).getTransitions()
-				- transitionsBetween(bottomRight, c1).getTransitions());
-		int l2 = Math.abs(transitionsBetween(topLeft, c2).getTransitions()
-				- transitionsBetween(bottomRight, c2).getTransitions());
+		int l1 = Math.abs(transitionsBetween(topLeft, c1).getTransitions() - transitionsBetween(bottomRight, c1).getTransitions());
+		int l2 = Math.abs(transitionsBetween(topLeft, c2).getTransitions() - transitionsBetween(bottomRight, c2).getTransitions());
 
 		if (l1 <= l2) {
 			return c1;
@@ -243,13 +220,11 @@ public final class Detector {
 	}
 
 	private boolean isValid(ResultPoint p) {
-		return (p.getX() >= 0 && p.getX() < image.width && p.getY() > 0 && p
-				.getY() < image.height);
+		return (p.getX() >= 0 && p.getX() < image.width && p.getY() > 0 && p.getY() < image.height);
 	}
 
 	/**
-	 * Ends up being a bit faster than Math.round(). This merely rounds its
-	 * argument to the nearest int, where x.5 rounds up.
+	 * Ends up being a bit faster than Math.round(). This merely rounds its argument to the nearest int, where x.5 rounds up.
 	 */
 	private static int round(float d) {
 		return (int) (d + 0.5f);
@@ -257,9 +232,7 @@ public final class Detector {
 
 	// L2 distance
 	private static int distance(ResultPoint a, ResultPoint b) {
-		return round((float) Math.sqrt((a.getX() - b.getX())
-				* (a.getX() - b.getX()) + (a.getY() - b.getY())
-				* (a.getY() - b.getY())));
+		return round((float) Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY())));
 	}
 
 	/**
@@ -267,29 +240,20 @@ public final class Detector {
 	 */
 	private static void increment(Hashtable table, ResultPoint key) {
 		Integer value = (Integer) table.get(key);
-		table.put(key, value == null ? INTEGERS[1]
-				: INTEGERS[value.intValue() + 1]);
+		table.put(key, value == null ? INTEGERS[1] : INTEGERS[value.intValue() + 1]);
 	}
 
-	private static BitMatrix sampleGrid(BitMatrix image, ResultPoint topLeft,
-			ResultPoint bottomLeft, ResultPoint bottomRight,
-			ResultPoint topRight, int dimension) throws NotFoundException {
+	private static BitMatrix sampleGrid(BitMatrix image, ResultPoint topLeft, ResultPoint bottomLeft, ResultPoint bottomRight, ResultPoint topRight, int dimension) throws NotFoundException {
 
 		GridSampler sampler = GridSampler.getInstance();
 
-		return sampler.sampleGrid(image, dimension, 0.5f, 0.5f,
-				dimension - 0.5f, 0.5f, dimension - 0.5f, dimension - 0.5f,
-				0.5f, dimension - 0.5f, topLeft.getX(), topLeft.getY(),
-				topRight.getX(), topRight.getY(), bottomRight.getX(),
-				bottomRight.getY(), bottomLeft.getX(), bottomLeft.getY());
+		return sampler.sampleGrid(image, dimension, 0.5f, 0.5f, dimension - 0.5f, 0.5f, dimension - 0.5f, dimension - 0.5f, 0.5f, dimension - 0.5f, topLeft.getX(), topLeft.getY(), topRight.getX(), topRight.getY(), bottomRight.getX(), bottomRight.getY(), bottomLeft.getX(), bottomLeft.getY());
 	}
 
 	/**
-	 * Counts the number of black/white transitions between two points, using
-	 * something like Bresenham's algorithm.
+	 * Counts the number of black/white transitions between two points, using something like Bresenham's algorithm.
 	 */
-	private ResultPointsAndTransitions transitionsBetween(ResultPoint from,
-			ResultPoint to) {
+	private ResultPointsAndTransitions transitionsBetween(ResultPoint from, ResultPoint to) {
 		// See QR Code Detector, sizeOfBlackWhiteBlackRun()
 		int fromX = (int) from.getX();
 		int fromY = (int) from.getY();
@@ -311,8 +275,7 @@ public final class Detector {
 		int ystep = fromY < toY ? 1 : -1;
 		int xstep = fromX < toX ? 1 : -1;
 		int transitions = 0;
-		boolean inBlack = image.get(steep ? fromY : fromX, steep ? fromX
-				: fromY);
+		boolean inBlack = image.get(steep ? fromY : fromX, steep ? fromX : fromY);
 		for (int x = fromX, y = fromY; x != toX; x += xstep) {
 			boolean isBlack = image.get(steep ? y : x, steep ? x : y);
 			if (isBlack != inBlack) {
@@ -339,8 +302,7 @@ public final class Detector {
 		private final ResultPoint to;
 		private final int transitions;
 
-		private ResultPointsAndTransitions(ResultPoint from, ResultPoint to,
-				int transitions) {
+		private ResultPointsAndTransitions(ResultPoint from, ResultPoint to, int transitions) {
 			this.from = from;
 			this.to = to;
 			this.transitions = transitions;
@@ -366,11 +328,9 @@ public final class Detector {
 	/**
 	 * Orders ResultPointsAndTransitions by number of transitions, ascending.
 	 */
-	private static class ResultPointsAndTransitionsComparator implements
-			Comparator {
+	private static class ResultPointsAndTransitionsComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
-			return ((ResultPointsAndTransitions) o1).getTransitions()
-					- ((ResultPointsAndTransitions) o2).getTransitions();
+			return ((ResultPointsAndTransitions) o1).getTransitions() - ((ResultPointsAndTransitions) o2).getTransitions();
 		}
 	}
 

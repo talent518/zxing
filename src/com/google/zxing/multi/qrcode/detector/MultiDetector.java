@@ -28,8 +28,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * Encapsulates logic that can detect one or more QR Codes in an image, even if
- * the QR Code is rotated or skewed, or partially obscured.
+ * Encapsulates logic that can detect one or more QR Codes in an image, even if the QR Code is rotated or skewed, or partially obscured.
  * </p>
  * 
  * @author Sean Owen
@@ -43,8 +42,7 @@ public final class MultiDetector extends Detector {
 		super(image);
 	}
 
-	public DetectorResult[] detectMulti(Hashtable hints)
-			throws NotFoundException {
+	public DetectorResult[] detectMulti(Hashtable hints) throws NotFoundException {
 		BitMatrix image = getImage();
 		MultiFinderPatternFinder finder = new MultiFinderPatternFinder(image);
 		FinderPatternInfo[] info = finder.findMulti(hints);

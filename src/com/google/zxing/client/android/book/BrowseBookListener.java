@@ -29,8 +29,7 @@ final class BrowseBookListener implements AdapterView.OnItemClickListener {
 	private final SearchBookContentsActivity activity;
 	private final List<SearchBookContentsResult> items;
 
-	BrowseBookListener(SearchBookContentsActivity activity,
-			List<SearchBookContentsResult> items) {
+	BrowseBookListener(SearchBookContentsActivity activity, List<SearchBookContentsResult> items) {
 		this.activity = activity;
 		this.items = items;
 	}
@@ -41,16 +40,12 @@ final class BrowseBookListener implements AdapterView.OnItemClickListener {
 		// kludge.
 		String pageId = items.get(position - 1).getPageId();
 		String query = SearchBookContentsResult.getQuery();
-		if (activity.getISBN().startsWith("http://google.com/books?id=")
-				&& (pageId.length() > 0)) {
+		if (activity.getISBN().startsWith("http://google.com/books?id=") && (pageId.length() > 0)) {
 			String uri = activity.getISBN();
 			int equals = uri.indexOf('=');
 			String volumeId = uri.substring(equals + 1);
-			String readBookURI = "http://books.google."
-					+ LocaleManager.getBookSearchCountryTLD() + "/books?id="
-					+ volumeId + "&pg=" + pageId + "&vq=" + query;
-			Intent intent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse(readBookURI));
+			String readBookURI = "http://books.google." + LocaleManager.getBookSearchCountryTLD() + "/books?id=" + volumeId + "&pg=" + pageId + "&vq=" + query;
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(readBookURI));
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			activity.startActivity(intent);
 		}

@@ -20,21 +20,13 @@ import com.google.zxing.Result;
 import com.google.zxing.client.result.URIParsedResult;
 
 /**
- * Recognizes an NDEF message that encodes a URI according to the
- * "URI Record Type Definition" specification.
+ * Recognizes an NDEF message that encodes a URI according to the "URI Record Type Definition" specification.
  * 
  * @author Sean Owen
  */
 final class NDEFURIResultParser extends AbstractNDEFResultParser {
 
-	private static final String[] URI_PREFIXES = { null, "http://www.",
-			"https://www.", "http://", "https://", "tel:", "mailto:",
-			"ftp://anonymous:anonymous@", "ftp://ftp.", "ftps://", "sftp://",
-			"smb://", "nfs://", "ftp://", "dav://", "news:", "telnet://",
-			"imap:", "rtsp://", "urn:", "pop:", "sip:", "sips:", "tftp:",
-			"btspp://", "btl2cap://", "btgoep://", "tcpobex://", "irdaobex://",
-			"file://", "urn:epc:id:", "urn:epc:tag:", "urn:epc:pat:",
-			"urn:epc:raw:", "urn:epc:", "urn:nfc:", };
+	private static final String[] URI_PREFIXES = { null, "http://www.", "https://www.", "http://", "https://", "tel:", "mailto:", "ftp://anonymous:anonymous@", "ftp://ftp.", "ftps://", "sftp://", "smb://", "nfs://", "ftp://", "dav://", "news:", "telnet://", "imap:", "rtsp://", "urn:", "pop:", "sip:", "sips:", "tftp:", "btspp://", "btl2cap://", "btgoep://", "tcpobex://", "irdaobex://", "file://", "urn:epc:id:", "urn:epc:tag:", "urn:epc:pat:", "urn:epc:raw:", "urn:epc:", "urn:nfc:", };
 
 	public static URIParsedResult parse(Result result) {
 		byte[] bytes = result.getRawBytes();
@@ -42,8 +34,7 @@ final class NDEFURIResultParser extends AbstractNDEFResultParser {
 			return null;
 		}
 		NDEFRecord ndefRecord = NDEFRecord.readRecord(bytes, 0);
-		if (ndefRecord == null || !ndefRecord.isMessageBegin()
-				|| !ndefRecord.isMessageEnd()) {
+		if (ndefRecord == null || !ndefRecord.isMessageBegin() || !ndefRecord.isMessageEnd()) {
 			return null;
 		}
 		if (!ndefRecord.getType().equals(NDEFRecord.URI_WELL_KNOWN_TYPE)) {

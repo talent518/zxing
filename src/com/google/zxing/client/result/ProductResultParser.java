@@ -34,10 +34,7 @@ final class ProductResultParser extends ResultParser {
 	// product barcodes.
 	public static ProductParsedResult parse(Result result) {
 		BarcodeFormat format = result.getBarcodeFormat();
-		if (!(BarcodeFormat.UPC_A.equals(format)
-				|| BarcodeFormat.UPC_E.equals(format)
-				|| BarcodeFormat.EAN_8.equals(format) || BarcodeFormat.EAN_13
-					.equals(format))) {
+		if (!(BarcodeFormat.UPC_A.equals(format) || BarcodeFormat.UPC_E.equals(format) || BarcodeFormat.EAN_8.equals(format) || BarcodeFormat.EAN_13.equals(format))) {
 			return null;
 		}
 		// Really neither of these should happen:

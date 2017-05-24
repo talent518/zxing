@@ -63,8 +63,7 @@ public final class EAN13Reader extends UPCEANReader {
 	// in binary:
 	// 0 1 1 0 0 1 == 0x19
 	//
-	static final int[] FIRST_DIGIT_ENCODINGS = { 0x00, 0x0B, 0x0D, 0xE, 0x13,
-			0x19, 0x1C, 0x15, 0x16, 0x1A };
+	static final int[] FIRST_DIGIT_ENCODINGS = { 0x00, 0x0B, 0x0D, 0xE, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A };
 
 	private final int[] decodeMiddleCounters;
 
@@ -72,8 +71,7 @@ public final class EAN13Reader extends UPCEANReader {
 		decodeMiddleCounters = new int[4];
 	}
 
-	protected int decodeMiddle(BitArray row, int[] startRange,
-			StringBuffer resultString) throws NotFoundException {
+	protected int decodeMiddle(BitArray row, int[] startRange, StringBuffer resultString) throws NotFoundException {
 		int[] counters = decodeMiddleCounters;
 		counters[0] = 0;
 		counters[1] = 0;
@@ -85,8 +83,7 @@ public final class EAN13Reader extends UPCEANReader {
 		int lgPatternFound = 0;
 
 		for (int x = 0; x < 6 && rowOffset < end; x++) {
-			int bestMatch = decodeDigit(row, counters, rowOffset,
-					L_AND_G_PATTERNS);
+			int bestMatch = decodeDigit(row, counters, rowOffset, L_AND_G_PATTERNS);
 			resultString.append((char) ('0' + bestMatch % 10));
 			for (int i = 0; i < counters.length; i++) {
 				rowOffset += counters[i];
@@ -98,8 +95,7 @@ public final class EAN13Reader extends UPCEANReader {
 
 		determineFirstDigit(resultString, lgPatternFound);
 
-		int[] middleRange = findGuardPattern(row, rowOffset, true,
-				MIDDLE_PATTERN);
+		int[] middleRange = findGuardPattern(row, rowOffset, true, MIDDLE_PATTERN);
 		rowOffset = middleRange[1];
 
 		for (int x = 0; x < 6 && rowOffset < end; x++) {
@@ -118,20 +114,16 @@ public final class EAN13Reader extends UPCEANReader {
 	}
 
 	/**
-	 * Based on pattern of odd-even ('L' and 'G') patterns used to encoded the
-	 * explicitly-encoded digits in a barcode, determines the implicitly encoded
-	 * first digit and adds it to the result string.
+	 * Based on pattern of odd-even ('L' and 'G') patterns used to encoded the explicitly-encoded digits in a barcode, determines the implicitly encoded first digit and adds it to the result string.
 	 * 
 	 * @param resultString
 	 *            string to insert decoded first digit into
 	 * @param lgPatternFound
-	 *            int whose bits indicates the pattern of odd/even L/G patterns
-	 *            used to encode digits
+	 *            int whose bits indicates the pattern of odd/even L/G patterns used to encode digits
 	 * @throws NotFoundException
 	 *             if first digit cannot be determined
 	 */
-	private static void determineFirstDigit(StringBuffer resultString,
-			int lgPatternFound) throws NotFoundException {
+	private static void determineFirstDigit(StringBuffer resultString, int lgPatternFound) throws NotFoundException {
 		for (int d = 0; d < 10; d++) {
 			if (lgPatternFound == FIRST_DIGIT_ENCODINGS[d]) {
 				resultString.insert(0, (char) ('0' + d));

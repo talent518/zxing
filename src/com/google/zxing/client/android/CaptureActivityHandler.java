@@ -32,15 +32,13 @@ import android.util.Log;
 import java.util.Vector;
 
 /**
- * This class handles all the messaging which comprises the state machine for
- * capture.
+ * This class handles all the messaging which comprises the state machine for capture.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class CaptureActivityHandler extends Handler {
 
-	private static final String TAG = CaptureActivityHandler.class
-			.getSimpleName();
+	private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
 	private final CaptureActivity activity;
 	private final DecodeThread decodeThread;
@@ -50,11 +48,9 @@ public final class CaptureActivityHandler extends Handler {
 		PREVIEW, SUCCESS, DONE
 	}
 
-	CaptureActivityHandler(CaptureActivity activity,
-			Vector<BarcodeFormat> decodeFormats, String characterSet) {
+	CaptureActivityHandler(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats, String characterSet) {
 		this.activity = activity;
-		decodeThread = new DecodeThread(activity, decodeFormats, characterSet,
-				new ViewfinderResultPointCallback(activity.getViewfinderView()));
+		decodeThread = new DecodeThread(activity, decodeFormats, characterSet, new ViewfinderResultPointCallback(activity.getViewfinderView()));
 		decodeThread.start();
 		state = State.SUCCESS;
 
@@ -84,16 +80,14 @@ public final class CaptureActivityHandler extends Handler {
 			Log.d(TAG, "Got decode succeeded message");
 			state = State.SUCCESS;
 			Bundle bundle = message.getData();
-			Bitmap barcode = bundle == null ? null : (Bitmap) bundle
-					.getParcelable(DecodeThread.BARCODE_BITMAP);
+			Bitmap barcode = bundle == null ? null : (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
 			activity.handleDecode((Result) message.obj, barcode);
 			break;
 		case R.id.decode_failed:
 			// We're decoding as fast as possible, so when one decode fails,
 			// start another.
 			state = State.PREVIEW;
-			CameraManager.get().requestPreviewFrame(decodeThread.getHandler(),
-					R.id.decode);
+			CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
 			break;
 		case R.id.return_scan_result:
 			Log.d(TAG, "Got return scan result message");
@@ -129,8 +123,7 @@ public final class CaptureActivityHandler extends Handler {
 	private void restartPreviewAndDecode() {
 		if (state == State.SUCCESS) {
 			state = State.PREVIEW;
-			CameraManager.get().requestPreviewFrame(decodeThread.getHandler(),
-					R.id.decode);
+			CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
 			CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
 			activity.drawViewfinder();
 		}

@@ -21,8 +21,7 @@ import com.google.zxing.Result;
 import java.util.Hashtable;
 
 /**
- * Represents a result that encodes an e-mail address, either as a plain address
- * like "joe@example.org" or a mailto: URL like "mailto:joe@example.org".
+ * Represents a result that encodes an e-mail address, either as a plain address like "joe@example.org" or a mailto: URL like "mailto:joe@example.org".
  * 
  * @author Sean Owen
  */
@@ -52,15 +51,13 @@ final class EmailAddressResultParser extends ResultParser {
 				subject = (String) nameValues.get("subject");
 				body = (String) nameValues.get("body");
 			}
-			return new EmailAddressParsedResult(emailAddress, subject, body,
-					rawText);
+			return new EmailAddressParsedResult(emailAddress, subject, body, rawText);
 		} else {
 			if (!EmailDoCoMoResultParser.isBasicallyValidEmailAddress(rawText)) {
 				return null;
 			}
 			emailAddress = rawText;
-			return new EmailAddressParsedResult(emailAddress, null, null,
-					"mailto:" + emailAddress);
+			return new EmailAddressParsedResult(emailAddress, null, null, "mailto:" + emailAddress);
 		}
 	}
 

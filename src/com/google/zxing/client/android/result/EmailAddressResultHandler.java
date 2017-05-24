@@ -28,8 +28,7 @@ import android.app.Activity;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class EmailAddressResultHandler extends ResultHandler {
-	private static final int[] buttons = { R.string.button_email,
-			R.string.button_add_contact };
+	private static final int[] buttons = { R.string.button_email, R.string.button_add_contact };
 
 	public EmailAddressResultHandler(Activity activity, ParsedResult result) {
 		super(activity, result);
@@ -50,9 +49,7 @@ public final class EmailAddressResultHandler extends ResultHandler {
 		EmailAddressParsedResult emailResult = (EmailAddressParsedResult) getResult();
 		switch (index) {
 		case 0:
-			sendEmailFromUri(emailResult.getMailtoURI(),
-					emailResult.getEmailAddress(), emailResult.getSubject(),
-					emailResult.getBody());
+			sendEmailFromUri(emailResult.getMailtoURI(), emailResult.getEmailAddress(), emailResult.getSubject(), emailResult.getBody());
 			break;
 		case 1:
 			String[] addresses = new String[1];

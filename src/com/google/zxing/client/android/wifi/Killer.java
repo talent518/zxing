@@ -70,8 +70,7 @@ final class Killer implements Runnable {
 						// This will kill the parent, a bad idea.
 						// parent.finish();
 						// This will start the browser, a better idea
-						launchIntent(new Intent(Intent.ACTION_VIEW, Uri
-								.parse("http://www.google.com/")));
+						launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com/")));
 					}
 				});
 			}

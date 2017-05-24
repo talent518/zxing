@@ -22,16 +22,13 @@ import com.google.zxing.client.result.ParsedResult;
 import android.app.Activity;
 
 /**
- * This class handles TextParsedResult as well as unknown formats. It's the
- * fallback handler.
+ * This class handles TextParsedResult as well as unknown formats. It's the fallback handler.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class TextResultHandler extends ResultHandler {
 
-	private static final int[] buttons = { R.string.button_web_search,
-			R.string.button_share_by_email, R.string.button_share_by_sms,
-			R.string.button_custom_product_search, };
+	private static final int[] buttons = { R.string.button_web_search, R.string.button_share_by_email, R.string.button_share_by_sms, R.string.button_custom_product_search, };
 
 	public TextResultHandler(Activity activity, ParsedResult result) {
 		super(activity, result);

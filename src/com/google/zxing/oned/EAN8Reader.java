@@ -35,8 +35,7 @@ public final class EAN8Reader extends UPCEANReader {
 		decodeMiddleCounters = new int[4];
 	}
 
-	protected int decodeMiddle(BitArray row, int[] startRange,
-			StringBuffer result) throws NotFoundException {
+	protected int decodeMiddle(BitArray row, int[] startRange, StringBuffer result) throws NotFoundException {
 		int[] counters = decodeMiddleCounters;
 		counters[0] = 0;
 		counters[1] = 0;
@@ -53,8 +52,7 @@ public final class EAN8Reader extends UPCEANReader {
 			}
 		}
 
-		int[] middleRange = findGuardPattern(row, rowOffset, true,
-				MIDDLE_PATTERN);
+		int[] middleRange = findGuardPattern(row, rowOffset, true, MIDDLE_PATTERN);
 		rowOffset = middleRange[1];
 
 		for (int x = 0; x < 4 && rowOffset < end; x++) {

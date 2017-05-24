@@ -45,8 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * This class encodes data from an Intent into a QR code, and then displays it
- * full screen so that another person can scan it with their device.
+ * This class encodes data from an Intent into a QR code, and then displays it full screen so that another person can scan it with their device.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
@@ -61,8 +60,7 @@ public final class EncodeActivity extends Activity {
 	private boolean firstLayout;
 
 	/**
-	 * This needs to be delayed until after the first layout so that the view
-	 * dimensions will be available.
+	 * This needs to be delayed until after the first layout so that the view dimensions will be available.
 	 */
 	private final OnGlobalLayoutListener layoutListener = new OnGlobalLayoutListener() {
 		public void onGlobalLayout() {
@@ -75,10 +73,8 @@ public final class EncodeActivity extends Activity {
 
 				Intent intent = getIntent();
 				try {
-					qrCodeEncoder = new QRCodeEncoder(EncodeActivity.this,
-							intent);
-					setTitle(getString(R.string.app_name) + " - "
-							+ qrCodeEncoder.getTitle());
+					qrCodeEncoder = new QRCodeEncoder(EncodeActivity.this, intent);
+					setTitle(getString(R.string.app_name) + " - " + qrCodeEncoder.getTitle());
 					qrCodeEncoder.requestBarcode(handler, smallerDimension);
 				} catch (IllegalArgumentException e) {
 					showErrorMessage(R.string.msg_encode_contents_failed);
@@ -115,8 +111,7 @@ public final class EncodeActivity extends Activity {
 		Intent intent = getIntent();
 		if (intent != null) {
 			String action = intent.getAction();
-			if (action.equals(Intents.Encode.ACTION)
-					|| action.equals(Intent.ACTION_SEND)) {
+			if (action.equals(Intents.Encode.ACTION) || action.equals(Intent.ACTION_SEND)) {
 				setContentView(R.layout.encode);
 				return;
 			}
@@ -127,8 +122,7 @@ public final class EncodeActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, Menu.FIRST, 0, R.string.menu_share).setIcon(
-				android.R.drawable.ic_menu_share);
+		menu.add(0, Menu.FIRST, 0, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
 		return true;
 	}
 
@@ -142,32 +136,27 @@ public final class EncodeActivity extends Activity {
 		String contents = qrCodeEncoder.getContents();
 		Bitmap bitmap;
 		try {
-			bitmap = QRCodeEncoder.encodeAsBitmap(contents,
-					BarcodeFormat.QR_CODE, SHARE_BARCODE_DIMENSION,
-					SHARE_BARCODE_DIMENSION);
+			bitmap = QRCodeEncoder.encodeAsBitmap(contents, BarcodeFormat.QR_CODE, SHARE_BARCODE_DIMENSION, SHARE_BARCODE_DIMENSION);
 		} catch (WriterException we) {
 			Log.w(TAG, we);
 			return true;
 		}
 
-		File bsRoot = new File(Environment.getExternalStorageDirectory(),
-				"BarcodeScanner");
+		File bsRoot = new File(Environment.getExternalStorageDirectory(), "BarcodeScanner");
 		File barcodesRoot = new File(bsRoot, "Barcodes");
 		if (!barcodesRoot.exists() && !barcodesRoot.mkdirs()) {
 			Log.w(TAG, "Couldn't make dir " + barcodesRoot);
 			showErrorMessage(R.string.msg_unmount_usb);
 			return true;
 		}
-		File barcodeFile = new File(barcodesRoot, makeBarcodeFileName(contents)
-				+ ".png");
+		File barcodeFile = new File(barcodesRoot, makeBarcodeFileName(contents) + ".png");
 		barcodeFile.delete();
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(barcodeFile);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos);
 		} catch (FileNotFoundException fnfe) {
-			Log.w(TAG, "Couldn't access file " + barcodeFile + " due to "
-					+ fnfe);
+			Log.w(TAG, "Couldn't access file " + barcodeFile + " due to " + fnfe);
 			showErrorMessage(R.string.msg_unmount_usb);
 			return true;
 		} finally {
@@ -181,11 +170,9 @@ public final class EncodeActivity extends Activity {
 		}
 
 		Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse("mailto:"));
-		intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name)
-				+ " - " + qrCodeEncoder.getTitle());
+		intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " - " + qrCodeEncoder.getTitle());
 		intent.putExtra(Intent.EXTRA_TEXT, qrCodeEncoder.getContents());
-		intent.putExtra(Intent.EXTRA_STREAM,
-				Uri.parse("file://" + barcodeFile.getAbsolutePath()));
+		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + barcodeFile.getAbsolutePath()));
 		intent.setType("image/png");
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		startActivity(Intent.createChooser(intent, null));
@@ -193,13 +180,11 @@ public final class EncodeActivity extends Activity {
 	}
 
 	private static CharSequence makeBarcodeFileName(CharSequence contents) {
-		int fileNameLength = Math.min(MAX_BARCODE_FILENAME_LENGTH,
-				contents.length());
+		int fileNameLength = Math.min(MAX_BARCODE_FILENAME_LENGTH, contents.length());
 		StringBuilder fileName = new StringBuilder(fileNameLength);
 		for (int i = 0; i < fileNameLength; i++) {
 			char c = contents.charAt(i);
-			if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
-					|| (c >= '0' && c <= '9')) {
+			if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
 				fileName.append(c);
 			} else {
 				fileName.append('_');

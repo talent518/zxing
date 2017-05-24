@@ -40,15 +40,11 @@ final class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase sqLiteDatabase) {
-		sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID_COL
-				+ " INTEGER PRIMARY KEY, " + TEXT_COL + " TEXT, " + FORMAT_COL
-				+ " TEXT, " + DISPLAY_COL + " TEXT, " + TIMESTAMP_COL
-				+ " INTEGER" + ");");
+		sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ID_COL + " INTEGER PRIMARY KEY, " + TEXT_COL + " TEXT, " + FORMAT_COL + " TEXT, " + DISPLAY_COL + " TEXT, " + TIMESTAMP_COL + " INTEGER" + ");");
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion,
-			int newVersion) {
+	public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
 		sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(sqLiteDatabase);
 	}

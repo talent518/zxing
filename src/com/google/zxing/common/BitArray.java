@@ -18,8 +18,7 @@ package com.google.zxing.common;
 
 /**
  * <p>
- * A simple, fast array of bits, represented compactly by an array of ints
- * internally.
+ * A simple, fast array of bits, represented compactly by an array of ints internally.
  * </p>
  * 
  * @author Sean Owen
@@ -97,9 +96,7 @@ public final class BitArray {
 	 * @param i
 	 *            first bit to set
 	 * @param newBits
-	 *            the new value of the next 32 bits. Note again that the
-	 *            least-significant bit corresponds to bit i, the
-	 *            next-least-significant to i+1, and so on.
+	 *            the new value of the next 32 bits. Note again that the least-significant bit corresponds to bit i, the next-least-significant to i+1, and so on.
 	 */
 	public void setBulk(int i, int newBits) {
 		bits[i >> 5] = newBits;
@@ -123,10 +120,8 @@ public final class BitArray {
 	 * @param end
 	 *            end of range, exclusive
 	 * @param value
-	 *            if true, checks that bits in range are set, otherwise checks
-	 *            that they are not set
-	 * @return true iff all bits are set or not set in range, according to value
-	 *         argument
+	 *            if true, checks that bits in range are set, otherwise checks that they are not set
+	 * @return true iff all bits are set or not set in range, according to value argument
 	 * @throws IllegalArgumentException
 	 *             if end is less than or equal to start
 	 */
@@ -174,14 +169,11 @@ public final class BitArray {
 	}
 
 	/**
-	 * Appends the least-significant bits, from value, in order from
-	 * most-significant to least-significant. For example, appending 6 bits from
-	 * 0x000001E will append the bits 0, 1, 1, 1, 1, 0 in that order.
+	 * Appends the least-significant bits, from value, in order from most-significant to least-significant. For example, appending 6 bits from 0x000001E will append the bits 0, 1, 1, 1, 1, 0 in that order.
 	 */
 	public void appendBits(int value, int numBits) {
 		if (numBits < 0 || numBits > 32) {
-			throw new IllegalArgumentException(
-					"Num bits must be between 0 and 32");
+			throw new IllegalArgumentException("Num bits must be between 0 and 32");
 		}
 		ensureCapacity(size + numBits);
 		for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
@@ -213,9 +205,7 @@ public final class BitArray {
 	 * @param bitOffset
 	 *            first bit to start writing
 	 * @param array
-	 *            array to write into. Bytes are written most-significant byte
-	 *            first. This is the opposite of the internal representation,
-	 *            which is exposed by {@link #getBitArray()}
+	 *            array to write into. Bytes are written most-significant byte first. This is the opposite of the internal representation, which is exposed by {@link #getBitArray()}
 	 * @param offset
 	 *            position in array to start writing
 	 * @param numBytes
@@ -235,8 +225,7 @@ public final class BitArray {
 	}
 
 	/**
-	 * @return underlying array of ints. The first element holds the first 32
-	 *         bits, and the least significant bit is bit 0.
+	 * @return underlying array of ints. The first element holds the first 32 bits, and the least significant bit is bit 0.
 	 */
 	public int[] getBitArray() {
 		return bits;

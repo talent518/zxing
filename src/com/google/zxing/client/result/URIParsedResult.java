@@ -39,13 +39,7 @@ public final class URIParsedResult extends ParsedResult {
 	}
 
 	/**
-	 * @return true if the URI contains suspicious patterns that may suggest it
-	 *         intends to mislead the user about its true nature. At the moment
-	 *         this looks for the presence of user/password syntax in the
-	 *         host/authority portion of a URI which may be used in attempts to
-	 *         make the URI's host appear to be other than it is. Example:
-	 *         http://yourbank.com@phisher.com This URI connects to phisher.com
-	 *         but may appear to connect to yourbank.com at first glance.
+	 * @return true if the URI contains suspicious patterns that may suggest it intends to mislead the user about its true nature. At the moment this looks for the presence of user/password syntax in the host/authority portion of a URI which may be used in attempts to make the URI's host appear to be other than it is. Example: http://yourbank.com@phisher.com This URI connects to phisher.com but may appear to connect to yourbank.com at first glance.
 	 */
 	public boolean isPossiblyMaliciousURI() {
 		return containsUser();
@@ -77,8 +71,7 @@ public final class URIParsedResult extends ParsedResult {
 	}
 
 	/**
-	 * Transforms a string that represents a URI into something more proper, by
-	 * adding or canonicalizing the protocol.
+	 * Transforms a string that represents a URI into something more proper, by adding or canonicalizing the protocol.
 	 */
 	private static String massageURI(String uri) {
 		int protocolEnd = uri.indexOf(':');
@@ -91,14 +84,12 @@ public final class URIParsedResult extends ParsedResult {
 			uri = "http://" + uri;
 		} else {
 			// Lowercase protocol to avoid problems
-			uri = uri.substring(0, protocolEnd).toLowerCase()
-					+ uri.substring(protocolEnd);
+			uri = uri.substring(0, protocolEnd).toLowerCase() + uri.substring(protocolEnd);
 		}
 		return uri;
 	}
 
-	private static boolean isColonFollowedByPortNumber(String uri,
-			int protocolEnd) {
+	private static boolean isColonFollowedByPortNumber(String uri, int protocolEnd) {
 		int nextSlash = uri.indexOf('/', protocolEnd + 1);
 		if (nextSlash < 0) {
 			nextSlash = uri.length();

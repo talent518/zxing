@@ -20,8 +20,7 @@ import com.google.zxing.common.BitArray;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * This class is the core bitmap class used by ZXing to represent 1 bit data.
- * Reader objects accept a BinaryBitmap and attempt to decode it.
+ * This class is the core bitmap class used by ZXing to represent 1 bit data. Reader objects accept a BinaryBitmap and attempt to decode it.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
@@ -53,17 +52,12 @@ public final class BinaryBitmap {
 	}
 
 	/**
-	 * Converts one row of luminance data to 1 bit data. May actually do the
-	 * conversion, or return cached data. Callers should assume this method is
-	 * expensive and call it as seldom as possible. This method is intended for
-	 * decoding 1D barcodes and may choose to apply sharpening.
+	 * Converts one row of luminance data to 1 bit data. May actually do the conversion, or return cached data. Callers should assume this method is expensive and call it as seldom as possible. This method is intended for decoding 1D barcodes and may choose to apply sharpening.
 	 * 
 	 * @param y
 	 *            The row to fetch, 0 <= y < bitmap height.
 	 * @param row
-	 *            An optional preallocated array. If null or too small, it will
-	 *            be ignored. If used, the Binarizer will call BitArray.clear().
-	 *            Always use the returned object.
+	 *            An optional preallocated array. If null or too small, it will be ignored. If used, the Binarizer will call BitArray.clear(). Always use the returned object.
 	 * @return The array of bits for this row (true means black).
 	 */
 	public BitArray getBlackRow(int y, BitArray row) throws NotFoundException {
@@ -71,11 +65,7 @@ public final class BinaryBitmap {
 	}
 
 	/**
-	 * Converts a 2D array of luminance data to 1 bit. As above, assume this
-	 * method is expensive and do not call it repeatedly. This method is
-	 * intended for decoding 2D barcodes and may or may not apply sharpening.
-	 * Therefore, a row from this matrix may not be identical to one fetched
-	 * using getBlackRow(), so don't mix and match between them.
+	 * Converts a 2D array of luminance data to 1 bit. As above, assume this method is expensive and do not call it repeatedly. This method is intended for decoding 2D barcodes and may or may not apply sharpening. Therefore, a row from this matrix may not be identical to one fetched using getBlackRow(), so don't mix and match between them.
 	 * 
 	 * @return The 2D array of bits for the image (true means black).
 	 */
@@ -102,9 +92,7 @@ public final class BinaryBitmap {
 	}
 
 	/**
-	 * Returns a new object with cropped image data. Implementations may keep a
-	 * reference to the original data rather than a copy. Only callable if
-	 * isCropSupported() is true.
+	 * Returns a new object with cropped image data. Implementations may keep a reference to the original data rather than a copy. Only callable if isCropSupported() is true.
 	 * 
 	 * @param left
 	 *            The left coordinate, 0 <= left < getWidth().
@@ -117,8 +105,7 @@ public final class BinaryBitmap {
 	 * @return A cropped version of this object.
 	 */
 	public BinaryBitmap crop(int left, int top, int width, int height) {
-		LuminanceSource newSource = binarizer.getLuminanceSource().crop(left,
-				top, width, height);
+		LuminanceSource newSource = binarizer.getLuminanceSource().crop(left, top, width, height);
 		return new BinaryBitmap(binarizer.createBinarizer(newSource));
 	}
 
@@ -130,14 +117,12 @@ public final class BinaryBitmap {
 	}
 
 	/**
-	 * Returns a new object with rotated image data. Only callable if
-	 * isRotateSupported() is true.
+	 * Returns a new object with rotated image data. Only callable if isRotateSupported() is true.
 	 * 
 	 * @return A rotated version of this object.
 	 */
 	public BinaryBitmap rotateCounterClockwise() {
-		LuminanceSource newSource = binarizer.getLuminanceSource()
-				.rotateCounterClockwise();
+		LuminanceSource newSource = binarizer.getLuminanceSource().rotateCounterClockwise();
 		return new BinaryBitmap(binarizer.createBinarizer(newSource));
 	}
 

@@ -24,8 +24,7 @@ public final class WifiParsedResult extends ParsedResult {
 	private final String networkEncryption;
 	private final String password;
 
-	public WifiParsedResult(String networkEncryption, String ssid,
-			String password) {
+	public WifiParsedResult(String networkEncryption, String ssid, String password) {
 		super(ParsedResultType.WIFI);
 		this.ssid = ssid;
 		this.networkEncryption = networkEncryption;

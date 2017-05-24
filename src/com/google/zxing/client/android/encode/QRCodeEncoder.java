@@ -44,8 +44,7 @@ import java.io.InputStream;
 import java.util.Hashtable;
 
 /**
- * This class does the work of decoding the user's request and extracting all
- * the data to be encoded in a barcode.
+ * This class does the work of decoding the user's request and extracting all the data to be encoded in a barcode.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
@@ -81,8 +80,7 @@ final class QRCodeEncoder {
 	}
 
 	public void requestBarcode(Handler handler, int pixelResolution) {
-		Thread encodeThread = new EncodeThread(contents, handler,
-				pixelResolution, format);
+		Thread encodeThread = new EncodeThread(contents, handler, pixelResolution, format);
 		encodeThread.start();
 	}
 
@@ -136,10 +134,8 @@ final class QRCodeEncoder {
 	private boolean encodeContentsFromShareIntent(Intent intent) {
 		format = BarcodeFormat.QR_CODE;
 		try {
-			Uri uri = (Uri) intent.getExtras().getParcelable(
-					Intent.EXTRA_STREAM);
-			InputStream stream = activity.getContentResolver().openInputStream(
-					uri);
+			Uri uri = (Uri) intent.getExtras().getParcelable(Intent.EXTRA_STREAM);
+			InputStream stream = activity.getContentResolver().openInputStream(uri);
 			int length = stream.available();
 			if (length <= 0) {
 				Log.w(TAG, "Content stream is empty");
@@ -148,15 +144,13 @@ final class QRCodeEncoder {
 			byte[] vcard = new byte[length];
 			int bytesRead = stream.read(vcard, 0, length);
 			if (bytesRead < length) {
-				Log.w(TAG,
-						"Unable to fully read available bytes from content stream");
+				Log.w(TAG, "Unable to fully read available bytes from content stream");
 				return false;
 			}
 			String vcardString = new String(vcard, 0, bytesRead, "UTF-8");
 			Log.d(TAG, "Encoding share intent content:");
 			Log.d(TAG, vcardString);
-			Result result = new Result(vcardString, vcard, null,
-					BarcodeFormat.QR_CODE);
+			Result result = new Result(vcardString, vcard, null, BarcodeFormat.QR_CODE);
 			ParsedResult parsedResult = ResultParser.parseResult(result);
 			if (!(parsedResult instanceof AddressBookParsedResult)) {
 				Log.d(TAG, "Result was not an address");
@@ -212,36 +206,27 @@ final class QRCodeEncoder {
 				StringBuilder newContents = new StringBuilder(100);
 				StringBuilder newDisplayContents = new StringBuilder(100);
 				newContents.append("MECARD:");
-				String name = trim(bundle
-						.getString(Contacts.Intents.Insert.NAME));
+				String name = trim(bundle.getString(Contacts.Intents.Insert.NAME));
 				if (name != null) {
-					newContents.append("N:").append(escapeMECARD(name))
-							.append(';');
+					newContents.append("N:").append(escapeMECARD(name)).append(';');
 					newDisplayContents.append(name);
 				}
-				String address = trim(bundle
-						.getString(Contacts.Intents.Insert.POSTAL));
+				String address = trim(bundle.getString(Contacts.Intents.Insert.POSTAL));
 				if (address != null) {
-					newContents.append("ADR:").append(escapeMECARD(address))
-							.append(';');
+					newContents.append("ADR:").append(escapeMECARD(address)).append(';');
 					newDisplayContents.append('\n').append(address);
 				}
 				for (int x = 0; x < Contents.PHONE_KEYS.length; x++) {
-					String phone = trim(bundle
-							.getString(Contents.PHONE_KEYS[x]));
+					String phone = trim(bundle.getString(Contents.PHONE_KEYS[x]));
 					if (phone != null) {
-						newContents.append("TEL:").append(escapeMECARD(phone))
-								.append(';');
-						newDisplayContents.append('\n').append(
-								PhoneNumberUtils.formatNumber(phone));
+						newContents.append("TEL:").append(escapeMECARD(phone)).append(';');
+						newDisplayContents.append('\n').append(PhoneNumberUtils.formatNumber(phone));
 					}
 				}
 				for (int x = 0; x < Contents.EMAIL_KEYS.length; x++) {
-					String email = trim(bundle
-							.getString(Contents.EMAIL_KEYS[x]));
+					String email = trim(bundle.getString(Contents.EMAIL_KEYS[x]));
 					if (email != null) {
-						newContents.append("EMAIL:")
-								.append(escapeMECARD(email)).append(';');
+						newContents.append("EMAIL:").append(escapeMECARD(email)).append(';');
 						newDisplayContents.append('\n').append(email);
 					}
 				}
@@ -289,8 +274,7 @@ final class QRCodeEncoder {
 			for (String address : addresses) {
 				address = trim(address);
 				if (address != null) {
-					newContents.append("ADR:").append(escapeMECARD(address))
-							.append(';');
+					newContents.append("ADR:").append(escapeMECARD(address)).append(';');
 					newDisplayContents.append('\n').append(address);
 				}
 			}
@@ -300,10 +284,8 @@ final class QRCodeEncoder {
 			for (String phone : phoneNumbers) {
 				phone = trim(phone);
 				if (phone != null) {
-					newContents.append("TEL:").append(escapeMECARD(phone))
-							.append(';');
-					newDisplayContents.append('\n').append(
-							PhoneNumberUtils.formatNumber(phone));
+					newContents.append("TEL:").append(escapeMECARD(phone)).append(';');
+					newDisplayContents.append('\n').append(PhoneNumberUtils.formatNumber(phone));
 				}
 			}
 		}
@@ -312,8 +294,7 @@ final class QRCodeEncoder {
 			for (String email : emails) {
 				email = trim(email);
 				if (email != null) {
-					newContents.append("EMAIL:").append(escapeMECARD(email))
-							.append(';');
+					newContents.append("EMAIL:").append(escapeMECARD(email)).append(';');
 					newDisplayContents.append('\n').append(email);
 				}
 			}
@@ -337,8 +318,7 @@ final class QRCodeEncoder {
 		}
 	}
 
-	static Bitmap encodeAsBitmap(String contents, BarcodeFormat format,
-			int desiredWidth, int desiredHeight) throws WriterException {
+	static Bitmap encodeAsBitmap(String contents, BarcodeFormat format, int desiredWidth, int desiredHeight) throws WriterException {
 		Hashtable<EncodeHintType, Object> hints = null;
 		String encoding = guessAppropriateEncoding(contents);
 		if (encoding != null) {
@@ -346,8 +326,7 @@ final class QRCodeEncoder {
 			hints.put(EncodeHintType.CHARACTER_SET, encoding);
 		}
 		MultiFormatWriter writer = new MultiFormatWriter();
-		BitMatrix result = writer.encode(contents, format, desiredWidth,
-				desiredHeight, hints);
+		BitMatrix result = writer.encode(contents, format, desiredWidth, desiredHeight, hints);
 		int width = result.getWidth();
 		int height = result.getHeight();
 		int[] pixels = new int[width * height];
@@ -359,8 +338,7 @@ final class QRCodeEncoder {
 			}
 		}
 
-		Bitmap bitmap = Bitmap.createBitmap(width, height,
-				Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 		return bitmap;
 	}

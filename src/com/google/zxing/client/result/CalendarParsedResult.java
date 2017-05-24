@@ -28,8 +28,7 @@ public final class CalendarParsedResult extends ParsedResult {
 	private final String attendee;
 	private final String description;
 
-	public CalendarParsedResult(String summary, String start, String end,
-			String location, String attendee, String description) {
+	public CalendarParsedResult(String summary, String start, String end, String location, String attendee, String description) {
 		super(ParsedResultType.CALENDAR);
 		// Start is required, end is not
 		if (start == null) {
@@ -55,10 +54,7 @@ public final class CalendarParsedResult extends ParsedResult {
 
 	/**
 	 * <p>
-	 * We would return the start and end date as a {@link java.util.Date} except
-	 * that this code needs to work under JavaME / MIDP and there is no date
-	 * parsing library available there, such as
-	 * <code>java.text.SimpleDateFormat</code>.
+	 * We would return the start and end date as a {@link java.util.Date} except that this code needs to work under JavaME / MIDP and there is no date parsing library available there, such as <code>java.text.SimpleDateFormat</code>.
 	 * </p>
 	 * See validateDate() for the return format.
 	 * 
@@ -99,9 +95,7 @@ public final class CalendarParsedResult extends ParsedResult {
 	}
 
 	/**
-	 * RFC 2445 allows the start and end fields to be of type DATE (e.g.
-	 * 20081021) or DATE-TIME (e.g. 20081021T123000 for local time, or
-	 * 20081021T123000Z for UTC).
+	 * RFC 2445 allows the start and end fields to be of type DATE (e.g. 20081021) or DATE-TIME (e.g. 20081021T123000 for local time, or 20081021T123000Z for UTC).
 	 * 
 	 * @param date
 	 *            The string to validate

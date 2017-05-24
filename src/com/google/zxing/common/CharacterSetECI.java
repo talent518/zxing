@@ -19,8 +19,7 @@ package com.google.zxing.common;
 import java.util.Hashtable;
 
 /**
- * Encapsulates a Character Set ECI, according to
- * "Extended Channel Interpretations" 5.3.1.1 of ISO 18004.
+ * Encapsulates a Character Set ECI, according to "Extended Channel Interpretations" 5.3.1.1 of ISO 18004.
  * 
  * @author Sean Owen
  */
@@ -82,8 +81,7 @@ public final class CharacterSetECI extends ECI {
 	/**
 	 * @param value
 	 *            character set ECI value
-	 * @return {@link CharacterSetECI} representing ECI of given value, or null
-	 *         if it is legal but unsupported
+	 * @return {@link CharacterSetECI} representing ECI of given value, or null if it is legal but unsupported
 	 * @throws IllegalArgumentException
 	 *             if ECI value is invalid
 	 */
@@ -100,8 +98,7 @@ public final class CharacterSetECI extends ECI {
 	/**
 	 * @param name
 	 *            character set ECI encoding name
-	 * @return {@link CharacterSetECI} representing ECI for character encoding,
-	 *         or null if it is legal but unsupported
+	 * @return {@link CharacterSetECI} representing ECI for character encoding, or null if it is legal but unsupported
 	 */
 	public static CharacterSetECI getCharacterSetECIByName(String name) {
 		if (NAME_TO_ECI == null) {

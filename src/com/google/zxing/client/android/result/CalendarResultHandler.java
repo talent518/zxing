@@ -36,10 +36,8 @@ import java.util.GregorianCalendar;
  */
 public final class CalendarResultHandler extends ResultHandler {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
-			"yyyyMMdd");
-	private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat(
-			"yyyyMMdd'T'HHmmss");
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
 	private static final int[] buttons = { R.string.button_add_calendar };
 
@@ -61,10 +59,7 @@ public final class CalendarResultHandler extends ResultHandler {
 	public void handleButtonPress(int index) {
 		CalendarParsedResult calendarResult = (CalendarParsedResult) getResult();
 		if (index == 0) {
-			addCalendarEvent(calendarResult.getSummary(),
-					calendarResult.getStart(), calendarResult.getEnd(),
-					calendarResult.getLocation(),
-					calendarResult.getDescription());
+			addCalendarEvent(calendarResult.getSummary(), calendarResult.getStart(), calendarResult.getEnd(), calendarResult.getLocation(), calendarResult.getDescription());
 		}
 	}
 
@@ -96,27 +91,20 @@ public final class CalendarResultHandler extends ResultHandler {
 			synchronized (DATE_FORMAT) {
 				date = DATE_FORMAT.parse(when, new ParsePosition(0));
 			}
-			ParsedResult
-					.maybeAppend(
-							DateFormat.getDateInstance().format(date.getTime()),
-							result);
+			ParsedResult.maybeAppend(DateFormat.getDateInstance().format(date.getTime()), result);
 		} else {
 			// The when string can be local time, or UTC if it ends with a Z
 			Date date;
 			synchronized (DATE_TIME_FORMAT) {
-				date = DATE_TIME_FORMAT.parse(when.substring(0, 15),
-						new ParsePosition(0));
+				date = DATE_TIME_FORMAT.parse(when.substring(0, 15), new ParsePosition(0));
 			}
 			long milliseconds = date.getTime();
 			if (when.length() == 16 && when.charAt(15) == 'Z') {
 				Calendar calendar = new GregorianCalendar();
-				int offset = (calendar.get(Calendar.ZONE_OFFSET) + calendar
-						.get(Calendar.DST_OFFSET));
+				int offset = (calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET));
 				milliseconds += offset;
 			}
-			ParsedResult.maybeAppend(
-					DateFormat.getDateTimeInstance().format(milliseconds),
-					result);
+			ParsedResult.maybeAppend(DateFormat.getDateTimeInstance().format(milliseconds), result);
 		}
 	}
 

@@ -37,10 +37,8 @@ abstract class AI01weightDecoder extends AI01decoder {
 		super(information);
 	}
 
-	protected void encodeCompressedWeight(StringBuffer buf, int currentPos,
-			int weightSize) {
-		int originalWeightNumeric = this.generalDecoder
-				.extractNumericValueFromBitArray(currentPos, weightSize);
+	protected void encodeCompressedWeight(StringBuffer buf, int currentPos, int weightSize) {
+		int originalWeightNumeric = this.generalDecoder.extractNumericValueFromBitArray(currentPos, weightSize);
 		addWeightCode(buf, originalWeightNumeric);
 
 		int weightNumeric = checkWeight(originalWeightNumeric);

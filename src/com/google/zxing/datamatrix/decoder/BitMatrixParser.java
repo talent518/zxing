@@ -43,14 +43,12 @@ final class BitMatrixParser {
 		version = readVersion(bitMatrix);
 		this.mappingBitMatrix = extractDataRegion(bitMatrix);
 		// TODO(bbrown): Make this work for rectangular symbols
-		this.readMappingMatrix = new BitMatrix(
-				this.mappingBitMatrix.getHeight());
+		this.readMappingMatrix = new BitMatrix(this.mappingBitMatrix.getHeight());
 	}
 
 	/**
 	 * <p>
-	 * Creates the version object based on the dimension of the original bit
-	 * matrix from the datamatrix code.
+	 * Creates the version object based on the dimension of the original bit matrix from the datamatrix code.
 	 * </p>
 	 * 
 	 * <p>
@@ -61,8 +59,7 @@ final class BitMatrixParser {
 	 *            Original {@link BitMatrix} including alignment patterns
 	 * @return {@link Version} encapsulating the Data Matrix Code's "version"
 	 * @throws FormatException
-	 *             if the dimensions of the mapping matrix are not valid Data
-	 *             Matrix dimensions.
+	 *             if the dimensions of the mapping matrix are not valid Data Matrix dimensions.
 	 */
 	Version readVersion(BitMatrix bitMatrix) throws FormatException {
 
@@ -79,9 +76,7 @@ final class BitMatrixParser {
 
 	/**
 	 * <p>
-	 * Reads the bits in the {@link BitMatrix} representing the mapping matrix
-	 * (No alignment patterns) in the correct order in order to reconstitute the
-	 * codewords bytes contained within the Data Matrix Code.
+	 * Reads the bits in the {@link BitMatrix} representing the mapping matrix (No alignment patterns) in the correct order in order to reconstitute the codewords bytes contained within the Data Matrix Code.
 	 * </p>
 	 * 
 	 * @return bytes encoded within the Data Matrix Code
@@ -112,20 +107,17 @@ final class BitMatrixParser {
 				row -= 2;
 				column += 2;
 				corner1Read = true;
-			} else if ((row == numRows - 2) && (column == 0)
-					&& ((numColumns & 0x03) != 0) && !corner2Read) {
+			} else if ((row == numRows - 2) && (column == 0) && ((numColumns & 0x03) != 0) && !corner2Read) {
 				result[resultOffset++] = (byte) readCorner2(numRows, numColumns);
 				row -= 2;
 				column += 2;
 				corner2Read = true;
-			} else if ((row == numRows + 4) && (column == 2)
-					&& ((numColumns & 0x07) == 0) && !corner3Read) {
+			} else if ((row == numRows + 4) && (column == 2) && ((numColumns & 0x07) == 0) && !corner3Read) {
 				result[resultOffset++] = (byte) readCorner3(numRows, numColumns);
 				row -= 2;
 				column += 2;
 				corner3Read = true;
-			} else if ((row == numRows - 2) && (column == 0)
-					&& ((numColumns & 0x07) == 4) && !corner4Read) {
+			} else if ((row == numRows - 2) && (column == 0) && ((numColumns & 0x07) == 4) && !corner4Read) {
 				result[resultOffset++] = (byte) readCorner4(numRows, numColumns);
 				row -= 2;
 				column += 2;
@@ -133,10 +125,8 @@ final class BitMatrixParser {
 			} else {
 				// Sweep upward diagonally to the right
 				do {
-					if ((row < numRows) && (column >= 0)
-							&& !readMappingMatrix.get(column, row)) {
-						result[resultOffset++] = (byte) readUtah(row, column,
-								numRows, numColumns);
+					if ((row < numRows) && (column >= 0) && !readMappingMatrix.get(column, row)) {
+						result[resultOffset++] = (byte) readUtah(row, column, numRows, numColumns);
 					}
 					row -= 2;
 					column += 2;
@@ -146,10 +136,8 @@ final class BitMatrixParser {
 
 				// Sweep downward diagonally to the left
 				do {
-					if ((row >= 0) && (column < numColumns)
-							&& !readMappingMatrix.get(column, row)) {
-						result[resultOffset++] = (byte) readUtah(row, column,
-								numRows, numColumns);
+					if ((row >= 0) && (column < numColumns) && !readMappingMatrix.get(column, row)) {
+						result[resultOffset++] = (byte) readUtah(row, column, numRows, numColumns);
 					}
 					row += 2;
 					column -= 2;
@@ -204,11 +192,9 @@ final class BitMatrixParser {
 	 * </p>
 	 * 
 	 * @param row
-	 *            Current row in the mapping matrix, anchored at the 8th bit
-	 *            (LSB) of the pattern
+	 *            Current row in the mapping matrix, anchored at the 8th bit (LSB) of the pattern
 	 * @param column
-	 *            Current column in the mapping matrix, anchored at the 8th bit
-	 *            (LSB) of the pattern
+	 *            Current column in the mapping matrix, anchored at the 8th bit (LSB) of the pattern
 	 * @param numRows
 	 *            Number of rows in the mapping matrix
 	 * @param numColumns
@@ -457,8 +443,7 @@ final class BitMatrixParser {
 
 	/**
 	 * <p>
-	 * Extracts the data region from a {@link BitMatrix} that contains alignment
-	 * patterns.
+	 * Extracts the data region from a {@link BitMatrix} that contains alignment patterns.
 	 * </p>
 	 * 
 	 * @param bitMatrix
@@ -471,8 +456,7 @@ final class BitMatrixParser {
 
 		// TODO(bbrown): Make this work with rectangular codes
 		if (bitMatrix.getHeight() != symbolSizeRows) {
-			throw new IllegalArgumentException(
-					"Dimension of bitMarix must match the version size");
+			throw new IllegalArgumentException("Dimension of bitMarix must match the version size");
 		}
 
 		int dataRegionSizeRows = version.getDataRegionSizeRows();
@@ -490,19 +474,15 @@ final class BitMatrixParser {
 		for (int dataRegionRow = 0; dataRegionRow < numDataRegionsRow; ++dataRegionRow) {
 			int dataRegionRowOffset = dataRegionRow * dataRegionSizeRows;
 			for (int dataRegionColumn = 0; dataRegionColumn < numDataRegionsColumn; ++dataRegionColumn) {
-				int dataRegionColumnOffset = dataRegionColumn
-						* dataRegionSizeColumns;
+				int dataRegionColumnOffset = dataRegionColumn * dataRegionSizeColumns;
 				for (int i = 0; i < dataRegionSizeRows; ++i) {
-					int readRowOffset = dataRegionRow
-							* (dataRegionSizeRows + 2) + 1 + i;
+					int readRowOffset = dataRegionRow * (dataRegionSizeRows + 2) + 1 + i;
 					int writeRowOffset = dataRegionRowOffset + i;
 					for (int j = 0; j < dataRegionSizeColumns; ++j) {
-						int readColumnOffset = dataRegionColumn
-								* (dataRegionSizeColumns + 2) + 1 + j;
+						int readColumnOffset = dataRegionColumn * (dataRegionSizeColumns + 2) + 1 + j;
 						if (bitMatrix.get(readColumnOffset, readRowOffset)) {
 							int writeColumnOffset = dataRegionColumnOffset + j;
-							bitMatrixWithoutAlignment.set(writeColumnOffset,
-									writeRowOffset);
+							bitMatrixWithoutAlignment.set(writeColumnOffset, writeRowOffset);
 						}
 					}
 				}

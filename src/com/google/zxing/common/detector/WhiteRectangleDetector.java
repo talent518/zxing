@@ -22,10 +22,7 @@ import com.google.zxing.common.BitMatrix;
 
 /**
  * <p>
- * Detects a candidate barcode-like rectangular region within an image. It
- * starts around the center of the image, increases the size of the candidate
- * region until it finds a white rectangular region. By keeping track of the
- * last black points it encountered, it determines the corners of the barcode.
+ * Detects a candidate barcode-like rectangular region within an image. It starts around the center of the image, increases the size of the candidate region until it finds a white rectangular region. By keeping track of the last black points it encountered, it determines the corners of the barcode.
  * </p>
  * 
  * @author David Olivier
@@ -47,16 +44,10 @@ public final class WhiteRectangleDetector {
 
 	/**
 	 * <p>
-	 * Detects a candidate barcode-like rectangular region within an image. It
-	 * starts around the center of the image, increases the size of the
-	 * candidate region until it finds a white rectangular region.
+	 * Detects a candidate barcode-like rectangular region within an image. It starts around the center of the image, increases the size of the candidate region until it finds a white rectangular region.
 	 * </p>
 	 * 
-	 * @return {@link ResultPoint}[] describing the corners of the rectangular
-	 *         region. The first and last points are opposed on the diagonal, as
-	 *         are the second and third. The first point will be the topmost
-	 *         point and the last, the bottommost. The second point will be
-	 *         leftmost and the third, the rightmost
+	 * @return {@link ResultPoint}[] describing the corners of the rectangular region. The first and last points are opposed on the diagonal, as are the second and third. The first point will be the topmost point and the last, the bottommost. The second point will be leftmost and the third, the rightmost
 	 * @throws NotFoundException
 	 *             if no Data Matrix Code can be found
 	 */
@@ -96,8 +87,7 @@ public final class WhiteRectangleDetector {
 			// .___.
 			boolean bottomBorderNotWhite = true;
 			while (bottomBorderNotWhite && down < height) {
-				bottomBorderNotWhite = containsBlackPoint(left, right, down,
-						true);
+				bottomBorderNotWhite = containsBlackPoint(left, right, down, true);
 				if (bottomBorderNotWhite) {
 					down++;
 					aBlackPointFoundOnBorder = true;
@@ -212,15 +202,13 @@ public final class WhiteRectangleDetector {
 	}
 
 	/**
-	 * Ends up being a bit faster than Math.round(). This merely rounds its
-	 * argument to the nearest int, where x.5 rounds up.
+	 * Ends up being a bit faster than Math.round(). This merely rounds its argument to the nearest int, where x.5 rounds up.
 	 */
 	private static int round(float d) {
 		return (int) (d + 0.5f);
 	}
 
-	private ResultPoint getBlackPointOnSegment(float aX, float aY, float bX,
-			float bY) {
+	private ResultPoint getBlackPointOnSegment(float aX, float aY, float bX, float bY) {
 		int dist = distanceL2(aX, aY, bX, bY);
 		float xStep = (bX - aX) / dist;
 		float yStep = (bY - aY) / dist;
@@ -252,14 +240,9 @@ public final class WhiteRectangleDetector {
 	 *            right most point
 	 * @param t
 	 *            top most point
-	 * @return {@link ResultPoint}[] describing the corners of the rectangular
-	 *         region. The first and last points are opposed on the diagonal, as
-	 *         are the second and third. The first point will be the topmost
-	 *         point and the last, the bottommost. The second point will be
-	 *         leftmost and the third, the rightmost
+	 * @return {@link ResultPoint}[] describing the corners of the rectangular region. The first and last points are opposed on the diagonal, as are the second and third. The first point will be the topmost point and the last, the bottommost. The second point will be leftmost and the third, the rightmost
 	 */
-	private ResultPoint[] centerEdges(ResultPoint y, ResultPoint z,
-			ResultPoint x, ResultPoint t) {
+	private ResultPoint[] centerEdges(ResultPoint y, ResultPoint z, ResultPoint x, ResultPoint t) {
 
 		//
 		// t t
@@ -278,15 +261,9 @@ public final class WhiteRectangleDetector {
 		float tj = t.getY();
 
 		if (yi < width / 2) {
-			return new ResultPoint[] { new ResultPoint(ti - CORR, tj + CORR),
-					new ResultPoint(zi + CORR, zj + CORR),
-					new ResultPoint(xi - CORR, xj - CORR),
-					new ResultPoint(yi + CORR, yj - CORR) };
+			return new ResultPoint[] { new ResultPoint(ti - CORR, tj + CORR), new ResultPoint(zi + CORR, zj + CORR), new ResultPoint(xi - CORR, xj - CORR), new ResultPoint(yi + CORR, yj - CORR) };
 		} else {
-			return new ResultPoint[] { new ResultPoint(ti + CORR, tj + CORR),
-					new ResultPoint(zi + CORR, zj - CORR),
-					new ResultPoint(xi - CORR, xj + CORR),
-					new ResultPoint(yi - CORR, yj - CORR) };
+			return new ResultPoint[] { new ResultPoint(ti + CORR, tj + CORR), new ResultPoint(zi + CORR, zj - CORR), new ResultPoint(xi - CORR, xj + CORR), new ResultPoint(yi - CORR, yj - CORR) };
 		}
 	}
 
@@ -303,8 +280,7 @@ public final class WhiteRectangleDetector {
 	 *            set to true if scan must be horizontal, false if vertical
 	 * @return true if a black point has been found, else false.
 	 */
-	private boolean containsBlackPoint(int a, int b, int fixed,
-			boolean horizontal) {
+	private boolean containsBlackPoint(int a, int b, int fixed, boolean horizontal) {
 
 		if (horizontal) {
 			for (int x = a; x <= b; x++) {

@@ -29,9 +29,7 @@ import android.app.Activity;
  */
 public final class URIResultHandler extends ResultHandler {
 
-	private static final int[] buttons = { R.string.button_open_browser,
-			R.string.button_share_by_email, R.string.button_share_by_sms,
-			R.string.button_search_book_contents, };
+	private static final int[] buttons = { R.string.button_open_browser, R.string.button_share_by_email, R.string.button_share_by_sms, R.string.button_search_book_contents, };
 
 	public URIResultHandler(Activity activity, ParsedResult result) {
 		super(activity, result);
@@ -73,8 +71,7 @@ public final class URIResultHandler extends ResultHandler {
 	}
 
 	private boolean isGoogleBooksURI() {
-		return ((URIParsedResult) getResult()).getURI().startsWith(
-				"http://google.com/books?id=");
+		return ((URIParsedResult) getResult()).getURI().startsWith("http://google.com/books?id=");
 	}
 
 }

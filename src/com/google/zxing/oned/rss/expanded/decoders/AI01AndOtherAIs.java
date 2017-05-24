@@ -31,8 +31,7 @@ import com.google.zxing.common.BitArray;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 final class AI01AndOtherAIs extends AI01decoder {
 
@@ -50,12 +49,10 @@ final class AI01AndOtherAIs extends AI01decoder {
 
 		buff.append("(01)");
 		int initialGtinPosition = buff.length();
-		int firstGtinDigit = this.generalDecoder
-				.extractNumericValueFromBitArray(HEADER_SIZE, 4);
+		int firstGtinDigit = this.generalDecoder.extractNumericValueFromBitArray(HEADER_SIZE, 4);
 		buff.append(firstGtinDigit);
 
-		this.encodeCompressedGtinWithoutAI(buff, HEADER_SIZE + 4,
-				initialGtinPosition);
+		this.encodeCompressedGtinWithoutAI(buff, HEADER_SIZE + 4, initialGtinPosition);
 
 		return this.generalDecoder.decodeAllCodes(buff, HEADER_SIZE + 44);
 	}

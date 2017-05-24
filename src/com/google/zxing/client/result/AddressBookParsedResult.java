@@ -32,10 +32,7 @@ public final class AddressBookParsedResult extends ParsedResult {
 	private final String title;
 	private final String url;
 
-	public AddressBookParsedResult(String[] names, String pronunciation,
-			String[] phoneNumbers, String[] emails, String note,
-			String[] addresses, String org, String birthday, String title,
-			String url) {
+	public AddressBookParsedResult(String[] names, String pronunciation, String[] phoneNumbers, String[] emails, String note, String[] addresses, String org, String birthday, String title, String url) {
 		super(ParsedResultType.ADDRESSBOOK);
 		this.names = names;
 		this.pronunciation = pronunciation;
@@ -54,12 +51,9 @@ public final class AddressBookParsedResult extends ParsedResult {
 	}
 
 	/**
-	 * In Japanese, the name is written in kanji, which can have multiple
-	 * readings. Therefore a hint is often provided, called furigana, which
-	 * spells the name phonetically.
+	 * In Japanese, the name is written in kanji, which can have multiple readings. Therefore a hint is often provided, called furigana, which spells the name phonetically.
 	 * 
-	 * @return The pronunciation of the getNames() field, often in hiragana or
-	 *         katakana.
+	 * @return The pronunciation of the getNames() field, often in hiragana or katakana.
 	 */
 	public String getPronunciation() {
 		return pronunciation;

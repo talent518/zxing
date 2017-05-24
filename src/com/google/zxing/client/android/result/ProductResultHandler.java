@@ -32,11 +32,9 @@ import android.view.View;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class ProductResultHandler extends ResultHandler {
-	private static final int[] buttons = { R.string.button_product_search,
-			R.string.button_web_search, R.string.button_custom_product_search };
+	private static final int[] buttons = { R.string.button_product_search, R.string.button_web_search, R.string.button_custom_product_search };
 
-	public ProductResultHandler(Activity activity, ParsedResult result,
-			Result rawResult) {
+	public ProductResultHandler(Activity activity, ParsedResult result, Result rawResult) {
 		super(activity, result, rawResult);
 		showGoogleShopperButton(new View.OnClickListener() {
 			public void onClick(View view) {
@@ -69,8 +67,7 @@ public final class ProductResultHandler extends ResultHandler {
 					webSearch(productResult.getNormalizedProductID());
 					break;
 				case 2:
-					openURL(fillInCustomSearchURL(productResult
-							.getNormalizedProductID()));
+					openURL(fillInCustomSearchURL(productResult.getNormalizedProductID()));
 					break;
 				}
 			}

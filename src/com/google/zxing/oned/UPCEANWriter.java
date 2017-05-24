@@ -25,29 +25,24 @@ import java.util.Hashtable;
 
 /**
  * <p>
- * Encapsulates functionality and implementation that is common to UPC and EAN
- * families of one-dimensional barcodes.
+ * Encapsulates functionality and implementation that is common to UPC and EAN families of one-dimensional barcodes.
  * </p>
  * 
  * @author aripollak@gmail.com (Ari Pollak)
  */
 public abstract class UPCEANWriter implements Writer {
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height) throws WriterException {
 		return encode(contents, format, width, height, null);
 	}
 
-	public BitMatrix encode(String contents, BarcodeFormat format, int width,
-			int height, Hashtable hints) throws WriterException {
+	public BitMatrix encode(String contents, BarcodeFormat format, int width, int height, Hashtable hints) throws WriterException {
 		if (contents == null || contents.length() == 0) {
 			throw new IllegalArgumentException("Found empty contents");
 		}
 
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException(
-					"Requested dimensions are too small: " + width + 'x'
-							+ height);
+			throw new IllegalArgumentException("Requested dimensions are too small: " + width + 'x' + height);
 		}
 
 		byte[] code = encode(contents);
@@ -58,8 +53,7 @@ public abstract class UPCEANWriter implements Writer {
 	private static BitMatrix renderResult(byte[] code, int width, int height) {
 		int inputWidth = code.length;
 		// Add quiet zone on both sides
-		int fullWidth = inputWidth
-				+ (UPCEANReader.START_END_PATTERN.length << 1);
+		int fullWidth = inputWidth + (UPCEANReader.START_END_PATTERN.length << 1);
 		int outputWidth = Math.max(width, fullWidth);
 		int outputHeight = Math.max(1, height);
 
@@ -82,11 +76,9 @@ public abstract class UPCEANWriter implements Writer {
 	 *            starting color - 0 for white, 1 for black
 	 * @return the number of elements added to target.
 	 */
-	protected static int appendPattern(byte[] target, int pos, int[] pattern,
-			int startColor) {
+	protected static int appendPattern(byte[] target, int pos, int[] pattern, int startColor) {
 		if (startColor != 0 && startColor != 1) {
-			throw new IllegalArgumentException(
-					"startColor must be either 0 or 1, but got: " + startColor);
+			throw new IllegalArgumentException("startColor must be either 0 or 1, but got: " + startColor);
 		}
 
 		byte color = (byte) startColor;

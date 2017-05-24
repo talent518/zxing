@@ -28,8 +28,7 @@ import java.util.Vector;
 
 /**
  * <p>
- * QR Codes can encode text as bits in one of several modes, and can use
- * multiple modes in one QR Code. This class decodes the bits back into text.
+ * QR Codes can encode text as bits in one of several modes, and can use multiple modes in one QR Code. This class decodes the bits back into text.
  * </p>
  * 
  * <p>
@@ -43,18 +42,12 @@ final class DecodedBitStreamParser {
 	/**
 	 * See ISO 18004:2006, 6.4.4 Table 5
 	 */
-	private static final char[] ALPHANUMERIC_CHARS = { '0', '1', '2', '3', '4',
-			'5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-			'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-', '.', '/',
-			':' };
+	private static final char[] ALPHANUMERIC_CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-', '.', '/', ':' };
 
 	private DecodedBitStreamParser() {
 	}
 
-	static DecoderResult decode(byte[] bytes, Version version,
-			ErrorCorrectionLevel ecLevel, Hashtable hints)
-			throws FormatException {
+	static DecoderResult decode(byte[] bytes, Version version, ErrorCorrectionLevel ecLevel, Hashtable hints) throws FormatException {
 		BitSource bits = new BitSource(bytes);
 		StringBuffer result = new StringBuffer(50);
 		CharacterSetECI currentCharacterSetECI = null;
@@ -76,8 +69,7 @@ final class DecodedBitStreamParser {
 				}
 			}
 			if (!mode.equals(Mode.TERMINATOR)) {
-				if (mode.equals(Mode.FNC1_FIRST_POSITION)
-						|| mode.equals(Mode.FNC1_SECOND_POSITION)) {
+				if (mode.equals(Mode.FNC1_FIRST_POSITION) || mode.equals(Mode.FNC1_SECOND_POSITION)) {
 					// We do little with FNC1 except alter the parsed result a
 					// bit according to the spec
 					fc1InEffect = true;
@@ -89,23 +81,19 @@ final class DecodedBitStreamParser {
 				} else if (mode.equals(Mode.ECI)) {
 					// Count doesn't apply to ECI
 					int value = parseECIValue(bits);
-					currentCharacterSetECI = CharacterSetECI
-							.getCharacterSetECIByValue(value);
+					currentCharacterSetECI = CharacterSetECI.getCharacterSetECIByValue(value);
 					if (currentCharacterSetECI == null) {
 						throw FormatException.getFormatInstance();
 					}
 				} else {
 					// How many characters will follow, encoded in this mode?
-					int count = bits.readBits(mode
-							.getCharacterCountBits(version));
+					int count = bits.readBits(mode.getCharacterCountBits(version));
 					if (mode.equals(Mode.NUMERIC)) {
 						decodeNumericSegment(bits, result, count);
 					} else if (mode.equals(Mode.ALPHANUMERIC)) {
-						decodeAlphanumericSegment(bits, result, count,
-								fc1InEffect);
+						decodeAlphanumericSegment(bits, result, count, fc1InEffect);
 					} else if (mode.equals(Mode.BYTE)) {
-						decodeByteSegment(bits, result, count,
-								currentCharacterSetECI, byteSegments, hints);
+						decodeByteSegment(bits, result, count, currentCharacterSetECI, byteSegments, hints);
 					} else if (mode.equals(Mode.KANJI)) {
 						decodeKanjiSegment(bits, result, count);
 					} else {
@@ -115,12 +103,10 @@ final class DecodedBitStreamParser {
 			}
 		} while (!mode.equals(Mode.TERMINATOR));
 
-		return new DecoderResult(bytes, result.toString(),
-				byteSegments.isEmpty() ? null : byteSegments, ecLevel);
+		return new DecoderResult(bytes, result.toString(), byteSegments.isEmpty() ? null : byteSegments, ecLevel);
 	}
 
-	private static void decodeKanjiSegment(BitSource bits, StringBuffer result,
-			int count) throws FormatException {
+	private static void decodeKanjiSegment(BitSource bits, StringBuffer result, int count) throws FormatException {
 		// Each character will require 2 bytes. Read the characters as 2-byte
 		// pairs
 		// and decode as Shift_JIS afterwards
@@ -129,8 +115,7 @@ final class DecodedBitStreamParser {
 		while (count > 0) {
 			// Each 13 bits encodes a 2-byte character
 			int twoBytes = bits.readBits(13);
-			int assembledTwoBytes = ((twoBytes / 0x0C0) << 8)
-					| (twoBytes % 0x0C0);
+			int assembledTwoBytes = ((twoBytes / 0x0C0) << 8) | (twoBytes % 0x0C0);
 			if (assembledTwoBytes < 0x01F00) {
 				// In the 0x8140 to 0x9FFC range
 				assembledTwoBytes += 0x08140;
@@ -151,9 +136,7 @@ final class DecodedBitStreamParser {
 		}
 	}
 
-	private static void decodeByteSegment(BitSource bits, StringBuffer result,
-			int count, CharacterSetECI currentCharacterSetECI,
-			Vector byteSegments, Hashtable hints) throws FormatException {
+	private static void decodeByteSegment(BitSource bits, StringBuffer result, int count, CharacterSetECI currentCharacterSetECI, Vector byteSegments, Hashtable hints) throws FormatException {
 		byte[] readBytes = new byte[count];
 		if (count << 3 > bits.available()) {
 			throw FormatException.getFormatInstance();
@@ -187,9 +170,7 @@ final class DecodedBitStreamParser {
 		return ALPHANUMERIC_CHARS[value];
 	}
 
-	private static void decodeAlphanumericSegment(BitSource bits,
-			StringBuffer result, int count, boolean fc1InEffect)
-			throws FormatException {
+	private static void decodeAlphanumericSegment(BitSource bits, StringBuffer result, int count, boolean fc1InEffect) throws FormatException {
 		// Read two characters at a time
 		int start = result.length();
 		while (count > 1) {
@@ -220,8 +201,7 @@ final class DecodedBitStreamParser {
 		}
 	}
 
-	private static void decodeNumericSegment(BitSource bits,
-			StringBuffer result, int count) throws FormatException {
+	private static void decodeNumericSegment(BitSource bits, StringBuffer result, int count) throws FormatException {
 		// Read three digits at a time
 		while (count >= 3) {
 			// Each 10 bits encodes three digits
@@ -266,8 +246,7 @@ final class DecodedBitStreamParser {
 			int secondThirdBytes = bits.readBits(16);
 			return ((firstByte & 0x1F) << 16) | secondThirdBytes;
 		}
-		throw new IllegalArgumentException("Bad ECI bits starting with byte "
-				+ firstByte);
+		throw new IllegalArgumentException("Bad ECI bits starting with byte " + firstByte);
 	}
 
 }

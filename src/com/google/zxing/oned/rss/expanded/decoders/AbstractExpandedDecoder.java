@@ -31,8 +31,7 @@ import com.google.zxing.common.BitArray;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 public abstract class AbstractExpandedDecoder {
 
@@ -53,8 +52,7 @@ public abstract class AbstractExpandedDecoder {
 			return new AnyAIDecoder(information);
 		}
 
-		int fourBitEncodationMethod = GeneralAppIdDecoder
-				.extractNumericValueFromBitArray(information, 1, 4);
+		int fourBitEncodationMethod = GeneralAppIdDecoder.extractNumericValueFromBitArray(information, 1, 4);
 
 		switch (fourBitEncodationMethod) {
 		case 4:
@@ -63,8 +61,7 @@ public abstract class AbstractExpandedDecoder {
 			return new AI01320xDecoder(information);
 		}
 
-		int fiveBitEncodationMethod = GeneralAppIdDecoder
-				.extractNumericValueFromBitArray(information, 1, 5);
+		int fiveBitEncodationMethod = GeneralAppIdDecoder.extractNumericValueFromBitArray(information, 1, 5);
 		switch (fiveBitEncodationMethod) {
 		case 12:
 			return new AI01392xDecoder(information);
@@ -72,8 +69,7 @@ public abstract class AbstractExpandedDecoder {
 			return new AI01393xDecoder(information);
 		}
 
-		int sevenBitEncodationMethod = GeneralAppIdDecoder
-				.extractNumericValueFromBitArray(information, 1, 7);
+		int sevenBitEncodationMethod = GeneralAppIdDecoder.extractNumericValueFromBitArray(information, 1, 7);
 		switch (sevenBitEncodationMethod) {
 		case 56:
 			return new AI013x0x1xDecoder(information, "310", "11");

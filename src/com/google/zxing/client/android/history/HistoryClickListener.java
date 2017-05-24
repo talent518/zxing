@@ -34,8 +34,7 @@ final class HistoryClickListener implements DialogInterface.OnClickListener {
 	private final String[] dialogItems;
 	private final List<Result> items;
 
-	HistoryClickListener(HistoryManager historyManager,
-			CaptureActivity activity, String[] dialogItems, List<Result> items) {
+	HistoryClickListener(HistoryManager historyManager, CaptureActivity activity, String[] dialogItems, List<Result> items) {
 		this.historyManager = historyManager;
 		this.activity = activity;
 		this.dialogItems = dialogItems;
@@ -57,8 +56,7 @@ final class HistoryClickListener implements DialogInterface.OnClickListener {
 			}
 			Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse("mailto:"));
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			String subject = activity.getResources().getString(
-					R.string.history_email_title);
+			String subject = activity.getResources().getString(R.string.history_email_title);
 			intent.putExtra(Intent.EXTRA_SUBJECT, subject);
 			intent.putExtra(Intent.EXTRA_TEXT, subject);
 			intent.putExtra(Intent.EXTRA_STREAM, historyFile);
@@ -66,8 +64,7 @@ final class HistoryClickListener implements DialogInterface.OnClickListener {
 			activity.startActivity(intent);
 		} else {
 			Result result = items.get(i);
-			Message message = Message.obtain(activity.getHandler(),
-					R.id.decode_succeeded, result);
+			Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, result);
 			message.sendToTarget();
 		}
 	}

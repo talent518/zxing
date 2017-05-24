@@ -24,14 +24,12 @@ import android.app.Activity;
 import android.telephony.PhoneNumberUtils;
 
 /**
- * Handles SMS addresses, offering a choice of composing a new SMS or MMS
- * message.
+ * Handles SMS addresses, offering a choice of composing a new SMS or MMS message.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class SMSResultHandler extends ResultHandler {
-	private static final int[] buttons = { R.string.button_sms,
-			R.string.button_mms };
+	private static final int[] buttons = { R.string.button_sms, R.string.button_mms };
 
 	public SMSResultHandler(Activity activity, ParsedResult result) {
 		super(activity, result);
@@ -57,8 +55,7 @@ public final class SMSResultHandler extends ResultHandler {
 			sendSMS(smsResult.getNumbers()[0], smsResult.getBody());
 			break;
 		case 1:
-			sendMMS(smsResult.getNumbers()[0], smsResult.getSubject(),
-					smsResult.getBody());
+			sendMMS(smsResult.getNumbers()[0], smsResult.getSubject(), smsResult.getBody());
 			break;
 		}
 	}

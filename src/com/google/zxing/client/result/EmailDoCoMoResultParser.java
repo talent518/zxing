@@ -27,9 +27,7 @@ import com.google.zxing.Result;
  */
 final class EmailDoCoMoResultParser extends AbstractDoCoMoResultParser {
 
-	private static final char[] ATEXT_SYMBOLS = { '@', '.', '!', '#', '$', '%',
-			'&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|',
-			'}', '~' };
+	private static final char[] ATEXT_SYMBOLS = { '@', '.', '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' };
 
 	public static EmailAddressParsedResult parse(Result result) {
 		String rawText = result.getText();
@@ -50,11 +48,7 @@ final class EmailDoCoMoResultParser extends AbstractDoCoMoResultParser {
 	}
 
 	/**
-	 * This implements only the most basic checking for an email address's
-	 * validity -- that it contains an '@' contains no characters disallowed by
-	 * RFC 2822. This is an overly lenient definition of validity. We want to
-	 * generally be lenient here since this class is only intended to
-	 * encapsulate what's in a barcode, not "judge" it.
+	 * This implements only the most basic checking for an email address's validity -- that it contains an '@' contains no characters disallowed by RFC 2822. This is an overly lenient definition of validity. We want to generally be lenient here since this class is only intended to encapsulate what's in a barcode, not "judge" it.
 	 */
 	static boolean isBasicallyValidEmailAddress(String email) {
 		if (email == null) {
@@ -63,8 +57,7 @@ final class EmailDoCoMoResultParser extends AbstractDoCoMoResultParser {
 		boolean atFound = false;
 		for (int i = 0; i < email.length(); i++) {
 			char c = email.charAt(i);
-			if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')
-					&& (c < '0' || c > '9') && !isAtextSymbol(c)) {
+			if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9') && !isAtextSymbol(c)) {
 				return false;
 			}
 			if (c == '@') {

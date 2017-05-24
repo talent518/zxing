@@ -29,8 +29,7 @@ import java.util.Hashtable;
 
 /**
  * <p>
- * The main class which implements QR Code decoding -- as opposed to locating
- * and extracting the QR Code from an image.
+ * The main class which implements QR Code decoding -- as opposed to locating and extracting the QR Code from an image.
  * </p>
  * 
  * @author Sean Owen
@@ -43,15 +42,13 @@ public final class Decoder {
 		rsDecoder = new ReedSolomonDecoder(GF256.QR_CODE_FIELD);
 	}
 
-	public DecoderResult decode(boolean[][] image) throws ChecksumException,
-			FormatException, NotFoundException {
+	public DecoderResult decode(boolean[][] image) throws ChecksumException, FormatException, NotFoundException {
 		return decode(image, null);
 	}
 
 	/**
 	 * <p>
-	 * Convenience method that can decode a QR Code represented as a 2D array of
-	 * booleans. "true" is taken to mean a black module.
+	 * Convenience method that can decode a QR Code represented as a 2D array of booleans. "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param image
@@ -64,8 +61,7 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public DecoderResult decode(boolean[][] image, Hashtable hints)
-			throws ChecksumException, FormatException, NotFoundException {
+	public DecoderResult decode(boolean[][] image, Hashtable hints) throws ChecksumException, FormatException, NotFoundException {
 		int dimension = image.length;
 		BitMatrix bits = new BitMatrix(dimension);
 		for (int i = 0; i < dimension; i++) {
@@ -78,15 +74,13 @@ public final class Decoder {
 		return decode(bits, hints);
 	}
 
-	public DecoderResult decode(BitMatrix bits) throws ChecksumException,
-			FormatException, NotFoundException {
+	public DecoderResult decode(BitMatrix bits) throws ChecksumException, FormatException, NotFoundException {
 		return decode(bits, null);
 	}
 
 	/**
 	 * <p>
-	 * Decodes a QR Code represented as a {@link BitMatrix}. A 1 or "true" is
-	 * taken to mean a black module.
+	 * Decodes a QR Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.
 	 * </p>
 	 * 
 	 * @param bits
@@ -97,20 +91,17 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	public DecoderResult decode(BitMatrix bits, Hashtable hints)
-			throws FormatException, ChecksumException {
+	public DecoderResult decode(BitMatrix bits, Hashtable hints) throws FormatException, ChecksumException {
 
 		// Construct a parser and read version, error-correction level
 		BitMatrixParser parser = new BitMatrixParser(bits);
 		Version version = parser.readVersion();
-		ErrorCorrectionLevel ecLevel = parser.readFormatInformation()
-				.getErrorCorrectionLevel();
+		ErrorCorrectionLevel ecLevel = parser.readFormatInformation().getErrorCorrectionLevel();
 
 		// Read codewords
 		byte[] codewords = parser.readCodewords();
 		// Separate into data blocks
-		DataBlock[] dataBlocks = DataBlock.getDataBlocks(codewords, version,
-				ecLevel);
+		DataBlock[] dataBlocks = DataBlock.getDataBlocks(codewords, version, ecLevel);
 
 		// Count total number of data bytes
 		int totalBytes = 0;
@@ -132,15 +123,12 @@ public final class Decoder {
 		}
 
 		// Decode the contents of that stream of bytes
-		return DecodedBitStreamParser.decode(resultBytes, version, ecLevel,
-				hints);
+		return DecodedBitStreamParser.decode(resultBytes, version, ecLevel, hints);
 	}
 
 	/**
 	 * <p>
-	 * Given data and error-correction codewords received, possibly corrupted by
-	 * errors, attempts to correct the errors in-place using Reed-Solomon error
-	 * correction.
+	 * Given data and error-correction codewords received, possibly corrupted by errors, attempts to correct the errors in-place using Reed-Solomon error correction.
 	 * </p>
 	 * 
 	 * @param codewordBytes
@@ -150,8 +138,7 @@ public final class Decoder {
 	 * @throws ChecksumException
 	 *             if error correction fails
 	 */
-	private void correctErrors(byte[] codewordBytes, int numDataCodewords)
-			throws ChecksumException {
+	private void correctErrors(byte[] codewordBytes, int numDataCodewords) throws ChecksumException {
 		int numCodewords = codewordBytes.length;
 		// First read into an array of ints
 		int[] codewordsInts = new int[numCodewords];

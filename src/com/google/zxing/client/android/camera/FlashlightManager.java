@@ -23,19 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class is used to activate the weak light on some camera phones (not
- * flash) in order to illuminate surfaces for scanning. There is no official way
- * to do this, but, classes which allow access to this function still exist on
- * some devices. This therefore proceeds through a great deal of reflection.
+ * This class is used to activate the weak light on some camera phones (not flash) in order to illuminate surfaces for scanning. There is no official way to do this, but, classes which allow access to this function still exist on some devices. This therefore proceeds through a great deal of reflection.
  * 
- * See <a href=
- * "http://almondmendoza.com/2009/01/05/changing-the-screen-brightness-programatically/"
- * > http://almondmendoza.com/2009/01/05/changing-the-screen-brightness-
- * programatically/</a> and <a href=
- * "http://code.google.com/p/droidled/source/browse/trunk/src/com/droidled/demo/DroidLED.java"
- * > http://code.google.com/p/droidled/source/browse/trunk/src/com/droidled/demo
- * /DroidLED.java</a>. Thanks to Ryan Alford for pointing out the availability
- * of this class.
+ * See <a href= "http://almondmendoza.com/2009/01/05/changing-the-screen-brightness-programatically/" > http://almondmendoza.com/2009/01/05/changing-the-screen-brightness- programatically/</a> and <a href= "http://code.google.com/p/droidled/source/browse/trunk/src/com/droidled/demo/DroidLED.java" > http://code.google.com/p/droidled/source/browse/trunk/src/com/droidled/demo /DroidLED.java</a>. Thanks to Ryan Alford for pointing out the availability of this class.
  */
 final class FlashlightManager {
 
@@ -62,8 +52,7 @@ final class FlashlightManager {
 			return null;
 		}
 
-		Method getServiceMethod = maybeGetMethod(serviceManagerClass,
-				"getService", String.class);
+		Method getServiceMethod = maybeGetMethod(serviceManagerClass, "getService", String.class);
 		if (getServiceMethod == null) {
 			return null;
 		}
@@ -78,8 +67,7 @@ final class FlashlightManager {
 			return null;
 		}
 
-		Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass,
-				"asInterface", IBinder.class);
+		Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass, "asInterface", IBinder.class);
 		if (asInterfaceMethod == null) {
 			return null;
 		}
@@ -107,8 +95,7 @@ final class FlashlightManager {
 		}
 	}
 
-	private static Method maybeGetMethod(Class<?> clazz, String name,
-			Class<?>... argClasses) {
+	private static Method maybeGetMethod(Class<?> clazz, String name, Class<?>... argClasses) {
 		try {
 			return clazz.getMethod(name, argClasses);
 		} catch (NoSuchMethodException nsme) {
@@ -127,8 +114,7 @@ final class FlashlightManager {
 			Log.w(TAG, "Unexpected error while invoking " + method, e);
 			return null;
 		} catch (InvocationTargetException e) {
-			Log.w(TAG, "Unexpected error while invoking " + method,
-					e.getCause());
+			Log.w(TAG, "Unexpected error while invoking " + method, e.getCause());
 			return null;
 		} catch (RuntimeException re) {
 			Log.w(TAG, "Unexpected error while invoking " + method, re);

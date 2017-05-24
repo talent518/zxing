@@ -43,8 +43,7 @@ public final class WifiActivity extends Activity {
 
 	private static final int MAX_ERROR_COUNT = 3;
 	private static final int FAILURE_NO_NETWORK_ID = -1;
-	private static final Pattern HEX_DIGITS_64 = Pattern
-			.compile("[0-9A-Fa-f]{64}");
+	private static final Pattern HEX_DIGITS_64 = Pattern.compile("[0-9A-Fa-f]{64}");
 
 	private WifiManager wifiManager;
 	private TextView statusView;
@@ -78,10 +77,7 @@ public final class WifiActivity extends Activity {
 		}
 
 		// If the password is empty, this is an unencrypted network
-		if (setting.getPassword() == null
-				|| setting.getPassword().length() == 0
-				|| setting.getNetworkType() == null
-				|| setting.getNetworkType() == NetworkType.NETWORK_NOPASS) {
+		if (setting.getPassword() == null || setting.getPassword().length() == 0 || setting.getNetworkType() == null || setting.getNetworkType() == NetworkType.NETWORK_NOPASS) {
 			return changeNetworkUnEncrypted(setting);
 		}
 		if (setting.getNetworkType() == NetworkType.NETWORK_WPA) {
@@ -108,8 +104,7 @@ public final class WifiActivity extends Activity {
 
 	private WifiConfiguration changeNetworkCommon(NetworkSetting input) {
 		statusView.setText(R.string.wifi_creating_network);
-		Log.d(TAG, "Adding new configuration: \nSSID: " + input.getSsid()
-				+ "\nType: " + input.getNetworkType());
+		Log.d(TAG, "Adding new configuration: \nSSID: " + input.getSsid() + "\nType: " + input.getNetworkType());
 		WifiConfiguration config = new WifiConfiguration();
 
 		config.allowedAuthAlgorithms.clear();
@@ -139,8 +134,7 @@ public final class WifiActivity extends Activity {
 		} else {
 			config.wepKeys[0] = NetworkUtil.convertToQuotedString(pass);
 		}
-		config.allowedAuthAlgorithms
-				.set(WifiConfiguration.AuthAlgorithm.SHARED);
+		config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
 		config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
 		config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
 		config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
@@ -184,14 +178,12 @@ public final class WifiActivity extends Activity {
 	}
 
 	/**
-	 * If the given ssid name exists in the settings, then change its password
-	 * to the one given here, and save
+	 * If the given ssid name exists in the settings, then change its password to the one given here, and save
 	 * 
 	 * @param ssid
 	 */
 	private WifiConfiguration findNetworkInExistingConfig(String ssid) {
-		List<WifiConfiguration> existingConfigs = wifiManager
-				.getConfiguredNetworks();
+		List<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
 		for (WifiConfiguration existingConfig : existingConfigs) {
 			if (existingConfig.SSID.equals(ssid)) {
 				return existingConfig;
@@ -205,8 +197,7 @@ public final class WifiActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		if (intent == null
-				|| (!intent.getAction().equals(Intents.WifiConnect.ACTION))) {
+		if (intent == null || (!intent.getAction().equals(Intents.WifiConnect.ACTION))) {
 			finish();
 			return;
 		}
@@ -238,8 +229,7 @@ public final class WifiActivity extends Activity {
 		wifiReceiver = new WifiReceiver(wifiManager, this, statusView, ssid);
 
 		// The order matters!
-		mWifiStateFilter = new IntentFilter(
-				WifiManager.WIFI_STATE_CHANGED_ACTION);
+		mWifiStateFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
 		mWifiStateFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		mWifiStateFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 		mWifiStateFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -249,8 +239,7 @@ public final class WifiActivity extends Activity {
 		if (password == null) {
 			password = "";
 		}
-		Log.d(TAG, "Adding new configuration: \nSSID: " + ssid + "Type: "
-				+ networkT);
+		Log.d(TAG, "Adding new configuration: \nSSID: " + ssid + "Type: " + networkT);
 		NetworkSetting setting = new NetworkSetting(ssid, password, networkT);
 		changeNetwork(setting);
 	}
@@ -267,8 +256,7 @@ public final class WifiActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (wifiReceiver != null && mWifiStateFilter != null
-				&& !receiverRegistered) {
+		if (wifiReceiver != null && mWifiStateFilter != null && !receiverRegistered) {
 			registerReceiver(wifiReceiver, mWifiStateFilter);
 			receiverRegistered = true;
 		}
@@ -287,8 +275,7 @@ public final class WifiActivity extends Activity {
 	}
 
 	/**
-	 * Update the network: either create a new network or modify an existing
-	 * network
+	 * Update the network: either create a new network or modify an existing network
 	 * 
 	 * @param config
 	 *            the new network configuration

@@ -31,8 +31,7 @@ import com.google.zxing.common.BitArray;
 
 /**
  * @author Pablo Orduña, University of Deusto (pablo.orduna@deusto.es)
- * @author Eduardo Castillejo, University of Deusto
- *         (eduardo.castillejo@deusto.es)
+ * @author Eduardo Castillejo, University of Deusto (eduardo.castillejo@deusto.es)
  */
 final class GeneralAppIdDecoder {
 
@@ -44,15 +43,12 @@ final class GeneralAppIdDecoder {
 		this.information = information;
 	}
 
-	String decodeAllCodes(StringBuffer buff, int initialPosition)
-			throws NotFoundException {
+	String decodeAllCodes(StringBuffer buff, int initialPosition) throws NotFoundException {
 		int currentPosition = initialPosition;
 		String remaining = null;
 		do {
-			DecodedInformation info = this.decodeGeneralPurposeField(
-					currentPosition, remaining);
-			String parsedFields = FieldParser.parseFieldsInGeneralPurpose(info
-					.getNewString());
+			DecodedInformation info = this.decodeGeneralPurposeField(currentPosition, remaining);
+			String parsedFields = FieldParser.parseFieldsInGeneralPurpose(info.getNewString());
 			buff.append(parsedFields);
 			if (info.isRemaining()) {
 				remaining = String.valueOf(info.getRemainingValue());
@@ -89,11 +85,9 @@ final class GeneralAppIdDecoder {
 		if (pos + 7 > this.information.size) {
 			int numeric = extractNumericValueFromBitArray(pos, 4);
 			if (numeric == 0) {
-				return new DecodedNumeric(this.information.size,
-						DecodedNumeric.FNC1, DecodedNumeric.FNC1);
+				return new DecodedNumeric(this.information.size, DecodedNumeric.FNC1, DecodedNumeric.FNC1);
 			}
-			return new DecodedNumeric(this.information.size, numeric - 1,
-					DecodedNumeric.FNC1);
+			return new DecodedNumeric(this.information.size, numeric - 1, DecodedNumeric.FNC1);
 		}
 		int numeric = extractNumericValueFromBitArray(pos, 7);
 
@@ -107,11 +101,9 @@ final class GeneralAppIdDecoder {
 		return extractNumericValueFromBitArray(this.information, pos, bits);
 	}
 
-	static int extractNumericValueFromBitArray(BitArray information, int pos,
-			int bits) {
+	static int extractNumericValueFromBitArray(BitArray information, int pos, int bits) {
 		if (bits > 32) {
-			throw new IllegalArgumentException(
-					"extractNumberValueFromBitArray can't handle more than 32 bits");
+			throw new IllegalArgumentException("extractNumberValueFromBitArray can't handle more than 32 bits");
 		}
 
 		int value = 0;
@@ -135,11 +127,9 @@ final class GeneralAppIdDecoder {
 
 		DecodedInformation lastDecoded = parseBlocks();
 		if (lastDecoded != null && lastDecoded.isRemaining()) {
-			return new DecodedInformation(this.current.position,
-					this.buffer.toString(), lastDecoded.getRemainingValue());
+			return new DecodedInformation(this.current.position, this.buffer.toString(), lastDecoded.getRemainingValue());
 		}
-		return new DecodedInformation(this.current.position,
-				this.buffer.toString());
+		return new DecodedInformation(this.current.position, this.buffer.toString());
 	}
 
 	private DecodedInformation parseBlocks() {
@@ -176,19 +166,16 @@ final class GeneralAppIdDecoder {
 			if (numeric.isFirstDigitFNC1()) {
 				DecodedInformation information;
 				if (numeric.isSecondDigitFNC1()) {
-					information = new DecodedInformation(current.position,
-							buffer.toString());
+					information = new DecodedInformation(current.position, buffer.toString());
 				} else {
-					information = new DecodedInformation(current.position,
-							buffer.toString(), numeric.getSecondDigit());
+					information = new DecodedInformation(current.position, buffer.toString(), numeric.getSecondDigit());
 				}
 				return new BlockParsedResult(information, true);
 			}
 			buffer.append(numeric.getFirstDigit());
 
 			if (numeric.isSecondDigitFNC1()) {
-				DecodedInformation information = new DecodedInformation(
-						current.position, buffer.toString());
+				DecodedInformation information = new DecodedInformation(current.position, buffer.toString());
 				return new BlockParsedResult(information, true);
 			}
 			buffer.append(numeric.getSecondDigit());
@@ -207,8 +194,7 @@ final class GeneralAppIdDecoder {
 			current.position = iso.getNewPosition();
 
 			if (iso.isFNC1()) {
-				DecodedInformation information = new DecodedInformation(
-						current.position, buffer.toString());
+				DecodedInformation information = new DecodedInformation(current.position, buffer.toString());
 				return new BlockParsedResult(information, true);
 			}
 			buffer.append(iso.getValue());
@@ -235,8 +221,7 @@ final class GeneralAppIdDecoder {
 			current.position = alpha.getNewPosition();
 
 			if (alpha.isFNC1()) {
-				DecodedInformation information = new DecodedInformation(
-						current.position, buffer.toString());
+				DecodedInformation information = new DecodedInformation(current.position, buffer.toString());
 				return new BlockParsedResult(information, true); // end of the
 																	// char
 																	// block
@@ -354,8 +339,7 @@ final class GeneralAppIdDecoder {
 			return new DecodedChar(pos + 8, ' ');
 		}
 
-		throw new RuntimeException("Decoding invalid ISO/IEC 646 value: "
-				+ eightBitValue);
+		throw new RuntimeException("Decoding invalid ISO/IEC 646 value: " + eightBitValue);
 	}
 
 	private boolean isStillAlpha(int pos) {
@@ -406,8 +390,7 @@ final class GeneralAppIdDecoder {
 			return new DecodedChar(pos + 6, '/');
 		}
 
-		throw new RuntimeException("Decoding invalid alphanumeric value: "
-				+ sixBitValue);
+		throw new RuntimeException("Decoding invalid alphanumeric value: " + sixBitValue);
 	}
 
 	private boolean isAlphaTo646ToAlphaLatch(int pos) {

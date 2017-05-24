@@ -35,13 +35,11 @@ public final class Result {
 	private Hashtable resultMetadata;
 	private final long timestamp;
 
-	public Result(String text, byte[] rawBytes, ResultPoint[] resultPoints,
-			BarcodeFormat format) {
+	public Result(String text, byte[] rawBytes, ResultPoint[] resultPoints, BarcodeFormat format) {
 		this(text, rawBytes, resultPoints, format, System.currentTimeMillis());
 	}
 
-	public Result(String text, byte[] rawBytes, ResultPoint[] resultPoints,
-			BarcodeFormat format, long timestamp) {
+	public Result(String text, byte[] rawBytes, ResultPoint[] resultPoints, BarcodeFormat format, long timestamp) {
 		if (text == null && rawBytes == null) {
 			throw new IllegalArgumentException("Text and bytes are null");
 		}
@@ -54,43 +52,35 @@ public final class Result {
 	}
 
 	/**
-	 * @return raw text encoded by the barcode, if applicable, otherwise
-	 *         <code>null</code>
+	 * @return raw text encoded by the barcode, if applicable, otherwise <code>null</code>
 	 */
 	public String getText() {
 		return text;
 	}
 
 	/**
-	 * @return raw bytes encoded by the barcode, if applicable, otherwise
-	 *         <code>null</code>
+	 * @return raw bytes encoded by the barcode, if applicable, otherwise <code>null</code>
 	 */
 	public byte[] getRawBytes() {
 		return rawBytes;
 	}
 
 	/**
-	 * @return points related to the barcode in the image. These are typically
-	 *         points identifying finder patterns or the corners of the barcode.
-	 *         The exact meaning is specific to the type of barcode that was
-	 *         decoded.
+	 * @return points related to the barcode in the image. These are typically points identifying finder patterns or the corners of the barcode. The exact meaning is specific to the type of barcode that was decoded.
 	 */
 	public ResultPoint[] getResultPoints() {
 		return resultPoints;
 	}
 
 	/**
-	 * @return {@link BarcodeFormat} representing the format of the barcode that
-	 *         was decoded
+	 * @return {@link BarcodeFormat} representing the format of the barcode that was decoded
 	 */
 	public BarcodeFormat getBarcodeFormat() {
 		return format;
 	}
 
 	/**
-	 * @return {@link Hashtable} mapping {@link ResultMetadataType} keys to
-	 *         values. May be <code>null</code>. This contains optional metadata
-	 *         about what was detected about the barcode, like orientation.
+	 * @return {@link Hashtable} mapping {@link ResultMetadataType} keys to values. May be <code>null</code>. This contains optional metadata about what was detected about the barcode, like orientation.
 	 */
 	public Hashtable getResultMetadata() {
 		return resultMetadata;
@@ -110,8 +100,7 @@ public final class Result {
 			} else {
 				Enumeration e = metadata.keys();
 				while (e.hasMoreElements()) {
-					ResultMetadataType key = (ResultMetadataType) e
-							.nextElement();
+					ResultMetadataType key = (ResultMetadataType) e.nextElement();
 					Object value = metadata.get(key);
 					resultMetadata.put(key, value);
 				}
@@ -123,11 +112,9 @@ public final class Result {
 		if (resultPoints == null) {
 			resultPoints = newPoints;
 		} else if (newPoints != null && newPoints.length > 0) {
-			ResultPoint[] allPoints = new ResultPoint[resultPoints.length
-					+ newPoints.length];
+			ResultPoint[] allPoints = new ResultPoint[resultPoints.length + newPoints.length];
 			System.arraycopy(resultPoints, 0, allPoints, 0, resultPoints.length);
-			System.arraycopy(newPoints, 0, allPoints, resultPoints.length,
-					newPoints.length);
+			System.arraycopy(newPoints, 0, allPoints, resultPoints.length, newPoints.length);
 			resultPoints = allPoints;
 		}
 	}

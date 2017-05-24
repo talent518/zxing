@@ -60,17 +60,14 @@ import com.google.zxing.client.android.AndroidHttpClient;
  */
 public final class SearchBookContentsActivity extends Activity {
 
-	private static final String TAG = SearchBookContentsActivity.class
-			.getSimpleName();
+	private static final String TAG = SearchBookContentsActivity.class.getSimpleName();
 
 	private static final String USER_AGENT = "ZXing (Android)";
 	private static final Pattern TAG_PATTERN = Pattern.compile("\\<.*?\\>");
 	private static final Pattern LT_ENTITY_PATTERN = Pattern.compile("&lt;");
 	private static final Pattern GT_ENTITY_PATTERN = Pattern.compile("&gt;");
-	private static final Pattern QUOTE_ENTITY_PATTERN = Pattern
-			.compile("&#39;");
-	private static final Pattern QUOT_ENTITY_PATTERN = Pattern
-			.compile("&quot;");
+	private static final Pattern QUOTE_ENTITY_PATTERN = Pattern.compile("&#39;");
+	private static final Pattern QUOT_ENTITY_PATTERN = Pattern.compile("&quot;");
 
 	private NetworkThread networkThread;
 	private String isbn;
@@ -124,9 +121,7 @@ public final class SearchBookContentsActivity extends Activity {
 		CookieManager.getInstance().removeExpiredCookie();
 
 		Intent intent = getIntent();
-		if (intent == null
-				|| (!intent.getAction().equals(
-						Intents.SearchBookContents.ACTION))) {
+		if (intent == null || (!intent.getAction().equals(Intents.SearchBookContents.ACTION))) {
 			finish();
 			return;
 		}
@@ -141,8 +136,7 @@ public final class SearchBookContentsActivity extends Activity {
 		setContentView(R.layout.search_book_contents);
 		queryTextView = (EditText) findViewById(R.id.query_text_view);
 
-		String initialQuery = intent
-				.getStringExtra(Intents.SearchBookContents.QUERY);
+		String initialQuery = intent.getStringExtra(Intents.SearchBookContents.QUERY);
 		if (initialQuery != null && initialQuery.length() > 0) {
 			// Populate the search box but don't trigger the search
 			queryTextView.setText(initialQuery);
@@ -154,8 +148,7 @@ public final class SearchBookContentsActivity extends Activity {
 
 		resultListView = (ListView) findViewById(R.id.result_list_view);
 		LayoutInflater factory = LayoutInflater.from(this);
-		headerView = (TextView) factory.inflate(
-				R.layout.search_book_contents_header, resultListView, false);
+		headerView = (TextView) factory.inflate(R.layout.search_book_contents_header, resultListView, false);
 		resultListView.addHeaderView(headerView);
 	}
 
@@ -199,21 +192,16 @@ public final class SearchBookContentsActivity extends Activity {
 	private void handleSearchResults(JSONObject json) {
 		try {
 			int count = json.getInt("number_of_results");
-			headerView.setText("Found "
-					+ (count == 1 ? "1 result" : count + " results"));
+			headerView.setText("Found " + (count == 1 ? "1 result" : count + " results"));
 			if (count > 0) {
 				JSONArray results = json.getJSONArray("search_results");
-				SearchBookContentsResult.setQuery(queryTextView.getText()
-						.toString());
-				List<SearchBookContentsResult> items = new ArrayList<SearchBookContentsResult>(
-						count);
+				SearchBookContentsResult.setQuery(queryTextView.getText().toString());
+				List<SearchBookContentsResult> items = new ArrayList<SearchBookContentsResult>(count);
 				for (int x = 0; x < count; x++) {
 					items.add(parseResult(results.getJSONObject(x)));
 				}
-				resultListView.setOnItemClickListener(new BrowseBookListener(
-						this, items));
-				resultListView.setAdapter(new SearchBookContentsAdapter(this,
-						items));
+				resultListView.setOnItemClickListener(new BrowseBookListener(this, items));
+				resultListView.setAdapter(new SearchBookContentsAdapter(this, items));
 			} else {
 				String searchable = json.optString("searchable");
 				if ("false".equals(searchable)) {
@@ -234,8 +222,7 @@ public final class SearchBookContentsActivity extends Activity {
 			String pageId = json.getString("page_id");
 			String pageNumber = json.getString("page_number");
 			if (pageNumber.length() > 0) {
-				pageNumber = getString(R.string.msg_sbc_page) + ' '
-						+ pageNumber;
+				pageNumber = getString(R.string.msg_sbc_page) + ' ' + pageNumber;
 			} else {
 				// This can happen for text on the jacket, and possibly other
 				// reasons.
@@ -256,12 +243,10 @@ public final class SearchBookContentsActivity extends Activity {
 				snippet = '(' + getString(R.string.msg_sbc_snippet_unavailable) + ')';
 				valid = false;
 			}
-			return new SearchBookContentsResult(pageId, pageNumber, snippet,
-					valid);
+			return new SearchBookContentsResult(pageId, pageNumber, snippet, valid);
 		} catch (JSONException e) {
 			// Never seen in the wild, just being complete.
-			return new SearchBookContentsResult(
-					getString(R.string.msg_sbc_no_page_returned), "", "", false);
+			return new SearchBookContentsResult(getString(R.string.msg_sbc_no_page_returned), "", "", false);
 		}
 	}
 
@@ -289,13 +274,9 @@ public final class SearchBookContentsActivity extends Activity {
 				if (isbn.startsWith("http://google.com/books?id=")) {
 					int equals = isbn.indexOf('=');
 					String volumeId = isbn.substring(equals + 1);
-					uri = new URI("http", null, "www.google.com", -1, "/books",
-							"id=" + volumeId + "&jscmd=SearchWithinVolume2&q="
-									+ query, null);
+					uri = new URI("http", null, "www.google.com", -1, "/books", "id=" + volumeId + "&jscmd=SearchWithinVolume2&q=" + query, null);
 				} else {
-					uri = new URI("http", null, "www.google.com", -1, "/books",
-							"vid=isbn" + isbn + "&jscmd=SearchWithinVolume2&q="
-									+ query, null);
+					uri = new URI("http", null, "www.google.com", -1, "/books", "vid=isbn" + isbn + "&jscmd=SearchWithinVolume2&q=" + query, null);
 				}
 				HttpUriRequest get = new HttpGet(uri);
 				get.setHeader("cookie", getCookie(uri.toString()));
@@ -306,26 +287,20 @@ public final class SearchBookContentsActivity extends Activity {
 					ByteArrayOutputStream jsonHolder = new ByteArrayOutputStream();
 					entity.writeTo(jsonHolder);
 					jsonHolder.flush();
-					JSONObject json = new JSONObject(
-							jsonHolder.toString(getEncoding(entity)));
+					JSONObject json = new JSONObject(jsonHolder.toString(getEncoding(entity)));
 					jsonHolder.close();
 
-					Message message = Message.obtain(handler,
-							R.id.search_book_contents_succeeded);
+					Message message = Message.obtain(handler, R.id.search_book_contents_succeeded);
 					message.obj = json;
 					message.sendToTarget();
 				} else {
-					Log.w(TAG, "HTTP returned "
-							+ response.getStatusLine().getStatusCode()
-							+ " for " + uri);
-					Message message = Message.obtain(handler,
-							R.id.search_book_contents_failed);
+					Log.w(TAG, "HTTP returned " + response.getStatusLine().getStatusCode() + " for " + uri);
+					Message message = Message.obtain(handler, R.id.search_book_contents_failed);
 					message.sendToTarget();
 				}
 			} catch (Exception e) {
 				Log.w(TAG, "Error accessing book search", e);
-				Message message = Message.obtain(handler,
-						R.id.search_book_contents_failed);
+				Message message = Message.obtain(handler, R.id.search_book_contents_failed);
 				message.sendToTarget();
 			} finally {
 				if (client != null) {
@@ -345,15 +320,13 @@ public final class SearchBookContentsActivity extends Activity {
 			if (cookie == null || cookie.length() == 0) {
 				Log.d(TAG, "Book Search cookie was missing or expired");
 				HttpUriRequest head = new HttpHead(url);
-				AndroidHttpClient client = AndroidHttpClient
-						.newInstance(USER_AGENT);
+				AndroidHttpClient client = AndroidHttpClient.newInstance(USER_AGENT);
 				try {
 					HttpResponse response = client.execute(head);
 					if (response.getStatusLine().getStatusCode() == 200) {
 						Header[] cookies = response.getHeaders("set-cookie");
 						for (Header theCookie : cookies) {
-							CookieManager.getInstance().setCookie(url,
-									theCookie.getValue());
+							CookieManager.getInstance().setCookie(url, theCookie.getValue());
 						}
 						CookieSyncManager.getInstance().sync();
 						cookie = CookieManager.getInstance().getCookie(url);

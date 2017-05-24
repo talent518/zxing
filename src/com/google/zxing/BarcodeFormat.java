@@ -33,8 +33,7 @@ public final class BarcodeFormat {
 	public static final BarcodeFormat QR_CODE = new BarcodeFormat("QR_CODE");
 
 	/** Data Matrix 2D barcode format. */
-	public static final BarcodeFormat DATA_MATRIX = new BarcodeFormat(
-			"DATA_MATRIX");
+	public static final BarcodeFormat DATA_MATRIX = new BarcodeFormat("DATA_MATRIX");
 
 	/** UPC-E 1D format. */
 	public static final BarcodeFormat UPC_E = new BarcodeFormat("UPC_E");
@@ -49,8 +48,7 @@ public final class BarcodeFormat {
 	public static final BarcodeFormat EAN_13 = new BarcodeFormat("EAN_13");
 
 	/** UPC/EAN extension format. Not a stand-alone format. */
-	public static final BarcodeFormat UPC_EAN_EXTENSION = new BarcodeFormat(
-			"UPC_EAN_EXTENSION");
+	public static final BarcodeFormat UPC_EAN_EXTENSION = new BarcodeFormat("UPC_EAN_EXTENSION");
 
 	/** Code 128 1D format. */
 	public static final BarcodeFormat CODE_128 = new BarcodeFormat("CODE_128");
@@ -74,8 +72,7 @@ public final class BarcodeFormat {
 	public static final BarcodeFormat PDF417 = new BarcodeFormat("PDF417");
 
 	/** RSS EXPANDED */
-	public static final BarcodeFormat RSS_EXPANDED = new BarcodeFormat(
-			"RSS_EXPANDED");
+	public static final BarcodeFormat RSS_EXPANDED = new BarcodeFormat("RSS_EXPANDED");
 
 	private final String name;
 

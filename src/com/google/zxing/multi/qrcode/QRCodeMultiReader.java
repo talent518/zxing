@@ -38,8 +38,7 @@ import java.util.Vector;
  * @author Sean Owen
  * @author Hannes Erven
  */
-public final class QRCodeMultiReader extends QRCodeReader implements
-		MultipleBarcodeReader {
+public final class QRCodeMultiReader extends QRCodeReader implements MultipleBarcodeReader {
 
 	private static final Result[] EMPTY_RESULT_ARRAY = new Result[0];
 
@@ -47,27 +46,19 @@ public final class QRCodeMultiReader extends QRCodeReader implements
 		return decodeMultiple(image, null);
 	}
 
-	public Result[] decodeMultiple(BinaryBitmap image, Hashtable hints)
-			throws NotFoundException {
+	public Result[] decodeMultiple(BinaryBitmap image, Hashtable hints) throws NotFoundException {
 		Vector results = new Vector();
-		DetectorResult[] detectorResult = new MultiDetector(
-				image.getBlackMatrix()).detectMulti(hints);
+		DetectorResult[] detectorResult = new MultiDetector(image.getBlackMatrix()).detectMulti(hints);
 		for (int i = 0; i < detectorResult.length; i++) {
 			try {
-				DecoderResult decoderResult = getDecoder().decode(
-						detectorResult[i].getBits());
+				DecoderResult decoderResult = getDecoder().decode(detectorResult[i].getBits());
 				ResultPoint[] points = detectorResult[i].getPoints();
-				Result result = new Result(decoderResult.getText(),
-						decoderResult.getRawBytes(), points,
-						BarcodeFormat.QR_CODE);
+				Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.QR_CODE);
 				if (decoderResult.getByteSegments() != null) {
-					result.putMetadata(ResultMetadataType.BYTE_SEGMENTS,
-							decoderResult.getByteSegments());
+					result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, decoderResult.getByteSegments());
 				}
 				if (decoderResult.getECLevel() != null) {
-					result.putMetadata(
-							ResultMetadataType.ERROR_CORRECTION_LEVEL,
-							decoderResult.getECLevel().toString());
+					result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, decoderResult.getECLevel().toString());
 				}
 				results.addElement(result);
 			} catch (ReaderException re) {

@@ -35,8 +35,7 @@ import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.R;
 
 /**
- * Barcode Scanner can share data like contacts and bookmarks by displaying a QR
- * Code on screen, such that another user can scan the barcode with their phone.
+ * Barcode Scanner can share data like contacts and bookmarks by displaying a QR Code on screen, such that another user can scan the barcode with their phone.
  * 
  * @author dswitkin@google.com (Daniel Switkin)
  */
@@ -53,22 +52,21 @@ public final class ShareActivity extends Activity {
 	private static final int METHODS_DATA_COLUMN = 2;
 
 	private static final String[] METHODS_PROJECTION = { BaseColumns._ID, // 0
-			Contacts.ContactMethodsColumns.KIND, // 1
-			Contacts.ContactMethodsColumns.DATA, // 2
+		Contacts.ContactMethodsColumns.KIND, // 1
+		Contacts.ContactMethodsColumns.DATA, // 2
 	};
 
 	private static final int PHONES_NUMBER_COLUMN = 1;
 
 	private static final String[] PHONES_PROJECTION = { BaseColumns._ID, // 0
-			Contacts.PhonesColumns.NUMBER // 1
+		Contacts.PhonesColumns.NUMBER // 1
 	};
 
 	private Button clipboardButton;
 
 	private final Button.OnClickListener contactListener = new Button.OnClickListener() {
 		public void onClick(View v) {
-			Intent intent = new Intent(Intent.ACTION_PICK,
-					Contacts.People.CONTENT_URI);
+			Intent intent = new Intent(Intent.ACTION_PICK, Contacts.People.CONTENT_URI);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivityForResult(intent, PICK_CONTACT);
 		}
@@ -78,8 +76,7 @@ public final class ShareActivity extends Activity {
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_PICK);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			intent.setClassName(ShareActivity.this,
-					BookmarkPickerActivity.class.getName());
+			intent.setClassName(ShareActivity.this, BookmarkPickerActivity.class.getName());
 			startActivityForResult(intent, PICK_BOOKMARK);
 		}
 	};
@@ -88,8 +85,7 @@ public final class ShareActivity extends Activity {
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_PICK);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			intent.setClassName(ShareActivity.this,
-					AppPickerActivity.class.getName());
+			intent.setClassName(ShareActivity.this, AppPickerActivity.class.getName());
 			startActivityForResult(intent, PICK_APP);
 		}
 	};
@@ -103,10 +99,8 @@ public final class ShareActivity extends Activity {
 				Intent intent = new Intent(Intents.Encode.ACTION);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 				intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-				intent.putExtra(Intents.Encode.DATA, clipboard.getText()
-						.toString());
-				intent.putExtra(Intents.Encode.FORMAT,
-						BarcodeFormat.QR_CODE.toString());
+				intent.putExtra(Intents.Encode.DATA, clipboard.getText().toString());
+				intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
 				startActivity(intent);
 			}
 		}
@@ -144,8 +138,7 @@ public final class ShareActivity extends Activity {
 			switch (requestCode) {
 			case PICK_BOOKMARK:
 			case PICK_APP:
-				showTextAsBarcode(intent
-						.getStringExtra(Browser.BookmarkColumns.URL));
+				showTextAsBarcode(intent.getStringExtra(Browser.BookmarkColumns.URL));
 				break;
 			case PICK_CONTACT:
 				// Data field is content://contacts/people/984
@@ -169,9 +162,7 @@ public final class ShareActivity extends Activity {
 	}
 
 	/**
-	 * Takes a contact Uri and does the necessary database lookups to retrieve
-	 * that person's info, then sends an Encode intent to render it as a QR
-	 * Code.
+	 * Takes a contact Uri and does the necessary database lookups to retrieve that person's info, then sends an Encode intent to render it as a QR Code.
 	 * 
 	 * @param contactUri
 	 *            A Uri of the form content://contacts/people/17
@@ -182,44 +173,35 @@ public final class ShareActivity extends Activity {
 			return; // Show error?
 		}
 		ContentResolver resolver = getContentResolver();
-		Cursor contactCursor = resolver.query(contactUri, null, null, null,
-				null);
+		Cursor contactCursor = resolver.query(contactUri, null, null, null, null);
 		Bundle bundle = new Bundle();
 		if (contactCursor != null && contactCursor.moveToFirst()) {
-			int nameColumn = contactCursor
-					.getColumnIndex(Contacts.PeopleColumns.NAME);
+			int nameColumn = contactCursor.getColumnIndex(Contacts.PeopleColumns.NAME);
 			String name = contactCursor.getString(nameColumn);
 
 			// Don't require a name to be present, this contact might be just a
 			// phone number.
 			if (name != null && name.length() > 0) {
-				bundle.putString(Contacts.Intents.Insert.NAME,
-						massageContactData(name));
+				bundle.putString(Contacts.Intents.Insert.NAME, massageContactData(name));
 			}
 			contactCursor.close();
 
-			Uri phonesUri = Uri.withAppendedPath(contactUri,
-					Contacts.People.Phones.CONTENT_DIRECTORY);
-			Cursor phonesCursor = resolver.query(phonesUri, PHONES_PROJECTION,
-					null, null, null);
+			Uri phonesUri = Uri.withAppendedPath(contactUri, Contacts.People.Phones.CONTENT_DIRECTORY);
+			Cursor phonesCursor = resolver.query(phonesUri, PHONES_PROJECTION, null, null, null);
 			if (phonesCursor != null) {
 				int foundPhone = 0;
 				while (phonesCursor.moveToNext()) {
-					String number = phonesCursor
-							.getString(PHONES_NUMBER_COLUMN);
+					String number = phonesCursor.getString(PHONES_NUMBER_COLUMN);
 					if (foundPhone < Contents.PHONE_KEYS.length) {
-						bundle.putString(Contents.PHONE_KEYS[foundPhone],
-								massageContactData(number));
+						bundle.putString(Contents.PHONE_KEYS[foundPhone], massageContactData(number));
 						foundPhone++;
 					}
 				}
 				phonesCursor.close();
 			}
 
-			Uri methodsUri = Uri.withAppendedPath(contactUri,
-					Contacts.People.ContactMethods.CONTENT_DIRECTORY);
-			Cursor methodsCursor = resolver.query(methodsUri,
-					METHODS_PROJECTION, null, null, null);
+			Uri methodsUri = Uri.withAppendedPath(contactUri, Contacts.People.ContactMethods.CONTENT_DIRECTORY);
+			Cursor methodsCursor = resolver.query(methodsUri, METHODS_PROJECTION, null, null, null);
 			if (methodsCursor != null) {
 				int foundEmail = 0;
 				boolean foundPostal = false;
@@ -229,15 +211,13 @@ public final class ShareActivity extends Activity {
 					switch (kind) {
 					case Contacts.KIND_EMAIL:
 						if (foundEmail < Contents.EMAIL_KEYS.length) {
-							bundle.putString(Contents.EMAIL_KEYS[foundEmail],
-									massageContactData(data));
+							bundle.putString(Contents.EMAIL_KEYS[foundEmail], massageContactData(data));
 							foundEmail++;
 						}
 						break;
 					case Contacts.KIND_POSTAL:
 						if (!foundPostal) {
-							bundle.putString(Contacts.Intents.Insert.POSTAL,
-									massageContactData(data));
+							bundle.putString(Contacts.Intents.Insert.POSTAL, massageContactData(data));
 							foundPostal = true;
 						}
 						break;
@@ -250,8 +230,7 @@ public final class ShareActivity extends Activity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			intent.putExtra(Intents.Encode.TYPE, Contents.Type.CONTACT);
 			intent.putExtra(Intents.Encode.DATA, bundle);
-			intent.putExtra(Intents.Encode.FORMAT,
-					BarcodeFormat.QR_CODE.toString());
+			intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
 
 			Log.i(TAG, "Sending bundle for encoding: " + bundle);
 			startActivity(intent);

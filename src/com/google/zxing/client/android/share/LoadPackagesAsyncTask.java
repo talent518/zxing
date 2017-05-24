@@ -33,12 +33,10 @@ import java.util.List;
  * 
  * @author Sean Owen
  */
-final class LoadPackagesAsyncTask extends
-		AsyncTask<List<String[]>, Void, List<String[]>> {
+final class LoadPackagesAsyncTask extends AsyncTask<List<String[]>, Void, List<String[]>> {
 
 	private static final String[] PKG_PREFIX_WHITELIST = { "com.google.android.apps.", };
-	private static final String[] PKG_PREFIX_BLACKLIST = { "com.android.",
-			"android", "com.google.android.", "com.htc", };
+	private static final String[] PKG_PREFIX_BLACKLIST = { "com.android.", "android", "com.google.android.", "com.htc", };
 
 	private final AppPickerActivity appPickerActivity;
 
@@ -50,15 +48,13 @@ final class LoadPackagesAsyncTask extends
 	protected List<String[]> doInBackground(List<String[]>... objects) {
 		List<String[]> labelsPackages = objects[0];
 		PackageManager packageManager = appPickerActivity.getPackageManager();
-		List<ApplicationInfo> appInfos = packageManager
-				.getInstalledApplications(0);
+		List<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
 		for (ApplicationInfo appInfo : appInfos) {
 			CharSequence label = appInfo.loadLabel(packageManager);
 			if (label != null) {
 				String packageName = appInfo.packageName;
 				if (!isHidden(packageName)) {
-					labelsPackages.add(new String[] { label.toString(),
-							packageName });
+					labelsPackages.add(new String[] { label.toString(), packageName });
 				}
 			}
 		}
@@ -89,14 +85,12 @@ final class LoadPackagesAsyncTask extends
 		for (String[] result : results) {
 			labels.add(result[0]);
 		}
-		ListAdapter listAdapter = new ArrayAdapter<String>(appPickerActivity,
-				android.R.layout.simple_list_item_1, labels);
+		ListAdapter listAdapter = new ArrayAdapter<String>(appPickerActivity, android.R.layout.simple_list_item_1, labels);
 		appPickerActivity.setListAdapter(listAdapter);
 		appPickerActivity.getProgressDialog().dismiss();
 	}
 
-	private static class ByFirstStringComparator implements
-			Comparator<String[]>, Serializable {
+	private static class ByFirstStringComparator implements Comparator<String[]>, Serializable {
 		public int compare(String[] o1, String[] o2) {
 			return o1[0].compareTo(o2[0]);
 		}

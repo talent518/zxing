@@ -137,7 +137,7 @@ public final class CameraManager {
 			if (camera == null) {
 				throw new IOException();
 			}
-			
+
 			camera.setPreviewDisplay(holder);
 
 			if (!initialized) {
@@ -146,12 +146,11 @@ public final class CameraManager {
 			}
 			configManager.setDesiredCameraParameters(camera);
 
-
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			Boolean isEnableFlashlight = prefs.getBoolean(PreferencesActivity.KEY_FRONT_LIGHT, false);
 
-			if(isEnableFlashlight) {
-				Parameters parameter = camera.getParameters();  
+			if (isEnableFlashlight) {
+				Parameters parameter = camera.getParameters();
 				parameter.setFlashMode(Parameters.FLASH_MODE_TORCH);
 				camera.setParameters(parameter);
 				FlashlightManager.enableFlashlight();
@@ -241,13 +240,13 @@ public final class CameraManager {
 			if (camera == null) {
 				return null;
 			}
-			int width = screenResolution.x-40;
+			int width = screenResolution.x - 40;
 			if (width < MIN_FRAME_WIDTH) {
 				width = MIN_FRAME_WIDTH;
 			} else if (width > MAX_FRAME_WIDTH) {
 				width = MAX_FRAME_WIDTH;
 			}
-			int height = screenResolution.y-40;
+			int height = screenResolution.y - 40;
 			if (height < MIN_FRAME_HEIGHT) {
 				height = MIN_FRAME_HEIGHT;
 			} else if (height > MAX_FRAME_HEIGHT) {
