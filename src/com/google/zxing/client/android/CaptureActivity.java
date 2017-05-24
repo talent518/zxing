@@ -26,7 +26,9 @@ import com.google.zxing.client.android.result.ResultButtonListener;
 import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.android.result.ResultHandlerFactory;
 import com.google.zxing.client.android.share.ShareActivity;
+import com.google.zxing.client.android.transfer.ResultTransfer;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -135,6 +137,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	private HistoryManager historyManager;
 	private InactivityTimer inactivityTimer;
 
+	private static TextView messageView;
+
 	/**
 	 * When the beep has finished playing, rewind to queue up another one.
 	 */
@@ -172,6 +176,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		resultView = findViewById(R.id.result_view);
 		statusView = (TextView) findViewById(R.id.status_view);
+		messageView = (TextView) findViewById(R.id.transfer_message);
 		handler = null;
 		lastResult = null;
 		hasSurface = false;
@@ -386,6 +391,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		inactivityTimer.onActivity();
 		lastResult = rawResult;
 		historyManager.addHistoryItem(rawResult);
+
 		if (barcode == null) {
 			// This is from history -- no saved barcode
 			handleDecodeInternally(rawResult, null);
@@ -406,8 +412,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				break;
 			case NONE:
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-				if (prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
+				Boolean isBulkMode = prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false);
+				if (isBulkMode) {
 					Toast.makeText(this, R.string.msg_bulk_mode_scanned, Toast.LENGTH_SHORT).show();
+
 					// Wait a moment or else it will scan the same barcode
 					// continuously about 3 times
 					if (handler != null) {
@@ -638,7 +646,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		}
 	}
 
-	private void playBeepSoundAndVibrate() {
+	public void playBeepSoundAndVibrate() {
 		if (playBeep && mediaPlayer != null) {
 			mediaPlayer.start();
 		}
@@ -686,5 +694,21 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 	public void drawViewfinder() {
 		viewfinderView.drawViewfinder();
+	}
+
+	public void handleTransfer(ResultTransfer result, Bitmap barcode) {
+		if (result.status) {
+			playBeepSoundAndVibrate();
+		}
+
+		messageView.setText(result.message);
+
+		drawResultPoints(barcode, result.rawResult);
+		// Wait a moment or else it will scan the same barcode
+		// continuously about 3 times
+		if (handler != null) {
+			handler.sendEmptyMessageDelayed(R.id.restart_preview, BULK_MODE_SCAN_DELAY_MS);
+		}
+		resetStatusView();
 	}
 }

@@ -19,6 +19,7 @@ package com.google.zxing.client.android;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.camera.CameraManager;
+import com.google.zxing.client.android.transfer.ResultTransfer;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -61,6 +62,8 @@ public final class CaptureActivityHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message message) {
+		Bundle bundle;
+		Bitmap barcode;
 		switch (message.what) {
 		case R.id.auto_focus:
 			// Log.d(TAG, "Got auto-focus message");
@@ -79,8 +82,8 @@ public final class CaptureActivityHandler extends Handler {
 		case R.id.decode_succeeded:
 			Log.d(TAG, "Got decode succeeded message");
 			state = State.SUCCESS;
-			Bundle bundle = message.getData();
-			Bitmap barcode = bundle == null ? null : (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
+			bundle = message.getData();
+			barcode = bundle == null ? null : (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
 			activity.handleDecode((Result) message.obj, barcode);
 			break;
 		case R.id.decode_failed:
@@ -100,6 +103,13 @@ public final class CaptureActivityHandler extends Handler {
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			activity.startActivity(intent);
+			break;
+		case R.id.transfer:
+			Log.d(TAG, "Got transfer message");
+			state = State.SUCCESS;
+			bundle = message.getData();
+			barcode = bundle == null ? null : (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
+			activity.handleTransfer((ResultTransfer) message.obj,barcode);
 			break;
 		}
 	}

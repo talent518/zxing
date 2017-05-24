@@ -131,4 +131,14 @@
   <string name="wifi_type_incorrect">网络类型不正确</string>
   <string name="wifi_type_label">类型</string>
   <string name="zxing_url">http://code.google.com/p/zxing</string>
+  <string name="transfer_no_file">没有要传输的文件。</string>
+  <string name="transfer_decode_error">文件传输: 数据解码失败。</string>
+  <string name="transfer_existed">文件 %1$s 已存在。</string>
+  <string name="transfer_no_read">文件 %1$s 不能写入。</string>
+  <string name="transfer_no_write">文件 %1$s 不能写入。</string>
+  <string name="transfer_begin">开始传输文件: %1$s\n文件大小: %2$d\n块数: %3$d\n块大小: %4$d</string>
+  <string name="transfer_progress">传输的文件: %1$s\n文件大小: %2$d\n进度: %3$d/%4$d\n传输开始时间: %5$s\n传输最后时间: %6$s\n共用时: %7$d 秒</string>
+  <string name="transfer_complete">文件 %1$s 已传输完毕。\n传输开始时间: %2$s\n传输完成时间: %3$s\n共用时: %4$d 秒</string>
+  <string name="transfer_hash">文件 %1$s 传输完成\n校验码不一致。\n校验码: %2$s\n传输开始时间: %3$s\n传输完成时间: %4$s\n共用时: %5$d 秒</string>
+  <string name="transfer_seek_error">传输的文件: %1$s\n该传输第  %2$d 块</string>
 </resources>

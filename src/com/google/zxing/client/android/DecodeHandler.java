@@ -22,6 +22,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.camera.CameraManager;
+import com.google.zxing.client.android.transfer.ResultTransfer;
 import com.google.zxing.common.HybridBinarizer;
 
 import android.os.Bundle;
@@ -70,7 +71,6 @@ final class DecodeHandler extends Handler {
 	 */
 	private void decode(byte[] data, int width, int height) {
 		long start = System.currentTimeMillis();
-		System.out.println("decode...." + data.length + "\twidth:" + width + "\theight:" + height);
 		Result rawResult = null;
 		PlanarYUVLuminanceSource source = CameraManager.get().buildLuminanceSource(data, width, height);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
@@ -85,9 +85,17 @@ final class DecodeHandler extends Handler {
 		if (rawResult != null) {
 			long end = System.currentTimeMillis();
 			Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
-			Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
+			
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
+			ResultTransfer transfer=FileTransfer.saveToTarget(rawResult, activity);
+			
+			Message message;
+			if(transfer==null) {
+				message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
+			} else {
+				message = Message.obtain(activity.getHandler(), R.id.transfer, transfer);
+			}
 			message.setData(bundle);
 			// Log.d(TAG, "Sending decode succeeded message...");
 			message.sendToTarget();
