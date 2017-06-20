@@ -108,7 +108,7 @@ public final class VCardResultParser extends ResultParser {
 			if (metadataString != null) {
 				for (String metadatum : SEMICOLON.split(metadataString)) {
 					if (metadata == null) {
-						metadata = new ArrayList<>(1);
+						metadata = new ArrayList(1);
 					}
 					metadata.add(metadatum);
 					String[] metadatumTokens = EQUALS.split(metadatum, 2);
@@ -146,7 +146,7 @@ public final class VCardResultParser extends ResultParser {
 			} else if (i > matchStart) {
 				// found a match
 				if (matches == null) {
-					matches = new ArrayList<>(1); // lazy init
+					matches = new ArrayList(1); // lazy init
 				}
 				if (i >= 1 && rawText.charAt(i - 1) == '\r') {
 					i--; // Back up over \r, which really should be there
@@ -169,7 +169,7 @@ public final class VCardResultParser extends ResultParser {
 					element = VCARD_ESCAPES.matcher(element).replaceAll("$1");
 				}
 				if (metadata == null) {
-					List<String> match = new ArrayList<>(1);
+					List<String> match = new ArrayList(1);
 					match.add(element);
 					matches.add(match);
 				} else {
@@ -250,7 +250,7 @@ public final class VCardResultParser extends ResultParser {
 		if (lists == null || lists.isEmpty()) {
 			return null;
 		}
-		List<String> result = new ArrayList<>(lists.size());
+		List<String> result = new ArrayList(lists.size());
 		for (List<String> list : lists) {
 			String value = list.get(0);
 			if (value != null && !value.isEmpty()) {
@@ -264,7 +264,7 @@ public final class VCardResultParser extends ResultParser {
 		if (lists == null || lists.isEmpty()) {
 			return null;
 		}
-		List<String> result = new ArrayList<>(lists.size());
+		List<String> result = new ArrayList(lists.size());
 		for (List<String> list : lists) {
 			String type = null;
 			for (int i = 1; i < list.size(); i++) {

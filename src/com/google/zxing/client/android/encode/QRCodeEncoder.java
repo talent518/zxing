@@ -225,44 +225,38 @@ final class QRCodeEncoder {
 	}
 
 	private void encodeQRCodeContents(Intent intent, String type) {
-		switch (type) {
-		case Contents.Type.TEXT:
+		if(Contents.Type.TEXT.equals(type)) {
 			String textData = intent.getStringExtra(Intents.Encode.DATA);
 			if (textData != null && !textData.isEmpty()) {
 				contents = textData;
 				displayContents = textData;
 				title = activity.getString(R.string.contents_text);
 			}
-			break;
-
-		case Contents.Type.EMAIL:
+		} else if(Contents.Type.EMAIL.equals(type)) {
 			String emailData = ContactEncoder.trim(intent.getStringExtra(Intents.Encode.DATA));
 			if (emailData != null) {
 				contents = "mailto:" + emailData;
 				displayContents = emailData;
 				title = activity.getString(R.string.contents_email);
 			}
-			break;
 
-		case Contents.Type.PHONE:
+		} else if(Contents.Type.PHONE.equals(type)) {
 			String phoneData = ContactEncoder.trim(intent.getStringExtra(Intents.Encode.DATA));
 			if (phoneData != null) {
 				contents = "tel:" + phoneData;
 				displayContents = PhoneNumberUtils.formatNumber(phoneData);
 				title = activity.getString(R.string.contents_phone);
 			}
-			break;
 
-		case Contents.Type.SMS:
+		} else if(Contents.Type.SMS.equals(type)) {
 			String smsData = ContactEncoder.trim(intent.getStringExtra(Intents.Encode.DATA));
 			if (smsData != null) {
 				contents = "sms:" + smsData;
 				displayContents = PhoneNumberUtils.formatNumber(smsData);
 				title = activity.getString(R.string.contents_sms);
 			}
-			break;
 
-		case Contents.Type.CONTACT:
+		} else if(Contents.Type.CONTACT.equals(type)) {
 			Bundle contactBundle = intent.getBundleExtra(Intents.Encode.DATA);
 			if (contactBundle != null) {
 
@@ -286,9 +280,8 @@ final class QRCodeEncoder {
 				}
 
 			}
-			break;
 
-		case Contents.Type.LOCATION:
+		} else if(Contents.Type.LOCATION.equals(type)) {
 			Bundle locationBundle = intent.getBundleExtra(Intents.Encode.DATA);
 			if (locationBundle != null) {
 				// These must use Bundle.getFloat(), not getDouble(), it's part of the API.
@@ -300,12 +293,11 @@ final class QRCodeEncoder {
 					title = activity.getString(R.string.contents_location);
 				}
 			}
-			break;
 		}
 	}
 
 	private static List<String> getAllBundleValues(Bundle bundle, String[] keys) {
-		List<String> values = new ArrayList<>(keys.length);
+		List<String> values = new ArrayList(keys.length);
 		for (String key : keys) {
 			Object value = bundle.get(key);
 			values.add(value == null ? null : value.toString());
@@ -336,7 +328,7 @@ final class QRCodeEncoder {
 		Map<EncodeHintType, Object> hints = null;
 		String encoding = guessAppropriateEncoding(contentsToEncode);
 		if (encoding != null) {
-			hints = new EnumMap<>(EncodeHintType.class);
+			hints = new EnumMap(EncodeHintType.class);
 			hints.put(EncodeHintType.CHARACTER_SET, encoding);
 		}
 		BitMatrix result;

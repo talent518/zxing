@@ -74,7 +74,7 @@ final class AlignmentPatternFinder {
 	 */
 	AlignmentPatternFinder(BitMatrix image, int startX, int startY, int width, int height, float moduleSize, ResultPointCallback resultPointCallback) {
 		this.image = image;
-		this.possibleCenters = new ArrayList<>(5);
+		this.possibleCenters = new ArrayList(5);
 		this.startX = startX;
 		this.startY = startY;
 		this.width = width;

@@ -42,7 +42,7 @@ public final class MultiFormatUPCEANReader extends OneDReader {
 	public MultiFormatUPCEANReader(Map<DecodeHintType, ?> hints) {
 		@SuppressWarnings("unchecked")
 		Collection<BarcodeFormat> possibleFormats = hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
-		Collection<UPCEANReader> readers = new ArrayList<>();
+		Collection<UPCEANReader> readers = new ArrayList();
 		if (possibleFormats != null) {
 			if (possibleFormats.contains(BarcodeFormat.EAN_13)) {
 				readers.add(new EAN13Reader());
