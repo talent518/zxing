@@ -37,7 +37,7 @@ public final class HttpHelper {
 
 	private static final String TAG = HttpHelper.class.getSimpleName();
 
-	private static final Collection<String> REDIRECTOR_DOMAINS = new HashSet(Arrays.asList("amzn.to", "bit.ly", "bitly.com", "fb.me", "goo.gl", "is.gd", "j.mp", "lnkd.in", "ow.ly", "R.BEETAGG.COM", "r.beetagg.com", "SCN.BY", "su.pr", "t.co", "tinyurl.com", "tr.im"));
+	private static final Collection<String> REDIRECTOR_DOMAINS = new HashSet<>(Arrays.asList("amzn.to", "bit.ly", "bitly.com", "fb.me", "goo.gl", "is.gd", "j.mp", "lnkd.in", "ow.ly", "R.BEETAGG.COM", "r.beetagg.com", "SCN.BY", "su.pr", "t.co", "tinyurl.com", "tr.im"));
 
 	private HttpHelper() {
 	}
@@ -157,8 +157,7 @@ public final class HttpHelper {
 			if (in != null) {
 				try {
 					in.close();
-				} catch (IOException ioe) {
-				} catch (NullPointerException ioe) {
+				} catch (IOException | NullPointerException ioe) {
 					// continue
 				}
 			}
@@ -217,28 +216,13 @@ public final class HttpHelper {
 	private static int safelyConnect(HttpURLConnection connection) throws IOException {
 		try {
 			connection.connect();
-		} catch (NullPointerException e) {
-			// this is an Android bug: http://code.google.com/p/android/issues/detail?id=16895
-			throw new IOException(e);
-		} catch (IllegalArgumentException e) {
-			// this is an Android bug: http://code.google.com/p/android/issues/detail?id=16895
-			throw new IOException(e);
-		} catch (IndexOutOfBoundsException e) {
-			// this is an Android bug: http://code.google.com/p/android/issues/detail?id=16895
-			throw new IOException(e);
-		} catch (SecurityException e) {
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException | SecurityException e) {
 			// this is an Android bug: http://code.google.com/p/android/issues/detail?id=16895
 			throw new IOException(e);
 		}
 		try {
 			return connection.getResponseCode();
-		} catch (NullPointerException e) {
-			// this is maybe this Android bug: http://code.google.com/p/android/issues/detail?id=15554
-			throw new IOException(e);
-		} catch (StringIndexOutOfBoundsException e) {
-			// this is maybe this Android bug: http://code.google.com/p/android/issues/detail?id=15554
-			throw new IOException(e);
-		} catch (IllegalArgumentException e) {
+		} catch (NullPointerException | StringIndexOutOfBoundsException | IllegalArgumentException e) {
 			// this is maybe this Android bug: http://code.google.com/p/android/issues/detail?id=15554
 			throw new IOException(e);
 		}

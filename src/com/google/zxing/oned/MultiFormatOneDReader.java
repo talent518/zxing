@@ -42,7 +42,7 @@ public final class MultiFormatOneDReader extends OneDReader {
 		@SuppressWarnings("unchecked")
 		Collection<BarcodeFormat> possibleFormats = hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
 		boolean useCode39CheckDigit = hints != null && hints.get(DecodeHintType.ASSUME_CODE_39_CHECK_DIGIT) != null;
-		Collection<OneDReader> readers = new ArrayList();
+		Collection<OneDReader> readers = new ArrayList<>();
 		if (possibleFormats != null) {
 			if (possibleFormats.contains(BarcodeFormat.EAN_13) || possibleFormats.contains(BarcodeFormat.UPC_A) || possibleFormats.contains(BarcodeFormat.EAN_8) || possibleFormats.contains(BarcodeFormat.UPC_E)) {
 				readers.add(new MultiFormatUPCEANReader(hints));

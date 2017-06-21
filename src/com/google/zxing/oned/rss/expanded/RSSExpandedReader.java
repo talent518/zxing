@@ -78,8 +78,8 @@ public final class RSSExpandedReader extends AbstractRSSReader {
 
 	private static final int MAX_PAIRS = 11;
 
-	private final List<ExpandedPair> pairs = new ArrayList(MAX_PAIRS);
-	private final List<ExpandedRow> rows = new ArrayList();
+	private final List<ExpandedPair> pairs = new ArrayList<>(MAX_PAIRS);
+	private final List<ExpandedRow> rows = new ArrayList<>();
 	private final int[] startEnd = new int[2];
 	private boolean startFromEven;
 
@@ -194,7 +194,7 @@ public final class RSSExpandedReader extends AbstractRSSReader {
 				return this.pairs;
 			}
 
-			List<ExpandedRow> rs = new ArrayList();
+			List<ExpandedRow> rs = new ArrayList<>();
 			rs.addAll(collectedRows);
 			rs.add(row);
 			try {
