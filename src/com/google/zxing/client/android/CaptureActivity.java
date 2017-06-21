@@ -118,7 +118,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	private static TextView messageView;
 
 	private TextView dateView, timeView;
-	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd E");
 	private DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 
 	ViewfinderView getViewfinderView() {
